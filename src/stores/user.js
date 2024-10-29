@@ -3,6 +3,9 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 // user api
 import { loginAPI, getManagerInfoAPI } from '@/api/user'
+// cookie設置
+import { removeToken } from "@/utils/auth"
+import { removeLocalStorage } from "@/utils/common"
 
 export const useUserStore = defineStore(
   'user',
@@ -28,7 +31,7 @@ export const useUserStore = defineStore(
       }
     }
 
-    // 取得管理者登入信息
+    // 取得管理者信息 (需登入)
     const getManmgerInfo = async () => {
       try {
         await getManagerInfoAPI().then((res) => {
@@ -38,19 +41,29 @@ export const useUserStore = defineStore(
             managerInfo.value = res
           }
         })
-
-        
       } catch (err) {
         console.log('err ======', err.response.data)
       }
     }
+
+    // 退出登入
+    const logout = () => {
+      // 刪除cookie的token
+      removeToken()
+      // 清除localStorage
+      removeLocalStorage("user")
+      // 刪除pinia管理者數據
+      managerInfo.value = {}
+    }
+
 
     // 給外部組件使用
     return {
       tokenInfo,
       managerInfo,
       getTokenInfo,
-      getManmgerInfo
+      getManmgerInfo,
+      logout
     }
   },
   {

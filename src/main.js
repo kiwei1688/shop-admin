@@ -16,9 +16,13 @@ const app = createApp(App)
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
 }
+
 const pinia = createPinia()
+
 // 註冊持久化套件
 pinia.use(piniaPluginPersistedstate)
+// 設置 全局前置守衛
+import "./permission"
 
 app.use(pinia)
 app.use(router)

@@ -52,13 +52,12 @@
 </template>
 
 <script setup>
-  import { ref, reactive} from 'vue'
+  import { ref, reactive, onMounted, onBeforeMount } from 'vue'
   // 直接透過pinia action請求登入
   import { useUserStore } from "@/stores/user"
   // cookie設置
   import { setToken } from "@/utils/auth"
   import { toast } from '@/utils/toast'
-
   import { useRouter } from 'vue-router'
 
   // 實例化 pinia
@@ -98,8 +97,8 @@
             setToken(store.tokenInfo.token)
 
             // 獲取 管理者相關信息(帶token去請求)
-            await store.getManmgerInfo()
-            console.log("管理者信息 ~~~", store.managerInfo)
+            // await store.getManmgerInfo()
+            // console.log("管理者信息 ~~~", store.managerInfo)
 
             // 提示用戶
             toast("success", "登入成功!!")
@@ -111,6 +110,21 @@
       }
     })
   }
+
+  // 監聽enter事件 (enter登入)
+  const onKeyUp = ((e) => {
+    console.log("eeeee", e)
+    if(e.key === "Enter") onSubmit()
+  })
+
+  onMounted(() => {
+    document.addEventListener("keyup", onKeyUp)
+  })
+
+  // 離開該page前 卸載手動綁定事件
+  onBeforeMount(() => {
+    document.removeEventListener("keyup", onKeyUp)
+  })
 
 </script>
 

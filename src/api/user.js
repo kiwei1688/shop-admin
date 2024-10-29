@@ -29,3 +29,15 @@ export const getManagerInfoAPI = async () => {
     method: 'POST',
   })
 }
+
+/**
+ * @description: 登出 -- post
+ * @param
+ * @return {*}
+ */
+export const logoutAPI = async () => {
+  return await request({
+    url: '/admin/logout',
+    method: 'POST'
+  })
+}
