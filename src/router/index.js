@@ -10,21 +10,39 @@ const router = createRouter({
     {
       // 首頁
       path: '/',
-      name: 'index',
+      name: 'admin',
       // redirect: '/index',
-      component: () => import('@/pages/index.vue'),
+      component: () => import('@/layout/admin.vue'),
+      // 二級路由
+      children: [
+        {
+          path: '/',
+          name: 'index',
+          // redirect: '/index',
+          component: () => import('@/pages/index.vue'),
+          meta: {
+            title: "後台首頁"
+          }
+        }
+      ]
     },
     {
       // 登入
       path: '/login',
       name: 'login',
       component: () => import('@/pages/login.vue'),
+      meta: {
+        title: "登入頁"
+      }
     },
     {
       // 404
       path: '/:pathMatch(.*)*', 
       name: '404',
       component: () => import('@/pages/404.vue'),
+      meta: {
+        title: "404"
+      }
     }
   ]
 })

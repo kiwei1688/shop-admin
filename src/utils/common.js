@@ -1,3 +1,5 @@
+import nprogress from "nprogress"
+
 // 格式化時間 -> 2023-11-16 00:12:48
 const dateFormat = (time) => {
   const date = time ? time : new Date()
@@ -120,6 +122,16 @@ function getRandom(min = 1, max = 20) {
   return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
+// 顯示全局loading
+function showFullLoading() {
+  nprogress.start()
+}
+
+// 關閉全局loading
+function hideFullLoading() {
+  nprogress.done()
+}
+
 export {
   dateFormat,
   deepClone,
@@ -128,5 +140,7 @@ export {
   setLocalStorage,
   removeLocalStorage,
   phoneLeaveKeypress,
-  getRandom
+  getRandom,
+  showFullLoading,
+  hideFullLoading
 }

@@ -51,7 +51,8 @@ export const useUserStore = defineStore(
       // 刪除cookie的token
       removeToken()
       // 清除localStorage
-      removeLocalStorage("user")
+      // removeLocalStorage("user")
+      localStorage.setItem("user", {})
       // 刪除pinia管理者數據
       managerInfo.value = {}
     }

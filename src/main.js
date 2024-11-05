@@ -9,6 +9,8 @@ import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 // 全局引入element plus icons
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+// 進度條_樣式
+import "nprogress/nprogress.css"
 
 const app = createApp(App)
 

@@ -18,7 +18,16 @@ export default defineConfig({
     WindiCSS()
   ],
   css: {
-
+    preprocessorOptions: {
+      scss: {
+        // 自动导入定制化样式文件进行样式覆盖
+        // 自動導入全局~~var.scss變數文件(全局使用)
+        additionalData: `
+          @use "@/styles/element/index.scss" as *;
+          @use "@/styles/var.scss" as *;
+        `
+      }
+    }
   },
   // 配置反向代理解決跨域問題
   server: {

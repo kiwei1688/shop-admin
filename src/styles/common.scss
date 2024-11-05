@@ -1,0 +1,29 @@
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+*,
+::before,
+::after {
+  border-color: unset;
+}
+
+// 進度條 style
+#nprogress{
+  .bar {
+    background-color: red !important;
+    height: 5px;
+  }
+  .spinner {
+    top: 20px;
+    right: 20px;
+    .spinner-icon {
+      width: 30px;
+      height: 30px;
+    }
+  }
+} 

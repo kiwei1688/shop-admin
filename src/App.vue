@@ -4,10 +4,11 @@
 
 <template>
   <div>
+    <!--  -->
     <router-view></router-view>
   </div>
 </template>
 
-<style scoped>
-
+<style lang="scss">
+@import '@/styles/common.scss';
 </style>

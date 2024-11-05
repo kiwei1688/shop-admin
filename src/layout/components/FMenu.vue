@@ -1,10 +1,9 @@
 <template>
-  <div class="mb-4">
-    後臺首頁 admin
-  </div>
+  <div>側邊</div>
 </template>
 
 <script setup>
+
 
 </script>
 

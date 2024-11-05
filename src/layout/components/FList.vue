@@ -1,10 +1,9 @@
 <template>
-  <div class="mb-4">
-    後臺首頁 admin
-  </div>
+  <div>標籤導航</div>
 </template>
 
 <script setup>
+
 
 </script>
 
