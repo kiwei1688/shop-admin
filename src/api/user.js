@@ -41,3 +41,16 @@ export const logoutAPI = async () => {
     method: 'POST'
   })
 }
+
+/**
+ * @description: 修改密碼 -- post
+ * @param
+ * @return {*}
+ */
+export const updatepassword = async (data) => {
+  return await request({
+    url: '/admin/updatepassword',
+    method: 'POST',
+    data
+  })
+}

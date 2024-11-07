@@ -98,7 +98,6 @@
 
             // 獲取 管理者相關信息(帶token去請求)
             // await store.getManmgerInfo()
-            // console.log("管理者信息 ~~~", store.managerInfo)
 
             // 提示用戶
             toast("success", "登入成功!!")
@@ -113,7 +112,7 @@
 
   // 監聽enter事件 (enter登入)
   const onKeyUp = ((e) => {
-    console.log("eeeee", e)
+    // console.log("eeeee", e)
     if(e.key === "Enter") onSubmit()
   })
 

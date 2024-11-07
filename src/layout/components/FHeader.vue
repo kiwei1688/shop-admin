@@ -44,26 +44,71 @@
           <el-dropdown-menu>
             <el-dropdown-item command="repassword">修改密碼</el-dropdown-item>
             <el-dropdown-item command="logout">退出登陸</el-dropdown-item>
-            <!-- <el-dropdown-item>Action 3</el-dropdown-item> -->
-            <!-- <el-dropdown-item disabled>Action 4</el-dropdown-item>
-            <el-dropdown-item divided>Action 5</el-dropdown-item> -->
           </el-dropdown-menu>
         </template>
       </el-dropdown>
     </div>
   </div>
+
+  <!-- 抽屜組件 修改密碼 -->
+  <form-drawer 
+    ref="formDrawerRef"
+    title="修改密碼"
+    destroyOnClose
+    @submit="handleUpdatePassword"
+  >
+    <el-form 
+      ref="formRef" 
+      :rules="rules" 
+      :model="form" 
+      class="w-[500px]"
+      label-width="80px"
+    >
+      <el-form-item prop="oldpassword" label="舊密碼">
+        <el-input 
+          v-model="form.oldpassword" 
+          placeholder="請輸入舊密碼"
+          type="password"
+          show-password
+        >
+        </el-input>
+      </el-form-item>
+      <el-form-item prop="password" label="新密碼">
+        <el-input 
+          v-model="form.password" 
+          placeholder="請輸入新密碼"
+          type="password"
+          show-password
+        >
+        </el-input>
+      </el-form-item>
+      <el-form-item prop="repassword" label="確認密碼">
+        <el-input 
+          v-model="form.repassword" 
+          placeholder="再次確認新密碼"
+          type="password"
+          show-password
+        >
+        </el-input>
+      </el-form-item>
+    </el-form>
+  </form-drawer>
 </template>
 
 <script setup>
+  import { ref, reactive } from "vue"
   // 直接透過pinia action請求登入
   import { useUserStore } from "@/stores/user"
+  // 組件
+  import FormDrawer from "@/components/FormDrawer.vue";
   // api
-  import { logoutAPI } from "@/api/user"
+  import { logoutAPI, updatepassword } from "@/api/user"
   // 提示彈窗
   import { toast, showModal } from "@/utils/toast";
   import { useRouter } from 'vue-router'
   // 全屏功能
   import { useFullscreen } from '@vueuse/core'
+  import { showFullLoading, hideFullLoading } from "@/utils/common"
 
   const { 
     isFullscreen, // 全屏狀態
@@ -71,6 +116,30 @@
   } = useFullscreen()
   const router = useRouter()
   const store = useUserStore()
+  
+  // 修改密碼 Dom元件
+  const formDrawerRef = ref(null)
+
+  // 取得form的ref dom
+  const formRef = ref(null)
+  const form = reactive({
+    oldpassword: "",
+    password: "",
+    repassword: ""
+  })
+
+  // 驗證規則
+  const rules = {
+    oldpassword: [
+      { required: true, message: '舊密碼不能為空', trigger: 'blur' },
+    ],
+    password: [
+      { required: true, message: '新密碼不能為空', trigger: 'blur' },
+    ],
+    repassword: [
+      { required: true, message: '確認新密碼不能為空', trigger: 'blur' },
+    ]
+  }
 
   // 處理下拉選項
   const handleCommand = (key) => {
@@ -79,7 +148,8 @@
         handleLogout()
         break;
       case "repassword": // 修改密碼
-        console.log("修改密碼")
+        // formDrawer組件的openDrawer方法
+        formDrawerRef.value.openDrawer()
         break;
       default:
         break;
@@ -105,9 +175,43 @@
     })
   }
 
+  // 修改密碼
+  const handleUpdatePassword = () => {
+    // 表單驗證
+    formRef.value.validate(async (validate) => {
+      // 驗證通過後
+      if(validate) {
+        try {
+          // 開啟loading
+          // formDrawerRef.value.showLoading()
+          showFullLoading()
+          await updatepassword(form)
+          .then(res => {
+            // 提示用戶
+            toast("修改密碼成功,請重新登錄!!")
+            // 退出登陸 讓用戶重新登入
+            store.logout()
+            // 導回登入頁
+            router.push({ path: "/login" })
+          })
+          // 請求成功or失敗都會執行
+          .finally(() => {
+            // 關閉loading
+            // formDrawerRef.value.closeLoading()
+            hideFullLoading()
+          })
+          
+        } catch(err) {
+          console.log("catch err !!!!!", err)
+        }
+      }
+    })
+  }
+
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@import '@/styles/common.scss';
 .f-header {
   @apply flex items-center bg-indigo-700 text-light-50 fixed top-0 left-0 right-0;
   height: 64px;

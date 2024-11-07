@@ -6,6 +6,8 @@ import { toast } from '@/utils/toast'
 import { useUserStore } from '@/stores/user'
 // cookie設置
 import { getToken } from "@/utils/auth"
+// api
+import { logoutAPI } from "@/api/user"
 // import router from '@/router'
 
 const httpInstance = axios.create({
@@ -15,7 +17,6 @@ const httpInstance = axios.create({
   // 超時時間
   timeout: 5000
 })
-
 // 攔截器
 
 // 請求攔截
@@ -50,11 +51,21 @@ httpInstance.interceptors.response.use(
   (error) => {
     // error.response.data = {msg: '用户名错误', errorCode: 20000}
     const errorCode = error.response.data.errorCode
+    const msg = error.response.data.msg || "請求失敗!!"
+    const store = useUserStore()
+
+    // 修改密碼時~~token失效後,將用戶強制登出,reload
+    if(msg === "非法token，请先登录！") {
+      store.logout()
+      setTimeout(() => {
+        location.reload()
+      }, 1500)
+    }
 
     // 全局 error提示
     switch (errorCode) {
       case 20000:
-        toast('error', error.response.data.msg || "請求失敗!!")
+        toast('error', msg)
         break
       default:
         break

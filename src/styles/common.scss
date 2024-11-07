@@ -12,6 +12,28 @@ body,
   border-color: unset;
 }
 
+// scroll style
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-button {
+  background: transparent;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-track-piece {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #97CBFF;
+}
+
+::-webkit-scrollbar-track {
+  box-shadow: transparent;
+}
+
 // 進度條 style
 #nprogress{
   .bar {
@@ -27,3 +49,10 @@ body,
     }
   }
 } 
+
+// 抽屜組件 style 
+.el-drawer__title {
+  font-size: 20px;
+  color: #5566FF;
+  font-weight: 700;
+}
