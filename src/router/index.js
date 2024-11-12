@@ -23,6 +23,14 @@ const router = createRouter({
           meta: {
             title: "後台首頁"
           }
+        },
+        { // 商品管理
+          path: '/goods/list',
+          name: 'list',
+          component: () => import('@/pages/goods/list.vue'),
+          meta: {
+            title: "商品管理"
+          }
         }
       ]
     },

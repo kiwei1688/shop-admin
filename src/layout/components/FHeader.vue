@@ -7,7 +7,18 @@
       </el-icon>
       後台系統
     </span>
-    <el-icon class="icon-btn"><fold/></el-icon>
+    <!-- 左側 icon 縮放 -->
+    <el-tooltip
+      effect="dark"
+      content="左側欄位縮放"
+      placement="bottom"
+    >
+      <el-icon class="icon-btn" @click="totalStore.handleAsideWidth">
+        <fold v-if="totalStore.asideWidth === '250px'"/>
+        <Expand v-else/>
+      </el-icon>
+    </el-tooltip>
+    <!-- 重新刷新 -->
     <el-tooltip
       effect="dark"
       content="刷新"
@@ -30,6 +41,7 @@
           <aim v-else/>
         </el-icon>
       </el-tooltip>
+
       <!-- 下拉選單 -->
       <el-dropdown class="f-dropdown" @command="handleCommand">
         <span class="flex items-center text-light-50">
@@ -99,6 +111,7 @@
   import { ref, reactive } from "vue"
   // 直接透過pinia action請求登入
   import { useUserStore } from "@/stores/user"
+  import { handleTotalStore } from "@/stores/handleTotal"
   // 組件
   import FormDrawer from "@/components/FormDrawer.vue";
   // api
@@ -116,6 +129,7 @@
   } = useFullscreen()
   const router = useRouter()
   const store = useUserStore()
+  const totalStore = handleTotalStore()
   
   // 修改密碼 Dom元件
   const formDrawerRef = ref(null)

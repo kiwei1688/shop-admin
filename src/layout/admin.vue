@@ -6,11 +6,11 @@
       </el-header>
       <!-- main container -->
       <el-container>
-        <!-- left side bar -->
-        <el-aside>
+        <!-- 左側 欄位 -->
+        <el-aside :width="totalStore.asideWidth" class="f-aside">
           <f-menu></f-menu>
         </el-aside>
-        <!-- right container -->
+        <!-- 右側 主要container -->
         <el-main>
           <f-list></f-list>
 
@@ -21,12 +21,19 @@
 </template>
 
 <script setup>
+// components
 import FHeader from "./components/FHeader.vue"
 import FMenu from "./components/FMenu.vue"
 import FList from "./components/FList.vue"
+// pinia
+import { handleTotalStore } from "@/stores/handleTotal"
+
+const totalStore = handleTotalStore()
 
 </script>
 
 <style scoped>
-
+.f-aside {
+  transition: all 0.2s;
+}
 </style>
