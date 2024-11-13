@@ -19,9 +19,5 @@ export const handleTotalStore = defineStore(
       asideWidth,
       handleAsideWidth
     }
-  },
-  {
-    // pinia持久化設定
-    persist: true
   }
 )

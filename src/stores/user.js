@@ -37,7 +37,7 @@ export const useUserStore = defineStore(
         await getManagerInfoAPI().then((res) => {
           // 請求登入成功
           if (res.msg === 'ok') {
-            console.log("管理者登入信息 ~~~", res.data)
+            // console.log("管理者登入信息 ~~~", res.data)
             managerInfo.value = res
           }
         })

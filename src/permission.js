@@ -1,4 +1,4 @@
-import router from '@/router'
+import { router, addRouters } from '@/router'
 // utils
 import { getToken } from "@/utils/auth"
 import { showFullLoading, hideFullLoading } from "@/utils/common"
@@ -29,13 +29,18 @@ router.beforeEach(async (to, from, next) => {
   }
 
   // 獲取 管理者相關信息(帶token去請求)
-  if(token) await store.getManmgerInfo()
-
+  let hasNewRoutes = false
+  if(token) {
+    // await store.getManmgerInfo()
+    // 動態載入 二級路由的menu(傳入後端給的menu數據)
+    hasNewRoutes = addRouters(store.managerInfo.data.menus)
+  }
   // 設置頁面標題
   let title = (to.meta.title ? to.meta.title : "") + "- Vue3後台系統"
   document.title = title
 
-  next()
+  // 手動指定路由-> 解決遞迴動態路由重新整理後,路由丟失的問題
+  hasNewRoutes ? next(to.fullPath) : next()
 })
 
 // 頁面加載完執行

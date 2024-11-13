@@ -7,9 +7,9 @@
       collapse-transition -- 開合動畫
     -->
     <el-menu
-        default-active="2"
         class="border-0"
         unique-opened
+        :default-active="defaultActive"
         :collapse="isCollapse"
         :collapse-transition=false
         @select="handleSelect"
@@ -40,7 +40,7 @@
               <span>{{ subItem.name }}</span>
             </el-menu-item>
           </el-sub-menu>
-          
+          <!-- 一層menu -->
           <el-menu-item v-else :index="item.frontpath">
             <el-icon>
               <!-- 動態icon -->
@@ -54,37 +54,46 @@
 </template>
 
 <script setup>
-import { computed } from "vue"
-import { useRouter } from 'vue-router'
+import { computed, ref } from "vue"
+import { useRouter, useRoute } from 'vue-router'
 // pinia
 import { handleTotalStore } from "@/stores/handleTotal"
+import { useUserStore } from "@/stores/user"
 
 const router = useRouter()
 const totalStore = handleTotalStore()
+const store = useUserStore()
+const route = useRoute()
+
+console.log("ddddddd", store.managerInfo.data)
+
+// 當前的路由path
+const defaultActive = ref(route.path)
 
 // 左側menu
-const asideMenus = [
-  {
-    "name": "後台面板",
-    "icon": "help",
-    "child": [{
-      "name": "主控台",
-      "icon": "home-filled",
-      "frontpath": "/",
-      }
-    ]
-  },
-  {
-    "name": "商城管理",
-    "icon": "shopping-bag",
-    "child": [{
-      "name": "商品管理",
-      "icon": "shopping-cart-full",
-      "frontpath": "/goods/list",
-      }
-    ]
-  },
-]
+// const asideMenus = [
+//   {
+//     "name": "後台面板",
+//     "icon": "help",
+//     "child": [{
+//       "name": "主控台",
+//       "icon": "home-filled",
+//       "frontpath": "/",
+//       }
+//     ]
+//   },
+//   {
+//     "name": "商城管理",
+//     "icon": "shopping-bag",
+//     "child": [{
+//       "name": "商品管理",
+//       "icon": "shopping-cart-full",
+//       "frontpath": "/goods/list",
+//       }
+//     ]
+//   }
+// ]
+const asideMenus = computed(() => store.managerInfo.data.menus)
 
 // 動態側邊欄位收合
 const isCollapse = computed(() => !(totalStore.asideWidth === "250px"))
@@ -107,5 +116,9 @@ const handleSelect = (path) => {
   overflow-x: hidden;
   overflow-y: auto;
   @apply shadow-2xl fixed bg-light-50;
+}
+
+.f-menu::-webkit-scrollbar {
+  width: 0;
 }
 </style>
