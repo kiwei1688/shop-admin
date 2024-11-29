@@ -12,7 +12,7 @@
         </el-aside>
         <!-- 右側 主要container -->
         <el-main>
-          <f-list></f-list>
+          <f-TagList></f-TagList>
 
           <router-view></router-view>
         </el-main>
@@ -24,7 +24,7 @@
 // components
 import FHeader from "./components/FHeader.vue"
 import FMenu from "./components/FMenu.vue"
-import FList from "./components/FList.vue"
+import FTagList from "./components/FTagList.vue"
 // pinia
 import { handleTotalStore } from "@/stores/handleTotal"
 

@@ -31,7 +31,7 @@ router.beforeEach(async (to, from, next) => {
   // 獲取 管理者相關信息(帶token去請求)
   let hasNewRoutes = false
   if(token) {
-    // await store.getManmgerInfo()
+    await store.getManmgerInfo()
     // 動態載入 二級路由的menu(傳入後端給的menu數據)
     hasNewRoutes = addRouters(store.managerInfo.data.menus)
   }
