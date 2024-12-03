@@ -65,7 +65,7 @@ const totalStore = handleTotalStore()
 const store = useUserStore()
 const route = useRoute()
 
-console.log("ddddddd", store.managerInfo.data)
+// console.log("ddddddd", store.managerInfo.data)
 
 // 當前的路由path
 const defaultActive = ref(route.path)
