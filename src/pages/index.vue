@@ -2,6 +2,35 @@
   <div class="mb-4">
     <!-- 上方 支付訂單4個面板 -->
     <el-row :gutter="20">
+      <!-- 骨架屏 預載時先顯示,載入完顯示下方數據 -->
+      <template v-if="panels.length === 0">
+        <el-col :span="6" v-for="index in 4" :key="index">
+          <el-skeleton style="width: 100%" animated loading>
+            <template #template>
+              <el-card shadow="hover">
+                <template #header>
+                  <div class="flex justify-between">
+                    <el-skeleton-item variant="text" style="width: 50%" />
+                    <el-skeleton-item variant="text" style="width: 10%" />
+                  </div>
+                </template>
+                <!-- 中間 數值 -->
+                <span class="text-3xl font-bold text-gray-500">
+                  <el-skeleton-item variant="h3" style="width: 80%" />
+                </span>
+                <el-divider/>
+                <!-- 底部 -->
+                <div class="flex justify-between text-sm text-gray-500">
+                  <el-skeleton-item variant="text" style="width: 50%" />
+                  <el-skeleton-item variant="text" style="width: 10%" />
+                </div>
+              </el-card>
+              
+            </template>
+          </el-skeleton>
+        </el-col>
+      </template>
+
       <el-col 
         :span="6" 
         :offset="0" 
@@ -22,7 +51,8 @@
           </template>
           <!-- 中間 數值 -->
           <span class="text-3xl font-bold text-gray-500">
-            {{ item.value }}
+            <!-- gsap數字動畫 -->
+            <CountTo :value="item.value"/>
           </span>
           <el-divider/>
           <!-- 底部 -->
@@ -41,7 +71,10 @@
 import { ref } from "vue"
 // api
 import { getStatistics1 } from "@/api/index.js"
+// gsap 數字動畫組件
+import CountTo from "@/components/CountTo.vue"
 
+// 主控台 數據
 const panels = ref([])
 
 const getStatist = async () => {
