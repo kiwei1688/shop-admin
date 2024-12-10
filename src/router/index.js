@@ -56,6 +56,70 @@ const asyncRouters = [
     meta: {
       title: "分類列表"
     }
+  },
+  { // 用戶列表
+    path: '/user/list',
+    name: '/user/list',
+    component: () => import('@/pages/user/list.vue'),
+    meta: {
+      title: "用戶列表"
+    }
+  },
+  { // 商品列表
+    path: '/goods/list',
+    name: '/goods/list',
+    component: () => import('@/pages/goods/list.vue'),
+    meta: {
+      title: "商品列表"
+    }
+  },
+  { // 訂單列表
+    path: '/order/list',
+    name: '/order/list',
+    component: () => import('@/pages/order/list.vue'),
+    meta: {
+      title: "訂單列表"
+    }
+  },
+  { // 評價
+    path: '/comment/list',
+    name: '/comment/list',
+    component: () => import('@/pages/comment/list.vue'),
+    meta: {
+      title: "評價"
+    }
+  },
+  { // 圖庫列表
+    path: '/image/list',
+    name: '/image/list',
+    component: () => import('@/pages/image/list.vue'),
+    meta: {
+      title: "圖庫列表"
+    }
+  },
+  { // 公告列表
+    path: '/notice/list',
+    name: '/notice/list',
+    component: () => import('@/pages/notice/list.vue'),
+    meta: {
+      title: "公告列表"
+    }
+  },
+  { // 配置
+    path: '/setting/base',
+    name: '/setting/base',
+    component: () => import('@/pages/setting/base.vue'),
+    meta: {
+      title: "配置"
+    }
+  },
+  { // 優惠券列表
+    path: '/coupon/list',
+    name: '/coupon/list',
+    component: () => import('@/pages/coupon/list.vue'),
+    meta: {
+      title: "優惠券列表"
+    }
   }
 ]
 

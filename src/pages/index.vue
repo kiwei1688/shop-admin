@@ -64,6 +64,7 @@
       </el-col>
     </el-row>
     
+    <IndexNavs/>
   </div>
 </template>
 
@@ -73,6 +74,7 @@ import { ref } from "vue"
 import { getStatistics1 } from "@/api/index.js"
 // gsap 數字動畫組件
 import CountTo from "@/components/CountTo.vue"
+import IndexNavs from "@/components/IndexNavs.vue"
 
 // 主控台 數據
 const panels = ref([])
