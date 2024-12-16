@@ -12,3 +12,20 @@ export const getStatistics1 = async () => {
     url: '/admin/statistics1'
   })
 }
+
+/**
+ * 
+ * @description: 主控台(echarts圖表數據) api -- get
+ * @param 
+ * @return {*}
+ */
+
+export const getStatistics3 = async (type) => {
+  return await request({
+    url: "/admin/statistics3?type=" + type
+  })
+
+
+
+  
+}

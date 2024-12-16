@@ -64,7 +64,17 @@
       </el-col>
     </el-row>
     
+    <!-- 8個面板 用戶/商品/訂單 ....... -->
     <IndexNavs/>
+    <!-- 圖表面板 echarts -->
+    <el-row class="mt-4">
+      <el-col :span="12" :offset="0" class="pr-3">
+        <IndexChart/>
+      </el-col>
+      <el-col :span="12" :offset="0" class="pl-3">
+        <IndexChart/>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -75,6 +85,7 @@ import { getStatistics1 } from "@/api/index.js"
 // gsap 數字動畫組件
 import CountTo from "@/components/CountTo.vue"
 import IndexNavs from "@/components/IndexNavs.vue"
+import IndexChart from "@/components/IndexChart.vue"
 
 // 主控台 數據
 const panels = ref([])

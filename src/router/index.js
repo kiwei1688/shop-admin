@@ -151,7 +151,7 @@ export function addRouters(menus){
   }
 
   findAndRoutesByMenus(menus)
-  console.log("查看目前有的遞歸路由 ~~~~~",router.getRoutes())
+  // console.log("查看目前有的遞歸路由 ~~~~~",router.getRoutes())
   return hasNewRoutes
 }
 
