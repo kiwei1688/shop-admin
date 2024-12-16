@@ -18,20 +18,22 @@
     </div>
     </template>
     <!-- card body -->
-    <div id="myChart" style="width: 100%; height: 300px">
-
-    </div>
+    <div ref="echartEl" id="myChart" style="width: 100%; height: 300px"></div>
   </el-card>
   
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue"
+import { ref, onMounted, onBeforeMount } from "vue"
 import * as echarts from 'echarts';
+// api
+import { getStatistics3 } from "@/api/index.js"
+// vueUse resize
+import { useResizeObserver } from "@vueuse/core"
 
 const curActive = ref("week")
-let option
 let myChart = null
+const echartEl = ref(null)
 
 const dataOptions = [
   {
@@ -48,29 +50,58 @@ const dataOptions = [
   },
 ]
 
+// 切換時間選擇圖表數據
 const handleActive = (type) => {
   curActive.value = type
+
+  getData()
 }
 
-const getData = () => {
-  option = {
+// 獲取圖表api數據
+const getData = async () => {
+  let option = {
     xAxis: {
       type: 'category',
-      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+      data: []
     },
     yAxis: {
       type: 'value'
     },
     series: [
       {
-        data: [120, 200, 150, 80, 70, 110, 130],
-        type: 'bar'
+        data: [],
+        type: 'bar',
+        showBackground: true,
+        backgroundStyle: {
+          color: "rgba(180, 180, 180, 0.2)"
+        }
       }
     ]
   };
 
-  option && myChart.setOption(option);
+  // 獲取圖表數據
+  try {
+    myChart.showLoading() // 打開loading
+    await getStatistics3(curActive.value).then(res => {
+      if(res.msg === "ok"){
+        option.xAxis["data"] = res.data.x
+        option.series[0].data = res.data.y
+        // 載入圖表
+        myChart.setOption(option)
+      }
+    }).finally(() => {
+      myChart.hideLoading() // 關閉loading
+    })
+
+  } catch(err) {
+    console.log('err ======', err)
+  }
 }
+
+// 處理圖表resize
+useResizeObserver(echartEl, (entries) => {
+  myChart.resize()
+})
 
 // dom渲染完執行
 onMounted(() => {
@@ -78,5 +109,10 @@ onMounted(() => {
   myChart = echarts.init(chartDom);
   
   getData()
+})
+
+// 頁面被銷毀前,要銷毀echart,不然會出現白屏
+onBeforeMount(() => {
+  if(myChart) echarts.dispose(myChart)
 })
 </script>
