@@ -28,7 +28,7 @@ import { ref, onMounted, onBeforeMount } from "vue"
 import * as echarts from 'echarts';
 // api
 import { getStatistics3 } from "@/api/index.js"
-// vueUse resize
+// vueUse echarts resize
 import { useResizeObserver } from "@vueuse/core"
 
 const curActive = ref("week")

@@ -1,4 +1,5 @@
 <template>
+  <!-- 首頁 主控台 -->
   <div class="mb-4">
     <!-- 上方 支付訂單4個面板 -->
     <el-row :gutter="20">
@@ -66,13 +67,27 @@
     
     <!-- 8個面板 用戶/商品/訂單 ....... -->
     <IndexNavs/>
-    <!-- 圖表面板 echarts -->
+
+    <!-- 圖表面板 -->
     <el-row class="mt-4">
+      <!-- 圖表面板 echarts -->
       <el-col :span="12" :offset="0" class="pr-3">
         <IndexChart/>
       </el-col>
+      <!-- 店鋪&商品提示 -->
       <el-col :span="12" :offset="0" class="pl-3">
-        <IndexChart/>
+        <IndexCard 
+          :title="'店鋪及商品提示'"
+          tip="店鋪及商品提示"
+          :goodsData="goods"
+          class="mb-3"
+        />
+
+        <IndexCard 
+          :title="'交易提示'"
+          tip="需要立即處理的交易訂單"
+          :goodsData="order"
+        />
       </el-col>
     </el-row>
   </div>
@@ -81,22 +96,37 @@
 <script setup>
 import { ref } from "vue"
 // api
-import { getStatistics1 } from "@/api/index.js"
+import { 
+  getStatistics1,
+  getStatistics2 
+} from "@/api/index.js"
 // gsap 數字動畫組件
 import CountTo from "@/components/CountTo.vue"
+// 面板組件
 import IndexNavs from "@/components/IndexNavs.vue"
 import IndexChart from "@/components/IndexChart.vue"
+import IndexCard from "@/components/IndexCard.vue"
 
 // 主控台 數據
 const panels = ref([])
+// 商品提示數據
+const goods = ref([])
+const order = ref([])
 
+// 獲取主控台api數據
 const getStatist = async () => {
   try {
     await getStatistics1().then(res => {
       // if(res.data.msg === "ok") {
         panels.value = res.data.panels
-        console.log("獲取主控台數據 ========", panels.value)
       // }
+    })
+    // 店鋪商品提示數據
+    await getStatistics2().then(res => {
+      if(res.msg === "ok") {
+        goods.value = res.data.goods
+        order.value = res.data.order
+      }
     })
   } catch(err) {
     console.log('err ======', err)
