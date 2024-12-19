@@ -106,9 +106,11 @@ useResizeObserver(echartEl, (entries) => {
 // dom渲染完執行
 onMounted(() => {
   let chartDom = document.getElementById('myChart');
-  myChart = echarts.init(chartDom);
-  
-  getData()
+  // 有chartDom才繪製圖表
+  if(chartDom) {
+    myChart = echarts.init(chartDom);
+    getData()
+  }
 })
 
 // 頁面被銷毀前,要銷毀echart,不然會出現白屏

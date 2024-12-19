@@ -25,7 +25,10 @@ const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)
 // 設置 全局前置守衛
 import "./permission"
+// 自訂義組件
+import permission from "@/directives/permission.js"
 
+app.use(permission)
 app.use(pinia)
 app.use(router)
 app.use(ElementPlus)

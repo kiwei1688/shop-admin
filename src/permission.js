@@ -33,6 +33,7 @@ router.beforeEach(async (to, from, next) => {
   // 獲取 管理者相關信息(帶token去請求)
   if(token) {
     await store.getManmgerInfo()
+    // console.log("檢查一下!!!!", store.managerInfo.data)
     // 控制不重複請求
     hasGetInfo = true
     // 動態載入 二級路由的menu(傳入後端給的menu數據)

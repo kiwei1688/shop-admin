@@ -2,7 +2,7 @@
   <!-- 首頁 主控台 -->
   <div class="mb-4">
     <!-- 上方 支付訂單4個面板 -->
-    <el-row :gutter="20">
+    <el-row :gutter="20" v-permission="['getStatistics1,GET']">
       <!-- 骨架屏 預載時先顯示,載入完顯示下方數據 -->
       <template v-if="panels.length === 0">
         <el-col :span="6" v-for="index in 4" :key="index">
@@ -71,8 +71,14 @@
     <!-- 圖表面板 -->
     <el-row class="mt-4">
       <!-- 圖表面板 echarts -->
-      <el-col :span="12" :offset="0" class="pr-3">
-        <IndexChart/>
+      <el-col 
+        :span="12" 
+        :offset="0" 
+        class="pr-3"
+        v-permission="['getStatistics2,GET']"
+      >
+        <!-- v-permission 自定義指令 判別權限 透過api接口別名 -->
+        <IndexChart v-permission="['getStatistics3,GET']"/>
       </el-col>
       <!-- 店鋪&商品提示 -->
       <el-col :span="12" :offset="0" class="pl-3">
