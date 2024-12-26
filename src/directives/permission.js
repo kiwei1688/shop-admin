@@ -20,6 +20,7 @@ export default {
   // 註冊自訂義組件
   install(app) {
     app.directive('permission', {
+
       mounted(el, binding) {
         // 判斷是否有該api權限(別名),沒有則移除該dom
         // binding.value 為判斷別名 - 'getStatistics3,GET'
