@@ -18,8 +18,8 @@
 
 <script setup>
 // component
-import ImageAside from "@/components/ImageAside.vue"
-import ImageMain from "@/components/ImageMain.vue"
+import ImageAside from "@/components/ImageManage/ImageAside.vue"
+import ImageMain from "@/components/ImageManage/ImageMain.vue"
 
 // 動態計算container整體高度
 const windowHeight = window.innerHeight || document.body.clientHeight
