@@ -52,11 +52,11 @@
   })
   // 執行父層組件的@submit
   const emit = defineEmits(["submit"])
-
+  // 開啟側邊彈窗
   const openDrawer = () => showDrawer.value = true
-
+  // 關閉側邊彈窗
   const closeDrawer = () => showDrawer.value = false
-  // 執行submit 提交
+  // 觸發執行父層@submit對應的fun功能 (提交,新增...)
   const submit = () => emit("submit")
 
   // 給外部使用

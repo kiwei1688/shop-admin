@@ -197,7 +197,6 @@
       if(validate) {
         try {
           // 開啟loading
-          // formDrawerRef.value.showLoading()
           showFullLoading()
           await updatepassword(form)
           .then(res => {
@@ -211,7 +210,6 @@
           // 請求成功or失敗都會執行
           .finally(() => {
             // 關閉loading
-            // formDrawerRef.value.closeLoading()
             hideFullLoading()
           })
           
