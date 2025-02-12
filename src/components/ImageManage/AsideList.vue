@@ -10,7 +10,7 @@
       type="primary" 
       size="small" 
       class="ml-auto px-1"
-      @click="emit('edit')"
+      @click="$emit('edit')"
     >
       <el-icon :size="12">
         <Edit/>

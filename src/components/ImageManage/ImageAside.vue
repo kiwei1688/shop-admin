@@ -7,6 +7,8 @@
         :active="activeId === item.id"
         v-for="(item, index) in imgList"
         :key="index"
+        @edit="handleEdit(item)"
+
       >
         {{ item.name }}
       </AsideList>
@@ -26,7 +28,7 @@
   
   <!-- 側邊 彈窗 -->
   <form-drawer
-    title="新增"
+    :title="drawerTitle"
     ref="formDrawerRef"
     @submit="handleSubmit"
     destroyOnClose
@@ -50,7 +52,7 @@
 </template>
 
 <script setup>
-import { ref, reactive } from "vue"
+import { ref, reactive, computed } from "vue"
 // components
 import FormDrawer from "@/components/FormDrawer.vue"
 import AsideList from "@/components/ImageManage/AsideList.vue"
@@ -59,7 +61,8 @@ import { toast } from "@/utils/toast";
 // api
 import { 
   getImageClassList,
-  createImageClass
+  createImageClass,
+  updateImageClass
  } from "@/api/image_class.js"
 
 const loading = ref(false)
@@ -71,16 +74,17 @@ const curPage = ref(1) // 當前page
 const total = ref(0) // 總筆數
 const limit = ref(10) // 每頁顯示筆數
 
+const editId = ref(0) // 分類id
 const formDrawerRef = ref(null) // 獲取彈窗組件dom
 const formRef = ref(null)
 
-// 打開側邊彈窗 (執行FormDrawer組件的openDrawer()~)
-const handleCreate = () => formDrawerRef.value.openDrawer()
+// 彈窗title
+const drawerTitle = computed(() => editId.value ? "修改分類" : "新增分類")
 
 // 定義form內容
 const form = reactive({
   name: "",
-  order: 50
+  order: 50 // 分類排序
 })
 
 // 驗證form規則
@@ -97,17 +101,47 @@ const handleSubmit = () => {
   // 驗證表單
   formRef.value.validate(async (valid) => {
     if(!valid) return false
-    
+    formDrawerRef.value.showLoading() // 開啟loading
+
     // 通過驗證
     try{
-      await createImageClass(form)
+      // 判斷是 新增分類 / 修改分類 (用分類id判斷)
+      // 分類id 0 => 新增 / != 0 => 修改
+      // editId.value ?
+      // // 修改分類
+      // await updateImageClass(editId.value, form).then(res => {
+      //   if(res.msg === "ok") {
+      //     toast("success", `${drawerTitle.value}圖庫分類成功`)
+      //     // 重新拉圖庫分類數據 新增取第一頁 / 修改取當頁數據
+      //     getImgData(curPage)
+      //     // 關閉彈窗
+      //     formDrawerRef.value.closeDrawer()
+      //   }
+      // })
+      // .finally(() => {
+      //   formDrawerRef.value.closeLoading()
+      // })
+
+      // :
+      // // 新增分類
+      // await createImageClass(form).then(res => {
+      //   if(res.msg === "ok") {
+      //     toast("success", `${drawerTitle.value}圖庫分類成功`)
+      //     // 重新拉圖庫分類數據 新增取第一頁 / 修改取當頁數據
+      //     getImgData(1)
+      //     // 關閉彈窗
+      //     formDrawerRef.value.closeDrawer()
+      //   }
+      // })
+
+      // 優化寫法
+      // 判斷是 新增分類 / 修改分類 (用分類id判斷) -- 分類id 0 => 新增 / != 0 => 修改
+      await (editId.value ? updateImageClass(editId.value, form) : createImageClass(form))
       .then(res => {
-        formDrawerRef.value.showLoading()
         if(res.msg === "ok") {
-          toast("success", "新增圖庫分類成功")
-          // 重新拉圖庫分類數據
-          getImgData(1)
-          form.name = ""
+          toast("success", `${drawerTitle.value}圖庫分類成功`)
+          // 重新拉圖庫分類數據 新增取第一頁 / 修改取當頁數據
+          getImgData(editId.value ? curPage.value : 1)
           // 關閉彈窗
           formDrawerRef.value.closeDrawer()
         }
@@ -119,6 +153,26 @@ const handleSubmit = () => {
       console.log("catch err !!!!!", err)
     }
   })
+}
+
+// 打開側邊彈窗 (執行FormDrawer組件的openDrawer()~)
+const handleCreate = () => {
+  // form值回復preset
+  editId.value = 0
+  Object.assign(form, {
+    name: "",
+    order: 50
+  })
+  formDrawerRef.value.openDrawer()
+}
+
+// 編輯圖庫分類
+const handleEdit = (curItem) => {
+  // 更新當下分類id
+  editId.value = curItem.id
+  // form 重新更新為當下的值
+  Object.assign(form, curItem)
+  formDrawerRef.value.openDrawer()
 }
 
 // 獲取圖庫數據
