@@ -8,7 +8,7 @@
         v-for="(item, index) in imgList"
         :key="index"
         @edit="handleEdit(item)"
-
+        @delete="handleDelete(item.id)"
       >
         {{ item.name }}
       </AsideList>
@@ -62,7 +62,8 @@ import { toast } from "@/utils/toast";
 import { 
   getImageClassList,
   createImageClass,
-  updateImageClass
+  updateImageClass,
+  deleteImageClass
  } from "@/api/image_class.js"
 
 const loading = ref(false)
@@ -105,41 +106,12 @@ const handleSubmit = () => {
 
     // 通過驗證
     try{
-      // 判斷是 新增分類 / 修改分類 (用分類id判斷)
-      // 分類id 0 => 新增 / != 0 => 修改
-      // editId.value ?
-      // // 修改分類
-      // await updateImageClass(editId.value, form).then(res => {
-      //   if(res.msg === "ok") {
-      //     toast("success", `${drawerTitle.value}圖庫分類成功`)
-      //     // 重新拉圖庫分類數據 新增取第一頁 / 修改取當頁數據
-      //     getImgData(curPage)
-      //     // 關閉彈窗
-      //     formDrawerRef.value.closeDrawer()
-      //   }
-      // })
-      // .finally(() => {
-      //   formDrawerRef.value.closeLoading()
-      // })
-
-      // :
-      // // 新增分類
-      // await createImageClass(form).then(res => {
-      //   if(res.msg === "ok") {
-      //     toast("success", `${drawerTitle.value}圖庫分類成功`)
-      //     // 重新拉圖庫分類數據 新增取第一頁 / 修改取當頁數據
-      //     getImgData(1)
-      //     // 關閉彈窗
-      //     formDrawerRef.value.closeDrawer()
-      //   }
-      // })
-
       // 優化寫法
       // 判斷是 新增分類 / 修改分類 (用分類id判斷) -- 分類id 0 => 新增 / != 0 => 修改
       await (editId.value ? updateImageClass(editId.value, form) : createImageClass(form))
       .then(res => {
         if(res.msg === "ok") {
-          toast("success", `${drawerTitle.value}圖庫分類成功`)
+          toast("success", `${drawerTitle.value}成功`)
           // 重新拉圖庫分類數據 新增取第一頁 / 修改取當頁數據
           getImgData(editId.value ? curPage.value : 1)
           // 關閉彈窗
@@ -173,6 +145,26 @@ const handleEdit = (curItem) => {
   // form 重新更新為當下的值
   Object.assign(form, curItem)
   formDrawerRef.value.openDrawer()
+}
+
+// 刪除一筆圖庫分類
+const handleDelete = async (id) => {
+  formDrawerRef.value.showLoading()
+
+  try{
+    await deleteImageClass(id).then(res => {
+      if(res.msg === "ok") {
+        toast("delete", "分類刪除成功")
+        // 重新拉取分類數據
+        getImgData()
+      }
+    })
+    .finally(() => {
+      formDrawerRef.value.closeLoading()
+    })
+  } catch(err) {
+    console.log("catch err !!!!!", err)
+  }
 }
 
 // 獲取圖庫數據

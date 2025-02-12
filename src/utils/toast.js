@@ -2,7 +2,7 @@
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 // 共用訊息提示
-export const toast = (type = "success", message, dangerouslyUseHTMLString = false) => {
+export const toast = (type = "success", message, dangerouslyUseHTMLString = true) => {
   ElMessage(
     {
       type,

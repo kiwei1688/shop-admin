@@ -45,4 +45,18 @@ export const updateImageClass = async (id, data) => {
   })
 }
 
+/**
+ * 
+ * @description: 刪除圖庫分類 api -- post
+ * @param { id - 圖庫分類id }
+ * @return {*}
+ */
+
+export const deleteImageClass = async (id) => {
+  return await request({
+    url: `/admin/image_class/${id}/delete`,
+    method: 'POST'
+  })
+}
+
 

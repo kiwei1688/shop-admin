@@ -5,6 +5,7 @@
     <span class="truncate">
       <slot/>
     </span>
+    <!-- 編輯 icon -->
     <el-button 
       text 
       type="primary" 
@@ -16,17 +17,27 @@
         <Edit/>
       </el-icon>
     </el-button>
-    <el-button 
-      text 
-      type="primary" 
-      size="small" 
-      class="px-1"
-      @click="$emit('delete')"
+
+    <!-- 刪除 icon -->
+    <el-popconfirm 
+      title="是否刪除該分類?"
+      confirm-button-text="確認"
+      cancel-button-text="取消"
+      @confirm="$emit('delete')"
     >
-      <el-icon :size="12">
-        <Close/>
-      </el-icon>
-    </el-button>
+      <template #reference>
+        <el-button 
+          text 
+          type="primary" 
+          size="small" 
+          class="px-1"
+        >
+          <el-icon :size="12">
+            <Close/>
+          </el-icon>
+        </el-button>
+      </template>
+    </el-popconfirm>
   </div>
 </template>
 
