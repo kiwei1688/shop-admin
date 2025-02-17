@@ -4,6 +4,7 @@
     class="bg-white rounded"
     :style="{height : (containerH + 'px')}"
   >
+    <!-- 上方header -->
     <el-header class="image-header">
       <el-button
         type="primary"
@@ -14,10 +15,15 @@
       </el-button>
     </el-header>
     <el-container>
-      <!-- 左側: 選項區 -->
-      <ImageAside ref="ImageAsideRef"/>
-      <!-- 右側: 圖片區 -->
-      <ImageMain/>
+      <!-- 左側: 分類列表區 -->
+      <ImageAside
+        ref="ImageAsideRef"
+        @changeType="handleAsideChange"
+      />
+      <!-- 右側: 圖片展示區 -->
+      <ImageMain
+        ref="ImageMainRef"
+      />
     </el-container>
   </el-container>
 </template>
@@ -35,8 +41,14 @@ const containerH = windowHeight - 64 - 44 - 40
 
 // 獲取ImageAside組件的dom
 const ImageAsideRef = ref(null)
+const ImageMainRef = ref(null)
 // 開啟側邊彈窗層(新增圖片分類)
 const handleOpenCreate = () => ImageAsideRef.value.handleCreate()
+
+const handleAsideChange = (image_type_id) => {
+  console.log("得到當下分類的id ~~~~~", image_type_id)
+  ImageMainRef.value.loadData(image_type_id)
+}
 </script>
 
 <style scoped>

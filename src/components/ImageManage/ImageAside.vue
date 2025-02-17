@@ -8,14 +8,15 @@
         v-for="(item, index) in imgList"
         :key="index"
         @edit="handleEdit(item)"
-        @delete="handleDelete(item.id)"
+        @delete="handleDelete(item.id)" 
+        @click="handleChangeActiveId(item.id)"
       >
         {{ item.name }}
       </AsideList>
     </div>
     <div class="bottom">
       <!-- @current-change 切換時觸發 並傳送下一頁頁碼 -->
-      <el-pagination 
+      <el-pagination
         background 
         layout="prev, next" 
         :total="total"
@@ -33,6 +34,8 @@
     @submit="handleSubmit"
     destroyOnClose
   >
+
+  
     <el-form
       :model="form"
       ref="formRef"
@@ -154,7 +157,7 @@ const handleDelete = async (id) => {
   try{
     await deleteImageClass(id).then(res => {
       if(res.msg === "ok") {
-        toast("delete", "分類刪除成功")
+        toast("info", "分類刪除成功")
         // 重新拉取分類數據
         getImgData()
       }
@@ -167,14 +170,13 @@ const handleDelete = async (id) => {
   }
 }
 
-// 獲取圖庫數據
+// 獲取圖庫分類
 const getImgData = async (page = null) => {
   // 有切換 傳入當下頁碼,則重新給當前頁籤碼
   if(typeof page === "number") curPage.value = page
+  loading.value = true // 打開loading
 
   try {
-      loading.value = true // 打開loading
-
       await getImageClassList(curPage.value)
       .then(res => {
         total.value = res.data.totalCount
@@ -184,12 +186,14 @@ const getImgData = async (page = null) => {
 
           // 載入默認選中第一個item
           let item = imgList.value[0]
-          if(item) activeId.value = item.id
+          // 必須先等左側分類load完後,在load右側對應分類的圖片列表
+          if(item) {
+            handleChangeActiveId(item.id)
+          }
         }
       }).finally(() => {
         loading.value = false // 關閉loading
       })
-  
     } catch(err) {
       console.log('err ======', err)
     }
@@ -197,7 +201,17 @@ const getImgData = async (page = null) => {
 
 getImgData()
 
-// 給外部OR父層使用
+// 通知父組件,執行changeType的fun
+const emit = defineEmits(["changeType"])
+
+// 切換選中對應的分類
+const handleChangeActiveId = (image_type_id) => {
+  activeId.value = image_type_id // 切換至當下選中的分類
+  // 通知父組件list並傳當下分類id,要讓imageMain組件知道要獲取哪個分類的圖片列表數據
+  emit("changeType", image_type_id)
+}
+
+// 給父層使用
 defineExpose({
   handleCreate
 })
