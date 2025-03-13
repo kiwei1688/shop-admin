@@ -9,16 +9,46 @@
             class="relative mb-3"
             :body-style="{'padding':'8px'}"
           >
+            <!-- 卡片圖片 :preview-src-list => 放大圖片檢視功能 -->
             <el-image 
               :src="item.url"
               fit="cover"
               :lazy="true"
               class="w-full h-[150px]"
-            ></el-image>
+              :preview-src-list="[item.url]"
+              :initial-index="0"
+            />
               <div class="image-title">{{ item.name }}</div>
               <div class="flex items-center justify-center p-2">
-                <el-button type="primary" size="small" text>重新命名</el-button>
-                <el-button type="danger" size="small" text>刪除</el-button>
+                <!-- 重新命名 -->
+                <el-button 
+                  type="primary"
+                  size="small"
+                  text
+                  @click="handleEdit(item)"
+                  class="reName_btn"
+                >
+                重新命名
+                </el-button>
+
+                <!-- 刪除 -->
+                <el-popconfirm 
+                title="是否刪除該圖片?"
+                confirm-button-text="確認"
+                cancel-button-text="取消"
+                @confirm="handleDelete(item.id)"
+              >
+                  <template #reference>
+                    <el-button 
+                      type="danger" 
+                      size="small" 
+                      text
+                      class="delete_btn"
+                    >
+                      刪除
+                    </el-button>
+                  </template>
+                </el-popconfirm>
               </div>
           </el-card>
         </el-col>
@@ -37,14 +67,40 @@
       />
     </div>
   </el-main>
+
+  <!-- 上傳圖片 組件 -->
+  <el-drawer
+    v-model="drawer"
+    title="上傳圖片"
+  >
+    <UploadFile 
+      :data="{ image_class_id }"
+      @uploadSuccess="handleUploadSuccess"
+    />
+  </el-drawer>
 </template>
 
 <script setup>
-import { ref, reactive } from "vue"
+import { ref } from "vue"
+// component 上傳圖片
+import UploadFile from "@/components/imageManage/UploadFile.vue"
+// 修改彈窗
+import { showPrompt } from "@/utils/prompt.js"
+// 提示彈窗
+import { toast } from "@/utils/toast";
 // api
 import { 
-  getImageList
+  getImageList,
+  updateImage,
+  deleteImage
 } from "@/api/image.js"
+
+// 上傳圖片
+const drawer = ref(false)
+
+const openUploadFile = () => {
+  drawer.value = true
+}
 
 // 分頁
 const curPage = ref(1) // 當前page
@@ -91,9 +147,65 @@ const loadData = (image_type_id) => {
   console.log("得到對應圖片列表 ======", imgList.value)
 }
 
+// 重新命名圖片名稱
+const handleEdit = ({ id, image_class_id, name }) => {
+  // 彈出框
+  showPrompt("重新命名", name)
+  .then(async ({ value }) => { // 按"確認"執行then內容
+
+    if(value) {
+      try {
+        loading.value = true // 打開loading
+        // 更改命名
+        await updateImage(id, value)
+        .then(res => {
+          // 成功獲取數據
+          if(res.msg === "ok"){
+            toast("success", "重新命名成功")
+            // 重新拉取當頁數據
+            loadData(image_class_id)
+          }
+        }).finally(() => {
+          loading.value = false // 關閉loading
+        })
+      } catch(err) {
+        console.log('err ======', err)
+      }
+    }
+
+  })
+}
+
+// 刪除圖片
+const handleDelete = async (imageId) => {
+  if(imageId) {
+    try {
+      loading.value = true // 打開loading
+
+      await deleteImage([imageId]) // 傳入id格式需為[1936]
+      .then(res => {
+        // 成功獲取數據
+        if(res.msg === "ok"){
+          toast("success", "成功刪除圖片")
+          // 重新拉取當頁數據
+          loadData()
+        }
+      }).finally(() => {
+        loading.value = false // 關閉loading
+      })
+    } catch(err) {
+      console.log('err ======', err)
+    }
+  }
+}
+
+// 上傳圖片成功,重新抓取數據
+const handleUploadSuccess = () => getImgList(1)
+
 // 給父層使用
 defineExpose({
-  loadData
+  loadData,
+  openUploadFile
 })
 
 </script>
@@ -111,10 +223,10 @@ defineExpose({
   padding: 8px;
   overflow-y: auto;
   overflow-x: hidden;
-  display: flex;
+  /* display: flex;
   flex-flow: row wrap;
   align-items: flex-start;
-  justify-content: flex-start;
+  justify-content: flex-start; */
 }
 .image-main .top .outer-box{
   width: 150px;
@@ -123,6 +235,8 @@ defineExpose({
 }
 .image-main .bottom {
   height: 50px;
+
+  
   position: absolute;
   right: 0;
   left: 0;
@@ -137,5 +251,24 @@ defineExpose({
   left: -1px;
   right: -1px;
   @apply text-sm truncate text-gray-100 bg-opacity-50 bg-gray-800 p-2;
+}
+
+.reName_btn {
+  color: #844200;
+  background-color: #FFE153;
+  border: 1px solid #C6A300;
+}
+.reName_btn:hover {
+  color: #fff !important;
+  background-color: 	#BB5E00 !important;
+}
+.delete_btn {
+  color: #fff;
+  background-color: 	#D94600;
+  border: 1px solid #C6A300;
+}
+.delete_btn:hover {
+  color: #fff !important;
+  background-color: 	#000 !important;
 }
 </style>

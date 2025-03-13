@@ -11,7 +11,7 @@
       type="primary" 
       size="small" 
       class="ml-auto px-1"
-      @click="$emit('edit')"
+      @click.stop="$emit('edit')"
     >
       <el-icon :size="12">
         <Edit/>
@@ -23,7 +23,7 @@
       title="是否刪除該分類?"
       confirm-button-text="確認"
       cancel-button-text="取消"
-      @confirm="$emit('delete')"
+      @confirm.stop="$emit('delete')"
     >
       <template #reference>
         <el-button 

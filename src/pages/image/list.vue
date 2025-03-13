@@ -13,6 +13,14 @@
       >
         新增圖片分類
       </el-button>
+      <!-- 上傳圖片 -->
+      <el-button
+        type="warning"
+        size="normal"
+        @click="handleOpenUpload"
+      >
+        上傳圖片
+      </el-button>
     </el-header>
     <el-container>
       <!-- 左側: 分類列表區 -->
@@ -49,6 +57,8 @@ const handleAsideChange = (image_type_id) => {
   console.log("得到當下分類的id ~~~~~", image_type_id)
   ImageMainRef.value.loadData(image_type_id)
 }
+// 上傳圖片 - 調用 子組件的fun - 打開上傳圖片組件
+const handleOpenUpload = () => ImageMainRef.value.openUploadFile()
 </script>
 
 <style scoped>

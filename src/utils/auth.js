@@ -18,3 +18,4 @@ export const setToken = (token) => {
 export const removeToken = () => {
   return cookie.remove(TokenKey)
 }
+
