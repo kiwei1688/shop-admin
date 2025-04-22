@@ -18,26 +18,28 @@
       </el-icon>
     </el-button>
 
-    <!-- 刪除 icon -->
-    <el-popconfirm 
-      title="是否刪除該分類?"
-      confirm-button-text="確認"
-      cancel-button-text="取消"
-      @confirm.stop="$emit('delete')"
-    >
-      <template #reference>
-        <el-button 
-          text 
-          type="primary" 
-          size="small" 
-          class="px-1"
-        >
-          <el-icon :size="12">
-            <Close/>
-          </el-icon>
-        </el-button>
-      </template>
-    </el-popconfirm>
+    <!-- 刪除 icon 外層增加spna 綁定.stop阻止事件冒泡 -->
+     <span @click.stop="() => {}">
+      <el-popconfirm 
+        title="是否刪除該分類?"
+        confirm-button-text="確認"
+        cancel-button-text="取消"
+        @confirm="$emit('delete')"
+      >
+        <template #reference>
+          <el-button 
+            text 
+            type="primary" 
+            size="small" 
+            class="px-1"
+          >
+            <el-icon :size="12">
+              <Close/>
+            </el-icon>
+          </el-button>
+        </template>
+      </el-popconfirm>
+    </span>
   </div>
 </template>
 
