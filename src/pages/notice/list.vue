@@ -2,7 +2,13 @@
   <el-card shadow="never" class="border-0">
     <!-- 新增 / 刷新 -->
     <div class="flex items-center justify-between mb-4">
-      <el-button type="primary" size="small" @click="handleCreateNotice">新增</el-button>
+      <el-button 
+        type="primary" 
+        size="small" 
+        @click="handleCreateNotice"
+      >
+        新增
+      </el-button>
       <!-- 右側 重新刷新提示 -->
       <el-tooltip
         effect="dark" 
@@ -28,13 +34,21 @@
       <!-- table list -->
       <el-table-column label="操作" width="180" align="center">
         <template #default="{ row }">
-          <el-button type="primary" size="small" text>修改</el-button>
+          <!-- 修改 -->
+          <el-button 
+            type="primary" 
+            size="small"
+            text
+            @click="handleUpdatedNotice(row)"
+          >
+            修改
+          </el-button>
           <!-- 刪除 -->
           <el-popconfirm 
             title="是否刪除該公告?"
             confirm-button-text="確認"
             cancel-button-text="取消"
-            @confirm="handleDelete(row.id)"
+            @confirm="handleDeleteNotice(row.id)"
           >
             <template #reference>
               <el-button 
@@ -64,9 +78,9 @@
       </el-pagination>
     </div>
 
-    <!-- 新增公告--彈窗 -->
+    <!-- 新增 / 修改 公告--彈窗 -->
     <FormDrawer
-      title="新增公告"
+      :title="isTitle"
       ref="formDrawerRef"
       @submit="handleSubmit"
       destroyOnClose
@@ -90,11 +104,13 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed } from 'vue'
 // api
 import {
   getNoticeList,
-  createNotice
+  createNotice,
+  updatedNotice,
+  deleteNotice
  } from "@/api/notice.js"
 // components
 import FormDrawer from "@/components/FormDrawer.vue"
@@ -102,6 +118,8 @@ import FormDrawer from "@/components/FormDrawer.vue"
 import { toast } from "@/utils/toast";
 
 const loading = ref(false)
+const editId = ref(0) // 0 > 新增 / 當前id > 修改
+const isTitle = computed(() => editId.value ? "修改公告" : "新增公告")
 const tableData = ref([])
 
 // 分頁
@@ -132,7 +150,6 @@ const rules = {
   }]
 }
 
-
 // 獲取公告列表數據
 const getNoticeData = async(page = null) => {
   // 有切換 傳入當下頁碼,則重新給當前頁籤碼
@@ -142,7 +159,6 @@ const getNoticeData = async(page = null) => {
   try {
     await getNoticeList(curPage.value)
     .then(res => {
-      console.log("reeee", res)
       // 成功獲取數據
       if(res.msg === "ok"){
         tableData.value = res.data.list
@@ -163,13 +179,14 @@ const handleSubmit = async () => {
     formDrawerRef.value.showLoading()
 
     try {
-      await createNotice(form)
+      // 修改公告 / 新增公告
+      await (editId.value ? updatedNotice(editId.value, form) : createNotice(form) )
       .then(res => {
         // 成功獲取數據
         if(res.msg === "ok"){
-          toast("success", "新增公告成功")
-          // 刷新第一頁
-          getNoticeData(1)
+          toast("success", `${isTitle.value}成功`)
+          // 修改刷新當前page / 新增 刷新第一頁
+          getNoticeData(editId.value ? false : 1)
           formDrawerRef.value.closeDrawer()
         }
       }).finally(() => {
@@ -182,11 +199,56 @@ const handleSubmit = async () => {
   })
 }
 
-const handleDelete = (rowId) => {
-  console.log(rowId)
+// 刪除公告
+const handleDeleteNotice = async (id) => {
+  loading.value = true
+
+  try {
+    await deleteNotice(id)
+    .then(res => {
+      // 成功獲取數據
+      if(res.msg === "ok"){
+        toast("success", "刪除公告成功")
+        // 重新獲取數據
+        getNoticeData()
+      }
+    }).finally(() => {
+      // 關閉loading
+      loading.value = false
+    })
+  } catch(err) {
+    console.log('err ======', err)
+  }
 }
-// open公告彈窗
+
+// 重置表單
+function resetForm(row = false) {
+  // 能拿到表單dom 先清除表單驗證狀態
+  if(formRef.value) formRef.value.clearValidate()
+
+  if(row) {
+    // 遍歷 把當前row數據更新form表單數據
+    for(const key in form) {
+      form[key] = row[key]
+    }
+  }
+}
+
+// 修改公告
+const handleUpdatedNotice = async (row) => {
+  editId.value = row.id // 等於當前修改id
+  resetForm(row)
+  formDrawerRef.value.openDrawer()
+
+}
+
+// 新增公告彈窗
 const handleCreateNotice = () => {
+  editId.value = 0 // 新增公告
+  resetForm({
+    title: "",
+    content: ""
+  })
   formDrawerRef.value.openDrawer()
 }
 
