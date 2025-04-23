@@ -54,3 +54,26 @@ export const updatepassword = async (data) => {
     data
   })
 }
+
+/**
+ * @description: 管理員列表 -- get
+ * @param
+ * @return {*}
+ */
+export const getManagerList = async (page, query = {}) => {
+  // 組合query數值
+  let q = []
+  for(const [key] of Object.entries(query)) {
+    if(query[key]){
+      // encodeURIComponent() 防止參數丟失需先轉換
+      q.push(`${key}=${encodeURIComponent(query[key])}`)
+    }
+  }
+  // 拼接出來的query值 為 ?limit=10&keyword=ceshi
+  let res = q.join("&")
+  res = res ? `?${res}` : ""
+
+  return await request({
+    url: `/admin/manager/${page}${res}`
+  })
+}

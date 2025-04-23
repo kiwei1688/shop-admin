@@ -3,7 +3,7 @@
     <!-- 新增 / 刷新 -->
     <div class="flex items-center justify-between mb-4">
       <el-button 
-        type="primary"
+        type="primary" 
         @click="handleCreateNotice"
       >
         新增
@@ -22,16 +22,42 @@
       </el-tooltip>
     </div>
 
+    <!-- 表格 -->
     <el-table
       :data="tableData"
-      border 
+      border
       style="width: 100%"
       v-loading="loading"
     >
-      <el-table-column prop="title" label="公告標題" width="180" style="color: red;" />
-      <el-table-column prop="create_time" label="發佈時間" />
+      <el-table-column label="管理員" width="300">
+        <template #default="{ row }">
+          <div class="flex items-star">
+            <el-avatar
+              :size="60" 
+              :src="row.avatar"
+            >
+              <img src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"/>
+            </el-avatar>
+            <div class="ml-3">
+              <h6>{{ row.name }}</h6>
+              <small>ID: {{ row.id }}</small>
+            </div>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column label="所屬管理員" align="center">
+        <template #default="{ row }">
+          {{ row.role?.name || "--" }}
+        </template>
+      </el-table-column>
+
+      <el-table-column label="狀態" width="150" align="center">
+        <template #default="{ row }">
+          <el-switch :model-value="row.status" :active-value="1" inactive-value="0"></el-switch>
+        </template>
+      </el-table-column>
       <!-- table list -->
-      <el-table-column label="操作" width="180" align="center">
+      <el-table-column label="操作" width="250" align="center">
         <template #default="{ row }">
           <!-- 修改 -->
           <el-button 
@@ -42,15 +68,13 @@
           </el-button>
           <!-- 刪除 -->
           <el-popconfirm 
-            title="是否刪除該公告?"
+            title="是否刪除該管理員?"
             confirm-button-text="確認"
             cancel-button-text="取消"
             @confirm="handleDeleteNotice(row.id)"
           >
             <template #reference>
-              <el-button 
-                type="danger"
-              >
+              <el-button type="danger">
                 刪除
               </el-button>
             </template>
@@ -100,12 +124,15 @@
 <script setup>
 import { ref, reactive, computed } from 'vue'
 // api
+// import {
+//   getNoticeList,
+//   createNotice,
+//   updatedNotice,
+//   deleteNotice
+//  } from "@/api/notice.js"
 import {
-  getNoticeList,
-  createNotice,
-  updatedNotice,
-  deleteNotice
- } from "@/api/notice.js"
+  getManagerList
+ } from "@/api/user.js"
 // components
 import FormDrawer from "@/components/FormDrawer.vue"
 // 提示彈窗
@@ -151,7 +178,10 @@ const getNoticeData = async(page = null) => {
   loading.value = true // 打開loading
 
   try {
-    await getNoticeList(curPage.value)
+    await getManagerList(curPage.value, {
+      limit: 10,
+      keyword: ""
+    })
     .then(res => {
       // 成功獲取數據
       if(res.msg === "ok"){
