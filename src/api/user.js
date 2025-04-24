@@ -55,10 +55,13 @@ export const updatepassword = async (data) => {
   })
 }
 
+
+
 /**
- * @description: 管理員列表 -- get
- * @param
- * @return {*}
+ * @description: 獲取管理員列表 -- get
+ * @param { page : 當前頁數 / query : 網址列帶入的query數據 }
+ * @return 
+ * {*}
  */
 export const getManagerList = async (page, query = {}) => {
   // 組合query數值

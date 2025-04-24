@@ -1,5 +1,31 @@
 <template>
   <el-card shadow="never" class="border-0">
+    <!-- 搜索 / 重置 -->
+    <el-form 
+      :model="searchForm"
+      label-width="80px"
+      class="mb-3"
+    >
+      <el-row :gutter="20">
+        <el-col :span="8" :offset="0">
+          <el-form-item label="關鍵詞">
+            <el-input 
+              v-model="searchForm.keyword"
+              placeholder="管理員暱稱"
+              clearable
+            ></el-input>
+          </el-form-item>
+        </el-col>
+        <!-- :offset 往右偏移8列 -->
+        <el-col :span="8" :offset="8">
+          <div class="flex items-center justify-end">
+            <el-button type="primary" @click="getData">搜索</el-button>
+            <el-button type="info" @click="resetSearchForm">重置</el-button>
+          </div>
+        </el-col>
+      </el-row>
+    </el-form>
+
     <!-- 新增 / 刷新 -->
     <div class="flex items-center justify-between mb-4">
       <el-button 
@@ -14,7 +40,7 @@
         content="刷新數據" 
         placement="top"
       >
-        <el-button text @click="getNoticeData">
+        <el-button text @click="getData">
           <el-icon :size="20">
             <Refresh/>
           </el-icon>
@@ -124,19 +150,15 @@
 <script setup>
 import { ref, reactive, computed } from 'vue'
 // api
-// import {
-//   getNoticeList,
-//   createNotice,
-//   updatedNotice,
-//   deleteNotice
-//  } from "@/api/notice.js"
 import {
   getManagerList
  } from "@/api/user.js"
 // components
 import FormDrawer from "@/components/FormDrawer.vue"
-// 提示彈窗
-import { toast } from "@/utils/toast";
+
+const searchForm = reactive({
+  keyword: ""
+})
 
 const loading = ref(false)
 const editId = ref(0) // 0 > 新增 / 當前id > 修改
@@ -172,16 +194,13 @@ const rules = {
 }
 
 // 獲取公告列表數據
-const getNoticeData = async(page = null) => {
+const getData = async(page = null) => {
   // 有切換 傳入當下頁碼,則重新給當前頁籤碼
   if(typeof page === "number") curPage.value = page
   loading.value = true // 打開loading
 
   try {
-    await getManagerList(curPage.value, {
-      limit: 10,
-      keyword: ""
-    })
+    await getManagerList(curPage.value, searchForm)
     .then(res => {
       // 成功獲取數據
       if(res.msg === "ok"){
@@ -194,6 +213,12 @@ const getNoticeData = async(page = null) => {
   } catch(err) {
     console.log('err ======', err)
   }
+}
+
+// 重置
+const resetSearchForm = () => {
+  searchForm.keyword = ""
+  getData()
 }
 
 // 新增公告
@@ -276,7 +301,7 @@ const handleCreateNotice = () => {
   formDrawerRef.value.openDrawer()
 }
 
-getNoticeData()
+getData()
 </script>
 
 <style scoped>
