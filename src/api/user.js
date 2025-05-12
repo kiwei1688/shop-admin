@@ -55,8 +55,6 @@ export const updatepassword = async (data) => {
   })
 }
 
-
-
 /**
  * @description: 獲取管理員列表 -- get
  * @param { page : 當前頁數 / query : 網址列帶入的query數據 }
@@ -78,5 +76,18 @@ export const getManagerList = async (page, query = {}) => {
 
   return await request({
     url: `/admin/manager/${page}${res}`
+  })
+}
+
+/**
+ * @description: 修改管理員狀態 -- post
+ * @param { id : 管理員id / status: 管理員是否啟用 0:禁用, 1:啟用 }
+ * @return {*}
+ */
+export const updateManagerStatus = async (id, status) => {
+  return await request({
+    url: `/admin/manager/${id}/update_status`,
+    method: 'POST',
+    data: { status }
   })
 }

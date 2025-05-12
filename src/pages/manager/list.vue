@@ -79,7 +79,13 @@
 
       <el-table-column label="狀態" width="150" align="center">
         <template #default="{ row }">
-          <el-switch :model-value="row.status" :active-value="1" inactive-value="0"></el-switch>
+          <!-- $event:當下status的值 -->
+          <el-switch 
+            :model-value="row.status" 
+            :active-value="1" 
+            inactive-value="0"
+            @change="handleStatusChg($event, row)"
+          ></el-switch>
         </template>
       </el-table-column>
       <!-- table list -->
@@ -108,6 +114,7 @@
         </template>
       </el-table-column>
     </el-table>
+    
 
     <!-- 分頁 -->
     <div class="flex items-center justify-center mt-5">
@@ -151,10 +158,13 @@
 import { ref, reactive, computed } from 'vue'
 // api
 import {
-  getManagerList
+  getManagerList,
+  updateManagerStatus
  } from "@/api/user.js"
 // components
 import FormDrawer from "@/components/FormDrawer.vue"
+// 提示彈窗
+import { toast } from "@/utils/toast";
 
 const searchForm = reactive({
   keyword: ""
@@ -219,6 +229,28 @@ const getData = async(page = null) => {
 const resetSearchForm = () => {
   searchForm.keyword = ""
   getData()
+}
+
+// 修改管理者啟用狀態
+const handleStatusChg = async (status, row) => {
+  if(row.id) {
+    try {
+      await updateManagerStatus(row.id, status)
+      .then(res => {
+        // 成功獲取數據
+        if(res.msg === "ok"){
+          toast("success", `修改管理者啟用狀態成功`)
+          row.status = status
+
+          
+        }
+      }).finally(() => {
+        loading.value = false // 關閉loading
+      })
+    } catch(err) {
+      console.log('err ======', err)
+    }
+  }
 }
 
 // 新增公告
