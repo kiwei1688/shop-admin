@@ -91,3 +91,41 @@ export const updateManagerStatus = async (id, status) => {
     data: { status }
   })
 }
+
+/**
+ * @description: 創建管理員 -- post
+ * @param { data : body的參數 }
+ * @return {*}
+ */
+export const createManager = async (data) => {
+  return await request({
+    url: "/admin/manager",
+    method: 'POST',
+    data
+  })
+}
+
+/**
+ * @description: 修改管理員 -- post
+ * @param { id : 管理員id / data: body的參數}
+ * @return {*}
+ */
+export const updateManager = async (id, data) => {
+  return await request({
+    url: `/admin/manager/${id}`,
+    method: 'POST',
+    data
+  })
+}
+
+/**
+ * @description: 刪除管理員 -- post
+ * @param { id : 管理員id }
+ * @return {*}
+ */
+export const deleteManager = async (id) => {
+  return await request({
+    url: `/admin/manager/${id}/delete`,
+    method: 'POST'
+  })
+}

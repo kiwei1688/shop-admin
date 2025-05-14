@@ -65,13 +65,13 @@
               <img src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"/>
             </el-avatar>
             <div class="ml-3">
-              <h6>{{ row.name }}</h6>
+              <h6>{{ row.username }}</h6>
               <small>ID: {{ row.id }}</small>
             </div>
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="所屬管理員" align="center">
+      <el-table-column label="所屬角色" align="center">
         <template #default="{ row }">
           {{ row.role?.name || "--" }}
         </template>
@@ -103,7 +103,7 @@
             title="是否刪除該管理員?"
             confirm-button-text="確認"
             cancel-button-text="取消"
-            @confirm="handleDeleteNotice(row.id)"
+            @confirm="handleDeleteManager(row.id)"
           >
             <template #reference>
               <el-button type="danger">
@@ -143,11 +143,31 @@
         label-width="80px"
         :inline="false"
       >
-        <el-form-item label="公告標題" prop="title">
-          <el-input v-model="form.title" placeholder="請輸入公告標題"></el-input>
+        <el-form-item label="用戶名" prop="username">
+          <el-input v-model="form.username" placeholder="請輸入用戶名"></el-input>
         </el-form-item>
-        <el-form-item label="公告內容" prop="content">
-          <el-input v-model="form.content" placeholder="請輸入公告內容" type="textarea" :rows="5"></el-input>
+        <el-form-item label="密碼" prop="password">
+          <el-input v-model="form.password" placeholder="請輸入密碼"></el-input>
+        </el-form-item>
+        <el-form-item label="頭像" prop="avatar">
+          <el-input v-model="form.avatar"></el-input>
+        </el-form-item>
+        <el-form-item label="所屬角色" prop="role_id">
+          <el-select v-model="form.role_id" placeholder="選擇所屬角色">
+            <el-option
+              v-for="item in roles"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="狀態" prop="status">
+          <el-switch 
+            v-model="form.status"
+            :active-value="1"
+            :inactive-value="0"
+          ></el-switch>
         </el-form-item>
       </el-form>
     </FormDrawer>
@@ -159,7 +179,10 @@ import { ref, reactive, computed } from 'vue'
 // api
 import {
   getManagerList,
-  updateManagerStatus
+  updateManagerStatus,
+  createManager,
+  updateManager,
+  deleteManager
  } from "@/api/user.js"
 // components
 import FormDrawer from "@/components/FormDrawer.vue"
@@ -172,7 +195,7 @@ const searchForm = reactive({
 
 const loading = ref(false)
 const editId = ref(0) // 0 > 新增 / 當前id > 修改
-const isTitle = computed(() => editId.value ? "修改公告" : "新增公告")
+const isTitle = computed(() => editId.value ? "修改管理員" : "新增管理員")
 const tableData = ref([])
 
 // 分頁
@@ -180,30 +203,51 @@ const curPage = ref(1) // 當前page
 const total = ref(0) // 總筆數
 const limit = ref(10) // 每頁顯示筆數
 
+// 角色
+const roles = ref([])
+
 // 取得彈窗dom
 const formDrawerRef = ref(null)
 const formRef = ref(null)
 // form 內容
 const form = reactive({
-  title: "",
-  content: ""
+  username: "",
+  password: "",
+  role_id: null,
+  status: 1,
+  avatar: ""
 })
 
 // 驗證rules規則
 const rules = {
-  title: [{
+  username: [{
     required: true,
-    message: "公告標題不能為空",
+    message: "用戶名不能為空",
     trigger: "blur"
   }],
-  content: [{
+  password: [{
     required: true,
-    message: "公告內容不能為空",
+    message: "密碼不能為空",
+    trigger: "blur"
+  }],
+  role_id: [{
+    required: true,
+    message: "role不能為空",
+    trigger: "blur"
+  }],
+  status: [{
+    required: true,
+    message: "狀態不能為空",
+    trigger: "blur" 
+  }],
+  avatar: [{
+    required: false,
+    message: "頭像不能為空",
     trigger: "blur"
   }]
 }
 
-// 獲取公告列表數據
+// 獲取管理員列表數據
 const getData = async(page = null) => {
   // 有切換 傳入當下頁碼,則重新給當前頁籤碼
   if(typeof page === "number") curPage.value = page
@@ -216,6 +260,8 @@ const getData = async(page = null) => {
       if(res.msg === "ok"){
         tableData.value = res.data.list
         total.value = res.data.totalCount
+        // 獲取role數據
+        roles.value = res.data.roles
       }
     }).finally(() => {
       loading.value = false // 關閉loading
@@ -241,8 +287,6 @@ const handleStatusChg = async (status, row) => {
         if(res.msg === "ok"){
           toast("success", `修改管理者啟用狀態成功`)
           row.status = status
-
-          
         }
       }).finally(() => {
         loading.value = false // 關閉loading
@@ -253,7 +297,7 @@ const handleStatusChg = async (status, row) => {
   }
 }
 
-// 新增公告
+// 新增/修改 管理員
 const handleSubmit = async () => {
   formRef.value.validate(async (valid) => {
     if(!valid) return false
@@ -261,13 +305,13 @@ const handleSubmit = async () => {
 
     try {
       // 修改公告 / 新增公告
-      await (editId.value ? updatedNotice(editId.value, form) : createNotice(form) )
+      await (editId.value ? updateManager(editId.value, form) : createManager(form) )
       .then(res => {
         // 成功獲取數據
         if(res.msg === "ok"){
           toast("success", `${isTitle.value}成功`)
           // 修改刷新當前page / 新增 刷新第一頁
-          getNoticeData(editId.value ? false : 1)
+          getData(editId.value ? false : 1)
           formDrawerRef.value.closeDrawer()
         }
       }).finally(() => {
@@ -280,18 +324,18 @@ const handleSubmit = async () => {
   })
 }
 
-// 刪除公告
-const handleDeleteNotice = async (id) => {
+// 刪除管理員
+const handleDeleteManager = async (id) => {
   loading.value = true
 
   try {
-    await deleteNotice(id)
+    await deleteManager(id)
     .then(res => {
       // 成功獲取數據
       if(res.msg === "ok"){
-        toast("success", "刪除公告成功")
+        toast("success", "成功刪除管理員")
         // 重新獲取數據
-        getNoticeData()
+        getData()
       }
     }).finally(() => {
       // 關閉loading
@@ -323,12 +367,16 @@ const handleUpdatedNotice = async (row) => {
 
 }
 
-// 新增公告彈窗
+// 新增管理員彈窗
 const handleCreateNotice = () => {
-  editId.value = 0 // 新增公告
+  editId.value = 0 // 新增管理員
+  // 重置form
   resetForm({
-    title: "",
-    content: ""
+    username: "",
+    password: "",
+    role_id: null,
+    status: 1,
+    avatar: ""
   })
   formDrawerRef.value.openDrawer()
 }
