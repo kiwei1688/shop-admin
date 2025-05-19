@@ -9,7 +9,7 @@
   >
     <!-- 修改密碼 表單 -->
     <div class="formDrawer">
-      <!-- 資訊內容 -->
+      <!-- 彈窗 - 資訊內容 -->
       <div class="content">
         <slot></slot>
       </div>

@@ -61,4 +61,10 @@ body,
 .el-table th.el-table__cell {
   color: #fff;
   background-color: 	#84C1FF;
-} 
+}
+
+// image/list 圖庫列表 & 管理員列表
+.image-header {
+  border-bottom: 3px solid #d4d4d4;
+  @apply flex items-center;
+}

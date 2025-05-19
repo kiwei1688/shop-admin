@@ -1,5 +1,5 @@
 <template>
-  <!-- <div>圖片列表</div> -->
+  <!-- 圖片列表 -->
   <el-container
     class="bg-white rounded"
     :style="{height : (containerH + 'px')}"
@@ -62,9 +62,5 @@ const handleOpenUpload = () => ImageMainRef.value.openUploadFile()
 </script>
 
 <style scoped>
-.image-header {
-  border-bottom: 1px solid #eee;
-  @apply flex items-center;
-}
 </style>
 

@@ -8,6 +8,7 @@
             shadow="hover" 
             class="relative mb-3"
             :body-style="{'padding':'8px'}"
+            :class="{'border-2 border-blue-500': item.checked}"
           >
             <!-- 卡片圖片 :preview-src-list => 放大圖片檢視功能 -->
             <el-image 
@@ -20,6 +21,12 @@
             />
               <div class="image-title">{{ item.name }}</div>
               <div class="flex items-center justify-center p-2">
+                <!-- 選擇圖片checkbox -->
+                 <el-checkbox 
+                  class="!mr-3"
+                  v-model="item.checked"
+                  @change="handleChooseChg(item)"
+                  />
                 <!-- 重新命名 -->
                 <el-button 
                   type="primary"
@@ -81,7 +88,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue"
+import { ref, computed } from "vue"
 // component 上傳圖片
 import UploadFile from "@/components/imageManage/UploadFile.vue"
 // 修改彈窗
@@ -126,7 +133,11 @@ const getImgList = async (page = null) => {
 
       // 成功獲取數據
       if(res.msg === "ok"){
-        imgList.value = res.data.list
+        // 在imgList增加一個新屬性checked checkbox的選取狀態
+        imgList.value = res.data.list.map(item => {
+          item.checked = false // 預設為false
+          return item
+        })
       }
     }).finally(() => {
       loading.value = false // 關閉loading
@@ -198,6 +209,20 @@ const handleDelete = async (imageId) => {
     }
   }
 }
+
+// 圖片選取的數量 選中的圖片
+const emit = defineEmits(["chooseImg"])
+const checkedImg = computed(() => imgList.value.filter(item => item.checked))
+// 檢查當下只能選取一張圖片
+const handleChooseChg = (item) => {
+  if(item.checked && checkedImg.value.length > 1) {
+    item.checked = false
+    return toast("error", "只能選取一張圖片")
+  }
+
+  // 回傳選中的圖片至父層 (ChooseImage.vue)
+  emit("chooseImg", checkedImg.value)
+} 
 
 // 上傳圖片成功,重新抓取數據
 const handleUploadSuccess = () => getImgList(1)

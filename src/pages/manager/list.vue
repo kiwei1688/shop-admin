@@ -150,7 +150,7 @@
           <el-input v-model="form.password" placeholder="請輸入密碼"></el-input>
         </el-form-item>
         <el-form-item label="頭像" prop="avatar">
-          <el-input v-model="form.avatar"></el-input>
+          <ChooseImage/>
         </el-form-item>
         <el-form-item label="所屬角色" prop="role_id">
           <el-select v-model="form.role_id" placeholder="選擇所屬角色">
@@ -186,6 +186,7 @@ import {
  } from "@/api/user.js"
 // components
 import FormDrawer from "@/components/FormDrawer.vue"
+import ChooseImage from "@/components/ChooseImage.vue"
 // 提示彈窗
 import { toast } from "@/utils/toast";
 
