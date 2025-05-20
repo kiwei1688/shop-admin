@@ -54,7 +54,7 @@ const ImageMainRef = ref(null)
 const handleOpenCreate = () => ImageAsideRef.value.handleCreate()
 
 const handleAsideChange = (image_type_id) => {
-  console.log("得到當下分類的id ~~~~~", image_type_id)
+  // console.log("得到當下分類的id ~~~~~", image_type_id)
   ImageMainRef.value.loadData(image_type_id)
 }
 // 上傳圖片 - 調用 子組件的fun - 打開上傳圖片組件

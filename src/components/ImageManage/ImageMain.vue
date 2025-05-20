@@ -26,6 +26,7 @@
                   class="!mr-3"
                   v-model="item.checked"
                   @change="handleChooseChg(item)"
+                  v-if="openChoose"
                   />
                 <!-- 重新命名 -->
                 <el-button 
@@ -226,6 +227,14 @@ const handleChooseChg = (item) => {
 
 // 上傳圖片成功,重新抓取數據
 const handleUploadSuccess = () => getImgList(1)
+
+// 父層傳入openChoose判斷~  管理員列表(有checkbox) - 可更新圖片 / 圖庫管理(沒有checkbox) - 不能更新圖片
+defineProps({
+  openChoose: {
+    type: Boolean,
+    default: false
+  }
+})
 
 // 給父層使用
 defineExpose({

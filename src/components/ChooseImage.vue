@@ -1,6 +1,13 @@
 <template>
+  <!-- avatar頭像 已選 -->
+  <div v-if="modelValue">
+    <el-image :src="modelValue" fit="cover" class="w-[100px] h-[100px] rounded mr-2 border"></el-image>
+  </div>
+  <!-- avatar頭像 修改 -->
   <div class="choose-image-btn" @click="open">
-    <el-icon :size="25"><Plus/></el-icon>
+    <el-icon :size="25">
+      <Plus/>
+    </el-icon>
   </div>
   <!-- 彈窗 -->
   <el-dialog
@@ -40,6 +47,7 @@
         />
         <!-- 右側: 圖片展示區 -->
         <ImageMain
+          openChoose
           ref="ImageMainRef"
           @chooseImg="handleChooseImg"
         />
@@ -49,8 +57,8 @@
     <!-- 底部按鈕 -->
     <template #footer>
       <span>
-        <el-button @click="showDialog = false">取消</el-button>
-        <el-button type="primary" @click="submit">提交</el-button>
+        <el-button @click="close">取消</el-button>
+        <el-button type="primary" @click="submit">確定</el-button>
       </span>
     </template>
   </el-dialog>
@@ -66,32 +74,46 @@ const showDialog = ref(false)
 // 獲取ImageAside組件的dom
 const ImageAsideRef = ref(null)
 const ImageMainRef = ref(null)
-// ImageMain子組件選中的圖片
-const urls = []
 
-const open = () => {
-  showDialog.value = true
-}
+// 開啟/關閉 圖片組件
+const open = () => showDialog.value = true
+const close = () => showDialog.value = false
 
 // 開啟側邊彈窗層(新增圖片分類)
 const handleOpenCreate = () => ImageAsideRef.value.handleCreate()
 
+// 得到當下分類的id
 const handleAsideChange = (image_type_id) => {
-  // console.log("得到當下分類的id ~~~~~", image_type_id)
   ImageMainRef.value.loadData(image_type_id)
 }
 // 上傳圖片 - 調用 子組件的fun - 打開上傳圖片組件
 const handleOpenUpload = () => ImageMainRef.value.openUploadFile()
 
+// 接收父層數據
+const props = defineProps({
+  modelValue: [
+    String, Array
+  ]
+})
+
+// 回傳給父層
+// "update:modelValue" 可動態讓父層<ChooseImage v-model="form.avatar"/> 的v-model獲取modelValue的數據
+const emit = defineEmits(["update:modelValue"])
+
+// ImageMain子組件選中的圖片
+let urls = []
 // ImageMain子組件選中的圖片
 const handleChooseImg = (checkedImg) => {
-  console.log(checkedImg)
   urls = checkedImg.map(item => item.url)
 }
 
-// 提交
+// 確定
 const submit = () => {
-  console.log("SSSSSS")
+  // 回傳給父層<ChooseImage v-model="form.avatar"/>
+  if(urls.length) {
+    emit("update:modelValue", urls[0])
+  }
+  close()
 }
 </script>
 
