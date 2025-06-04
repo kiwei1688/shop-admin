@@ -1,30 +1,11 @@
 <template>
   <el-card shadow="never" class="border-0">
     <!-- 新增 / 刷新 -->
-    <div class="flex items-center justify-between mb-4">
-      <el-button 
-        type="primary"
-        @click="handleCreateNotice"
-      >
-        新增
-      </el-button>
-      <!-- 右側 重新刷新提示 -->
-      <el-tooltip
-        effect="dark" 
-        content="刷新數據" 
-        placement="top"
-      >
-        <el-button text @click="getNoticeData">
-          <el-icon :size="20">
-            <Refresh/>
-          </el-icon>
-        </el-button>
-      </el-tooltip>
-    </div>
+    <ListHeader @handleCreate="handleCreateNotice" @refresh="getNoticeData"/>
 
     <el-table
       :data="tableData"
-      border 
+      border
       style="width: 100%"
       v-loading="loading"
     >
@@ -106,8 +87,11 @@ import {
   updatedNotice,
   deleteNotice
  } from "@/api/notice.js"
+
 // components
 import FormDrawer from "@/components/FormDrawer.vue"
+import ListHeader from "@/components/ListHeader.vue" // 新增/刷新
+
 // 提示彈窗
 import { toast } from "@/utils/toast";
 

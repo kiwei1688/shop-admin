@@ -86,6 +86,7 @@ function judgeType(obj) {
 
 // 取出localStorage
 function getLocalStorage(getItemKey) {
+  
   return JSON.parse(localStorage.getItem(getItemKey))
 }
 
@@ -96,6 +97,7 @@ function setLocalStorage(setItemName, setItemValue) {
     ...orginalData,
     ...setItemValue
   }
+
   return localStorage.setItem(setItemName, JSON.stringify(newData))
 }
 

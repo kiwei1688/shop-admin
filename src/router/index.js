@@ -121,12 +121,20 @@ const asyncRouters = [
       title: "優惠券列表"
     }
   },
-  { // 優惠券列表
+  { // 管理員列表
     path: '/manager/list',
     name: '/manager/list',
     component: () => import('@/pages/manager/list.vue'),
     meta: {
       title: "管理員列表"
+    }
+  },
+  { // 菜單權限
+    path: '/access/list',
+    name: '/access/list',
+    component: () => import('@/pages/access/list.vue'),
+    meta: {
+      title: "菜單權限"
     }
   }
 ]
