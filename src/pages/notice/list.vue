@@ -105,9 +105,11 @@ const {
   curPage,
   total,
   limit,
-  getData
+  getData,
+  handleDeleteManager,
 } = useInitTable({
-  getList: getNoticeList
+  getList: getNoticeList,
+  delete: deleteManager, // 刪除公告
 })
 
 const editId = ref(0) // 0 > 新增 / 當前id > 修改
@@ -183,28 +185,6 @@ const handleSubmit = async () => {
       console.log('err ======', err)
     }
   })
-}
-
-// 刪除公告
-const handleDeleteNotice = async (id) => {
-  loading.value = true
-
-  try {
-    await deleteNotice(id)
-    .then(res => {
-      // 成功獲取數據
-      if(res.msg === "ok"){
-        toast("success", "刪除公告成功")
-        // 重新獲取數據
-        getNoticeData()
-      }
-    }).finally(() => {
-      // 關閉loading
-      loading.value = false
-    })
-  } catch(err) {
-    console.log('err ======', err)
-  }
 }
 
 // 重置表單

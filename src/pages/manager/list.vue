@@ -189,10 +189,12 @@ const {
   curPage,
   total,
   limit,
-  getData
+  getData,
+  handleDeleteManager,
+  handleStatusChg
 } = useInitTable({
   searchForm: { keyword: "" }, // 傳要搜索的參數給子組件
-  getList: getManagerList,
+  getList: getManagerList, // 獲取管理列表
   onGetListSuccess: (res) => {
     tableData.value = res.data.list.map(item => {
       item.statusLoading = false
@@ -203,7 +205,9 @@ const {
     total.value = res.data.totalCount
     // 獲取role數據
     roles.value = res.data.roles
-  }
+  },
+  delete: deleteManager, // 刪除
+  updateStatus: updateManagerStatus // 修改啟用狀態
 })
 
 const editId = ref(0) // 0 > 新增 / 當前id > 修改
@@ -250,26 +254,6 @@ const rules = {
   }]
 }
 
-// 修改管理者啟用狀態
-const handleStatusChg = async (status, row) => {
-  if(row.id) {
-    try {
-      await updateManagerStatus(row.id, status)
-      .then(res => {
-        // 成功獲取數據
-        if(res.msg === "ok"){
-          toast("success", `修改管理者啟用狀態成功`)
-          row.status = status
-        }
-      }).finally(() => {
-        loading.value = false // 關閉loading
-      })
-    } catch(err) {
-      console.log('err ======', err)
-    }
-  }
-}
-
 // 新增/修改 管理員
 const handleSubmit = async () => {
   formRef.value.validate(async (valid) => {
@@ -297,28 +281,6 @@ const handleSubmit = async () => {
   })
 }
 
-// 刪除管理員
-const handleDeleteManager = async (id) => {
-  loading.value = true
-
-  try {
-    await deleteManager(id)
-    .then(res => {
-      // 成功獲取數據
-      if(res.msg === "ok"){
-        toast("success", "成功刪除管理員")
-        // 重新獲取數據
-        getData()
-      }
-    }).finally(() => {
-      // 關閉loading
-      loading.value = false
-    })
-  } catch(err) {
-    console.log('err ======', err)
-  }
-}
-
 // 重置表單
 function resetForm(row = false) {
   // 能拿到表單dom 先清除表單驗證狀態
@@ -337,7 +299,6 @@ const handleUpdatedNotice = async (row) => {
   editId.value = row.id // 等於當前修改id
   resetForm(row)
   formDrawerRef.value.openDrawer()
-
 }
 
 // 新增管理員彈窗

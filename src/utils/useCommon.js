@@ -1,13 +1,9 @@
 import { ref, reactive } from 'vue'
 
-// 表格 搜索 & 分頁 共用方法
+// 表格 == 列表 / 搜索 / 分頁 / 刪除 / 修改啟用狀態  (共用方法)
 function useInitTable(opt = {}) {
 
   const loading = ref(false)
-
-
-
-  
   const tableData = ref([])
 
   // 分頁
@@ -62,6 +58,48 @@ function useInitTable(opt = {}) {
 
   getData()
 
+  // 刪除管理員 / 公告
+  const handleDeleteManager = async (id) => {
+    loading.value = true
+  
+    try {
+      await opt.delete(id)
+      .then(res => {
+        // 成功獲取數據
+        if(res.msg === "ok"){
+          toast("success", "成功刪除管理員")
+          // 重新獲取數據
+          getData()
+        }
+      }).finally(() => {
+        // 關閉loading
+        loading.value = false
+      })
+    } catch(err) {
+      console.log('err ======', err)
+    }
+  }
+
+  // 修改管理者 / 公告 啟用狀態
+  const handleStatusChg = async (status, row) => {
+    if(row.id) {
+      try {
+        await opt.updateStatus(row.id, status)
+        .then(res => {
+          // 成功獲取數據
+          if(res.msg === "ok"){
+            toast("success", `修改管理者啟用狀態成功`)
+            row.status = status
+          }
+        }).finally(() => {
+          loading.value = false // 關閉loading
+        })
+      } catch(err) {
+        console.log('err ======', err)
+      }
+    }
+  }
+
   return {
     searchForm,
     resetSearchForm,
@@ -70,7 +108,9 @@ function useInitTable(opt = {}) {
     curPage,
     total,
     limit,
-    getData
+    getData,
+    handleDeleteManager,
+    handleStatusChg
   }
 }
 
