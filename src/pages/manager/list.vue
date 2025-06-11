@@ -166,6 +166,8 @@ import {
   updateManager,
   deleteManager
  } from "@/api/user.js"
+// 共用表格功能組件
+import { useInitTable } from "@/utils/useCommon.js"
 
 // components
 import FormDrawer from "@/components/FormDrawer.vue"
@@ -175,22 +177,37 @@ import ListHeader from "@/components/ListHeader.vue" // 新增/刷新
 // 提示彈窗
 import { toast } from "@/utils/toast";
 
-const searchForm = reactive({
-  keyword: ""
-})
-
-const loading = ref(false)
-const editId = ref(0) // 0 > 新增 / 當前id > 修改
-const isTitle = computed(() => editId.value ? "修改管理員" : "新增管理員")
-const tableData = ref([])
-
-// 分頁
-const curPage = ref(1) // 當前page
-const total = ref(0) // 總筆數
-const limit = ref(10) // 每頁顯示筆數
-
 // 角色
 const roles = ref([])
+
+// 表格 & 分頁 & 搜索 組件 (共用)
+const {
+  searchForm,
+  resetSearchForm,
+  tableData,
+  loading,
+  curPage,
+  total,
+  limit,
+  getData
+} = useInitTable({
+  searchForm: { keyword: "" }, // 傳要搜索的參數給子組件
+  getList: getManagerList,
+  onGetListSuccess: (res) => {
+    tableData.value = res.data.list.map(item => {
+      item.statusLoading = false
+      return item
+    })
+
+    tableData.value = res.data.list
+    total.value = res.data.totalCount
+    // 獲取role數據
+    roles.value = res.data.roles
+  }
+})
+
+const editId = ref(0) // 0 > 新增 / 當前id > 修改
+const isTitle = computed(() => editId.value ? "修改管理員" : "新增管理員")
 
 // 取得彈窗dom
 const formDrawerRef = ref(null)
@@ -231,36 +248,6 @@ const rules = {
     message: "頭像不能為空",
     trigger: "blur"
   }]
-}
-
-// 獲取管理員列表數據
-const getData = async(page = null) => {
-  // 有切換 傳入當下頁碼,則重新給當前頁籤碼
-  if(typeof page === "number") curPage.value = page
-  loading.value = true // 打開loading
-
-  try {
-    await getManagerList(curPage.value, searchForm)
-    .then(res => {
-      // 成功獲取數據
-      if(res.msg === "ok"){
-        tableData.value = res.data.list
-        total.value = res.data.totalCount
-        // 獲取role數據
-        roles.value = res.data.roles
-      }
-    }).finally(() => {
-      loading.value = false // 關閉loading
-    })
-  } catch(err) {
-    console.log('err ======', err)
-  }
-}
-
-// 重置
-const resetSearchForm = () => {
-  searchForm.keyword = ""
-  getData()
 }
 
 // 修改管理者啟用狀態
@@ -367,7 +354,6 @@ const handleCreateNotice = () => {
   formDrawerRef.value.openDrawer()
 }
 
-getData()
 </script>
 
 <style scoped>
