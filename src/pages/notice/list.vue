@@ -87,6 +87,8 @@ import {
   updatedNotice,
   deleteNotice
  } from "@/api/notice.js"
+ // 共用表格功能組件
+import { useInitTable } from "@/utils/useCommon.js"
 
 // components
 import FormDrawer from "@/components/FormDrawer.vue"
@@ -95,15 +97,21 @@ import ListHeader from "@/components/ListHeader.vue" // 新增/刷新
 // 提示彈窗
 import { toast } from "@/utils/toast";
 
-const loading = ref(false)
+// 表格 & 分頁 & 搜索 組件 (共用)
+// loading / 分頁
+const {
+  tableData,
+  loading,
+  curPage,
+  total,
+  limit,
+  getData
+} = useInitTable({
+  getList: getNoticeList
+})
+
 const editId = ref(0) // 0 > 新增 / 當前id > 修改
 const isTitle = computed(() => editId.value ? "修改公告" : "新增公告")
-const tableData = ref([])
-
-// 分頁
-const curPage = ref(1) // 當前page
-const total = ref(0) // 總筆數
-const limit = ref(10) // 每頁顯示筆數
 
 // 取得彈窗dom
 const formDrawerRef = ref(null)

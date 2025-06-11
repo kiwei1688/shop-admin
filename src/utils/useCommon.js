@@ -32,16 +32,6 @@ function useInitTable(opt = {}) {
     }
   }
 
-  // const searchForm = reactive({
-  //   keyword: ""
-  // })
-
-  // 重置
-  // const resetSearchForm = () => {
-  //   searchForm.keyword = ""
-  //   getData()
-  // }
-
   // 獲取管理員列表數據
   const getData = async(page = null) => {
     // 有切換 傳入當下頁碼,則重新給當前頁籤碼
