@@ -26,7 +26,7 @@
             title="是否刪除該公告?"
             confirm-button-text="確認"
             cancel-button-text="取消"
-            @confirm="handleDeleteNotice(row.id)"
+            @confirm="handleDeleteManager(row.id)"
           >
             <template #reference>
               <el-button 
@@ -109,7 +109,7 @@ const {
   handleDeleteManager,
 } = useInitTable({
   getList: getNoticeList,
-  delete: deleteManager, // 刪除公告
+  delete: deleteNotice, // 刪除公告
 })
 
 const editId = ref(0) // 0 > 新增 / 當前id > 修改
