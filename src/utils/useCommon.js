@@ -1,10 +1,9 @@
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed } from 'vue'
 // 提示彈窗
 import { toast } from "@/utils/toast";
 
 // 表格 == 列表 / 搜索 / 分頁 / 刪除 / 修改啟用狀態  (共用方法)
 function useInitTable(opt = {}) {
-
   const loading = ref(false)
   const tableData = ref([])
 
@@ -117,8 +116,90 @@ function useInitTable(opt = {}) {
 }
 
 // 新增 / 修改
-function useInitForm() {
+function useInitForm(opt = {}) {
+  const editId = ref(0) // 0 > 新增 / 當前id > 修改
+  const isTitle = computed(() => 
+    editId.value ? 
+    `修改${opt.titleName === "manager" ? "管理員" : "公告"}` :
+    `新增${opt.titleName === "manager" ? "管理員" : "公告"}`
+  )
 
+  // 取得彈窗dom
+  const formDrawerRef = ref(null)
+  const formRef = ref(null)
+
+  // form 內容
+  const form = reactive({})
+
+  // 驗證rules規則
+  const rules = opt.rules || {}
+
+  // 新增/修改 管理員
+  const handleSubmit = async () => {
+    formRef.value.validate(async (valid) => {
+      if(!valid) return false
+      formDrawerRef.value.showLoading()
+  
+      try {
+        // 修改公告 / 新增公告
+        await (editId.value ? opt.update(editId.value, form) : opt.create(form) )
+        .then(res => {
+          // 成功獲取數據
+          if(res.msg === "ok"){
+            toast("success", `${isTitle.value}成功`)
+            // 修改刷新當前page / 新增 刷新第一頁
+            opt.getData(editId.value ? false : 1)
+            formDrawerRef.value.closeDrawer()
+          }
+        }).finally(() => {
+          // 關閉loading
+          formDrawerRef.value.closeLoading()
+        })
+      } catch(err) {
+        console.log('err ======', err)
+      }
+    })
+  }
+
+  // 重置表單
+  function resetForm(row = false) {
+    // 能拿到表單dom 先清除表單驗證狀態
+    if(formRef.value) formRef.value.clearValidate()
+  
+    if(row) {
+      // 遍歷 把當前row數據更新form表單數據
+      for(const key in form) {
+        form[key] = row[key]
+      }
+    }
+  }
+
+  // 新增管理員彈窗
+  const handleCreateNotice = () => {
+    editId.value = 0 // 新增管理員
+    // 重置form, 從父層傳入form的初始值
+    resetForm(opt.form)
+    formDrawerRef.value.openDrawer()
+  }
+
+  // 修改公告
+  const handleUpdatedNotice = async (row) => {
+    editId.value = row.id // 等於當前修改id
+    resetForm(row)
+    formDrawerRef.value.openDrawer()
+  }
+
+  return {
+    formDrawerRef,
+    formRef,
+    isTitle,
+    form,
+    rules,
+    handleSubmit,
+    resetForm,
+    handleCreateNotice,
+    handleUpdatedNotice
+  }
 }
 
 export {

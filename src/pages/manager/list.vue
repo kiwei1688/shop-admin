@@ -167,15 +167,14 @@ import {
   deleteManager
  } from "@/api/user.js"
 // 共用表格功能組件
-import { useInitTable } from "@/utils/useCommon.js"
+import { useInitTable, useInitForm } from "@/utils/useCommon.js"
+// validate rules
+import { username, password, role_id, status, avatar } from "@/utils/validateRules.js"
 
 // components
 import FormDrawer from "@/components/FormDrawer.vue"
 import ChooseImage from "@/components/ChooseImage.vue"
 import ListHeader from "@/components/ListHeader.vue" // 新增/刷新
-
-// 提示彈窗
-import { toast } from "@/utils/toast";
 
 // 角色
 const roles = ref([])
@@ -200,7 +199,6 @@ const {
       item.statusLoading = false
       return item
     })
-
     tableData.value = res.data.list
     total.value = res.data.totalCount
     // 獲取role數據
@@ -210,113 +208,33 @@ const {
   updateStatus: updateManagerStatus // 修改啟用狀態
 })
 
-const editId = ref(0) // 0 > 新增 / 當前id > 修改
-const isTitle = computed(() => editId.value ? "修改管理員" : "新增管理員")
-
-// 取得彈窗dom
-const formDrawerRef = ref(null)
-const formRef = ref(null)
-// form 內容
-const form = reactive({
-  username: "",
-  password: "",
-  role_id: null,
-  status: 1,
-  avatar: ""
-})
-
-// 驗證rules規則
-const rules = {
-  username: [{
-    required: true,
-    message: "用戶名不能為空",
-    trigger: "blur"
-  }],
-  password: [{
-    required: true,
-    message: "密碼不能為空",
-    trigger: "blur"
-  }],
-  role_id: [{
-    required: true,
-    message: "role不能為空",
-    trigger: "blur"
-  }],
-  status: [{
-    required: true,
-    message: "狀態不能為空",
-    trigger: "blur" 
-  }],
-  avatar: [{
-    required: false,
-    message: "頭像不能為空",
-    trigger: "blur"
-  }]
-}
-
-// 新增/修改 管理員
-const handleSubmit = async () => {
-  formRef.value.validate(async (valid) => {
-    if(!valid) return false
-    formDrawerRef.value.showLoading()
-
-    try {
-      // 修改公告 / 新增公告
-      await (editId.value ? updateManager(editId.value, form) : createManager(form) )
-      .then(res => {
-        // 成功獲取數據
-        if(res.msg === "ok"){
-          toast("success", `${isTitle.value}成功`)
-          // 修改刷新當前page / 新增 刷新第一頁
-          getData(editId.value ? false : 1)
-          formDrawerRef.value.closeDrawer()
-        }
-      }).finally(() => {
-        // 關閉loading
-        formDrawerRef.value.closeLoading()
-      })
-    } catch(err) {
-      console.log('err ======', err)
-    }
-  })
-}
-
-// 重置表單
-function resetForm(row = false) {
-  // 能拿到表單dom 先清除表單驗證狀態
-  if(formRef.value) formRef.value.clearValidate()
-
-  if(row) {
-    // 遍歷 把當前row數據更新form表單數據
-    for(const key in form) {
-      form[key] = row[key]
-    }
-  }
-}
-
-// 修改公告
-const handleUpdatedNotice = async (row) => {
-  editId.value = row.id // 等於當前修改id
-  resetForm(row)
-  formDrawerRef.value.openDrawer()
-}
-
-// 新增管理員彈窗
-const handleCreateNotice = () => {
-  editId.value = 0 // 新增管理員
-  // 重置form
-  resetForm({
+// 表格 新增 / 修改
+const {
+  formDrawerRef,
+  formRef,
+  isTitle,
+  form,
+  rules,
+  handleSubmit,
+  resetForm,
+  handleCreateNotice,
+  handleUpdatedNotice
+} = useInitForm({
+  titleName: "manager",
+  form: { // 初始值
     username: "",
     password: "",
     role_id: null,
     status: 1,
     avatar: ""
-  })
-  formDrawerRef.value.openDrawer()
-}
+  },
+  rules: Object.assign({ username, password, role_id, status, avatar }),
+  getData,
+  update: updateManager, // 傳修改管理員api方法
+  create: createManager // 傳新增管理員api方法
+})
 
 </script>
 
 <style scoped>
-
 </style>
