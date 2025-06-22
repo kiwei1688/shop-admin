@@ -36,6 +36,7 @@ function useInitTable(opt = {}) {
     loading.value = true // 打開loading
 
     try {
+      // 接受父層傳入的api方法獲取數據
       await opt.getList(curPage.value, searchForm)
       .then(res => {
         if(opt.onGetListSuccess && typeof opt.onGetListSuccess === "function") {
@@ -45,8 +46,6 @@ function useInitTable(opt = {}) {
           if(res.msg === "ok"){
             tableData.value = res.data.list
             total.value = res.data.totalCount
-            // 獲取role數據
-            // roles.value = res.data.roles
           }
         }
       }).finally(() => {

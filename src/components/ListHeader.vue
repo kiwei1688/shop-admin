@@ -23,9 +23,6 @@
 </template>
 
 <script setup>
-const msg = "test msg ~~~~~~ !!"
-console.log(msg)
-
 // 傳遞父層執行
 defineEmits(["handleCreate", "refresh"])
 </script>
