@@ -55,7 +55,7 @@
 
 <script setup>
 import { computed, ref } from "vue"
-import { useRouter, useRoute } from 'vue-router'
+import { useRouter, useRoute, onBeforeRouteUpdate } from 'vue-router'
 // pinia
 import { handleTotalStore } from "@/stores/handleTotal"
 import { useUserStore } from "@/stores/user"
@@ -65,34 +65,14 @@ const totalStore = handleTotalStore()
 const store = useUserStore()
 const route = useRoute()
 
-// console.log("ddddddd", store.managerInfo.data)
-
-// 當前的路由path
+// 當前的路由path(默認選中)
 const defaultActive = ref(route.path)
 
-// 左側menu
-// const asideMenus = [
-//   {
-//     "name": "後台面板",
-//     "icon": "help",
-//     "child": [{
-//       "name": "主控台",
-//       "icon": "home-filled",
-//       "frontpath": "/",
-//       }
-//     ]
-//   },
-//   {
-//     "name": "商城管理",
-//     "icon": "shopping-bag",
-//     "child": [{
-//       "name": "商品管理",
-//       "icon": "shopping-cart-full",
-//       "frontpath": "/goods/list",
-//       }
-//     ]
-//   }
-// ]
+// 切換路由時監聽路由變化,左側選單對應所選中的路由 (9-3)
+onBeforeRouteUpdate((to, from) => {
+  defaultActive.value = to.path
+})
+
 const asideMenus = computed(() => store.managerInfo.data.menus)
 
 // 動態側邊欄位收合
@@ -102,7 +82,6 @@ const isCollapse = computed(() => !(totalStore.asideWidth === "250px"))
 const handleSelect = (path) => {
   // 參數path為路徑
   router.push(path)
-  
 }
 
 </script>
