@@ -89,7 +89,7 @@
             <el-input v-model="form.name" placeholder="菜單名稱" style="width: 30%"></el-input>
           </el-form-item>
           <el-form-item label="菜單圖標" prop="icon" v-if="form.menu === 1">
-            <el-input v-model="form.icon"></el-input>
+            <IconSelect v-model="form.icon"/>
           </el-form-item>
           <el-form-item 
             label="前端路由"
@@ -116,7 +116,6 @@
           </el-form-item>
         </el-form>
       </FormDrawer>
-
     </el-card>
   </div>
 </template>
@@ -136,6 +135,7 @@ import {
 // components
 import ListHeader from "@/components/ListHeader.vue" // 新增/刷新
 import FormDrawer from "@/components/FormDrawer.vue"
+import IconSelect from "@/components/IconSelect.vue"
 
 const defaultExpandedKeys = ref([])
 const options = ref([]) // 上級菜單的下拉數據
@@ -184,8 +184,6 @@ const {
   getData,
   update: updatedRule, // 傳修改菜單api
   create: createRule // 傳新增菜單api
-
-
 })
 </script>
 
