@@ -117,10 +117,18 @@ function useInitTable(opt = {}) {
 // 新增 / 修改
 function useInitForm(opt = {}) {
   const editId = ref(0) // 0 > 新增 / 當前id > 修改
-  const isTitle = computed(() => 
-    editId.value ? 
-    `修改${opt.titleName === "manager" ? "管理員" : "公告"}` :
-    `新增${opt.titleName === "manager" ? "管理員" : "公告"}`
+  const isTitle = computed(() => {
+    let name = ""
+
+    const objName = {
+      manager: "管理員",
+      notice: "公告",
+      rule: "菜單權限"
+    }
+
+    if(opt.titleName in objName) name = objName[opt.titleName]
+    return editId.value ? `修改${name}` : `新增${name}`
+    }
   )
 
   // 取得彈窗dom
@@ -138,7 +146,7 @@ function useInitForm(opt = {}) {
     formRef.value.validate(async (valid) => {
       if(!valid) return false
       formDrawerRef.value.showLoading()
-  
+      form.status = 1 // 先給status一個預設值
       try {
         // 修改公告 / 新增公告
         await (editId.value ? opt.update(editId.value, form) : opt.create(form) )
@@ -162,18 +170,19 @@ function useInitForm(opt = {}) {
 
   // 重置表單
   function resetForm(row = false) {
-    // 能拿到表單dom 先清除表單驗證狀態
+    // 有表單dom 先清除表單驗證狀態
     if(formRef.value) formRef.value.clearValidate()
   
     if(row) {
-      // 遍歷 把當前row數據更新form表單數據
+      // 更新form的表單數據
       for(const key in form) {
         form[key] = row[key]
       }
+      
     }
   }
 
-  // 新增管理員彈窗
+  // 新增~管理員/公告/菜單權限 彈窗
   const handleCreateNotice = () => {
     editId.value = 0 // 新增管理員
     // 重置form, 從父層傳入form的初始值
