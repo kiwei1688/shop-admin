@@ -106,6 +106,7 @@ const {
   getData,
   handleDeleteManager,
 } = useInitTable({
+  titleName: "notice",
   getList: getNoticeList,
   delete: deleteNotice, // 刪除公告
 })

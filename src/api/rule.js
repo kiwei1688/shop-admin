@@ -43,3 +43,29 @@ export const updatedRule = async (id, data) => {
     data
   })
 }
+
+/**
+ * @description: 修改菜單權限 --
+ *  post (switch切換)
+ * @param { id : 菜單id / data }
+ * @return {*}
+ */
+export const updateRuleStatus = async (id, data) => {
+  return await request({
+    url: `/admin/rule/${id}/update_status`,
+    method: 'POST',
+    data
+  })
+}
+
+/**
+ * @description: 刪除菜單 -- post
+ * @param { id : 菜單id }
+ * @return {*}
+ */
+export const deleteRule = async (id) => {
+  return await request({
+    url: `/admin/rule/${id}/delete`,
+    method: 'POST'
+  })
+}

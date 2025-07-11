@@ -192,6 +192,7 @@ const {
   handleDeleteManager,
   handleStatusChg
 } = useInitTable({
+  titleName: "manager",
   searchForm: { keyword: "" }, // 傳要搜索的參數給子組件
   getList: getManagerList, // 獲取管理列表
   onGetListSuccess: (res) => {

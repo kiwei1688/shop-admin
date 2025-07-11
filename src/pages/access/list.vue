@@ -37,16 +37,32 @@
           </div>
 
           <div class="ml-auto">
-            <el-switch modelValue="data.status" :active-value="1" :inactive-value="0" class="mr-2"/>
+            <el-switch 
+              :model-value="data.status"
+              :active-value="1" 
+              :inactive-value="0" 
+              class="mr-2"
+              @change="handleStatusChg($event, data)"
+            />
             <el-button type="primary" size="small" @click.stop="handleUpdatedNotice(data)">
               修改
             </el-button>
-            <el-button type="success" size="small">
+            <el-button type="success" size="small" @click.stop="addChild(data.id)">
               增加
             </el-button>
-            <el-button type="danger" size="small">
-              刪除
-            </el-button>
+            <!-- 刪除 -->
+            <el-popconfirm 
+              title="是否刪除該紀錄?"
+              confirm-button-text="確認"
+              cancel-button-text="取消"
+              @confirm="handleDeleteManager(data.id)"
+            >
+              <template #reference>
+                <el-button type="danger" size="small">
+                  刪除
+                </el-button>
+              </template>
+            </el-popconfirm>
           </div>
         </template>
       </el-tree>
@@ -128,7 +144,9 @@ import { useInitTable, useInitForm } from "@/utils/useCommon.js"
 import { 
   getRuleList,
   createRule,
-  updatedRule
+  updatedRule,
+  updateRuleStatus,
+  deleteRule
  } from "@/api/rule.js"
  // validate rules
 // import { title, content } from "@/utils/validateRules.js"
@@ -143,16 +161,21 @@ const options = ref([]) // 上級菜單的下拉數據
 const {
   loading,
   tableData,
-  getData
+  getData,
+  handleStatusChg,
+  handleDeleteManager
 } = useInitTable(
   {
+    titleName: "rule",
     getList: getRuleList, // 獲取菜單列表api方法
     onGetListSuccess: (res) => {
       options.value = res.data.rules
       tableData.value = res.data.list
       // 菜單id
       defaultExpandedKeys.value = res.data.list.map(item => item.id)
-    }
+    },
+    delete: deleteRule, // 刪除菜單
+    updateStatus: updateRuleStatus // 修改菜單啟用狀態
   }
 )
 
@@ -164,7 +187,6 @@ const {
   form,
   rules,
   handleSubmit,
-  resetForm,
   handleCreateNotice,
   handleUpdatedNotice
 } = useInitForm({
@@ -185,6 +207,12 @@ const {
   update: updatedRule, // 傳修改菜單api
   create: createRule // 傳新增菜單api
 })
+
+// 添加子分類
+const addChild = (id) => {
+  handleCreateNotice() // 開啟新增彈窗
+  form.rule_id = id // 更新當下id
+}
 </script>
 
 <style scoped>

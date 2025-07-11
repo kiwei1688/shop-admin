@@ -58,7 +58,7 @@ function useInitTable(opt = {}) {
 
   getData()
 
-  // 刪除管理員 / 公告
+  // 刪除管理員 / 公告 / 菜單權限
   const handleDeleteManager = async (id) => {
     loading.value = true
   
@@ -80,15 +80,18 @@ function useInitTable(opt = {}) {
     }
   }
 
-  // 修改管理者 / 公告 啟用狀態
+  // 修改管理者 / 公告 / 菜單權限 啟用狀態
   const handleStatusChg = async (status, row) => {
+    console.log("++++++", status, row)
+    const name = getTitle(opt.titleName)
+
     if(row.id) {
       try {
         await opt.updateStatus(row.id, status)
         .then(res => {
           // 成功獲取數據
           if(res.msg === "ok"){
-            toast("success", `修改管理者啟用狀態成功`)
+            toast("success", `修改${name}啟用狀態成功`)
             row.status = status
           }
         }).finally(() => {
@@ -118,15 +121,7 @@ function useInitTable(opt = {}) {
 function useInitForm(opt = {}) {
   const editId = ref(0) // 0 > 新增 / 當前id > 修改
   const isTitle = computed(() => {
-    let name = ""
-
-    const objName = {
-      manager: "管理員",
-      notice: "公告",
-      rule: "菜單權限"
-    }
-
-    if(opt.titleName in objName) name = objName[opt.titleName]
+    const name = getTitle(opt.titleName)
     return editId.value ? `修改${name}` : `新增${name}`
     }
   )
@@ -208,6 +203,19 @@ function useInitForm(opt = {}) {
     handleCreateNotice,
     handleUpdatedNotice
   }
+}
+
+// 彈窗title name
+function getTitle(key) {
+  let name = ""
+  const objName = {
+    manager: "管理員",
+    notice: "公告",
+    rule: "菜單權限"
+  }
+
+  if(key in objName) name = objName[key]
+  return name
 }
 
 export {

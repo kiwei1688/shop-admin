@@ -10,7 +10,7 @@
     <!-- 右側 重新刷新提示 -->
     <el-tooltip
       effect="dark" 
-      content="刷新數據" 
+      content="刷新數據"
       placement="top"
     >
       <el-button text @click="$emit('refresh')">
