@@ -4,6 +4,7 @@
   -->
   <!-- icon選擇器 -->
   <div class="flex items-center">
+    <!-- icon 顯示 -->
     <el-icon :size="20" class="mr-2" v-if="modelValue">
       <component :is="modelValue"/>
     </el-icon>
@@ -45,8 +46,9 @@ defineProps({
   modelValue: String
 })
 
-// 選中icon後更新modelValueK的值
+// 選中icon後更新modelValue的值
 const emit = defineEmits(["update:modelValue"])
+
 // 選中的圖標回傳給父層的v-model,讓父層拿到icon的值
 const handleChange = (icon) => {
   emit("update:modelValue", icon)

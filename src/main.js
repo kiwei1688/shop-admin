@@ -11,6 +11,8 @@ import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 // 進度條_樣式
 import "nprogress/nprogress.css"
+// lodash
+import _ from "lodash"
 
 const app = createApp(App)
 
@@ -34,4 +36,7 @@ app.use(router)
 app.use(ElementPlus)
 // windi css
 import 'virtual:windi.css'
+// 全局定義loash
+app.config.globalProperties.lodash = _
+
 app.mount('#app')

@@ -137,7 +137,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, getCurrentInstance } from 'vue'
 // 共用組件方法
 import { useInitTable, useInitForm } from "@/utils/useCommon.js"
 // api
@@ -155,8 +155,12 @@ import ListHeader from "@/components/ListHeader.vue" // 新增/刷新
 import FormDrawer from "@/components/FormDrawer.vue"
 import IconSelect from "@/components/IconSelect.vue"
 
+const { proxy } = getCurrentInstance()
+
 const defaultExpandedKeys = ref([])
 const options = ref([]) // 上級菜單的下拉數據
+// lodash 隨機0-50
+// console.log(proxy.lodash.random(0,50))
 
 const {
   loading,

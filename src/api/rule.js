@@ -36,7 +36,6 @@ export const createRule = async (data) => {
  */
 
 export const updatedRule = async (id, data) => {
-  console.log("查看rule_id ====", id , data)
   return await request({
     url: `/admin/rule/${id}`,
     method: 'POST',
@@ -45,16 +44,19 @@ export const updatedRule = async (id, data) => {
 }
 
 /**
- * @description: 修改菜單權限 --
+ * @description: 修改菜單權限狀態 --
  *  post (switch切換)
- * @param { id : 菜單id / data }
+ * @param { 
+ *  id : 菜單id
+ *  data: { "status" : status } 單單只傳入一個status的參數
+ * }
  * @return {*}
  */
-export const updateRuleStatus = async (id, data) => {
+export const updateRuleStatus = async (id, status) => {
   return await request({
     url: `/admin/rule/${id}/update_status`,
     method: 'POST',
-    data
+    data: { "status" : status }
   })
 }
 

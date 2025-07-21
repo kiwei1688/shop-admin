@@ -82,7 +82,6 @@ function useInitTable(opt = {}) {
 
   // 修改管理者 / 公告 / 菜單權限 啟用狀態
   const handleStatusChg = async (status, row) => {
-    console.log("++++++", status, row)
     const name = getTitle(opt.titleName)
 
     if(row.id) {
@@ -182,7 +181,7 @@ function useInitForm(opt = {}) {
     editId.value = 0 // 新增管理員
     // 重置form, 從父層傳入form的初始值
     resetForm(opt.form)
-    formDrawerRef.value.openDrawer()
+    formDrawerRef.value.openDrawer() // 開啟彈窗
   }
 
   // 修改公告
