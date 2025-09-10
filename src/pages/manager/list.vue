@@ -1,4 +1,7 @@
 <template>
+  <div style="padding: 10px;">
+    接收query參數 : {{ query.name }} ~~ {{ query.age }}
+  </div>
   <el-card shadow="never" class="border-0">
     <!-- 搜索 / 重置 -->
     <el-form 
@@ -157,7 +160,8 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, toRefs} from 'vue'
+import { useRoute } from "vue-router"
 // api
 import {
   getManagerList,
@@ -175,6 +179,10 @@ import { username, password, role_id, status, avatar } from "@/utils/validateRul
 import FormDrawer from "@/components/FormDrawer.vue"
 import ChooseImage from "@/components/ChooseImage.vue"
 import ListHeader from "@/components/ListHeader.vue" // 新增/刷新
+
+const route = useRoute()
+// 要解構響應式數據必須用toRefs,不然會丟失響應式數據
+const { query } = toRefs(route)
 
 // 角色
 const roles = ref([])

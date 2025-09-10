@@ -20,6 +20,14 @@ const routes = [
       title: "登入頁"
     }
   },
+  { // 自己練習用page
+    path: '/practice/list',
+    name: 'practice',
+    component: () => import('@/pages/practice/list.vue'),
+    meta: {
+      title: "練習用"
+    }
+  },
   {
     // 404
     path: '/:pathMatch(.*)*', 
@@ -121,20 +129,43 @@ const asyncRouters = [
       title: "優惠券列表"
     }
   },
-  { // 管理員列表
+  { // 管理員列表管理 == :age? 的? 代表可傳 可不傳
     path: '/manager/list',
     name: '/manager/list',
     component: () => import('@/pages/manager/list.vue'),
     meta: {
-      title: "管理員列表"
+      title: "管理員列表管理"
     }
   },
-  { // 菜單權限
+  { // 管理權限
     path: '/access/list',
     name: '/access/list',
     component: () => import('@/pages/access/list.vue'),
     meta: {
-      title: "菜單權限"
+      title: "權限管理"
+    }
+  },
+  { // 角色管理 ===> 傳送動態路由params參數
+    path: '/role/list',
+    name: '/role/list',
+    component: () => import('@/pages/role/list.vue'),
+    children: [
+      {
+        name: "xiagne",
+        // 子路徑不用帶"/"
+        path: "testParams/:id/:name/:age?",
+        // path: "testParams",
+        component: () => import('@/components/testParams.vue'),
+        //第一種寫法 頁面可直接用defineProps(['id', 'name', 'age'])接收數據
+        props: true
+        //第二種寫法-函式
+        // props(route) {
+        //   return route.params
+        // }
+      }
+    ],
+    meta: {
+      title: "角色管理"
     }
   }
 ]
@@ -167,7 +198,7 @@ export function addRouters(menus){
   }
 
   findAndRoutesByMenus(menus)
-  // console.log("查看目前有的遞歸路由 ~~~~~",router.getRoutes())
+  console.log("查看目前有的遞歸路由 ~~~~~",router.getRoutes())
   return hasNewRoutes
 }
 
