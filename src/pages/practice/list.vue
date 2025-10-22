@@ -1,4 +1,5 @@
 <template>
+  <!-- 01 -->
   <div class="practice_wrap">
     <div class="p-title">✦ 01 / 分類展示產品</div>
     <el-button-group>
@@ -38,9 +39,9 @@
 
   </div>
 
+  <!-- 02 -->
   <div class="practice_wrap">
     <div class="p-title">✦ 02 / 展示banner不同動態圖</div>
-
     <div class="banner" :style="{ backgroundImage: `url(${randomBg})` }">
       <!-- 上方按鈕區 -->
       <div class="button-group">
@@ -56,17 +57,15 @@
 
       <!-- 方塊動畫區 -->
       <div class="squares">
-
-        
         <!-- 大方塊 -->
-        <transition name="fade-up">
+        <!-- <transition name="fade-up"> -->
           <div
             v-if="current"
             :key="`${current}-big`"
             class="square big"
             :class="current"
           ></div>
-        </transition>
+        <!-- </transition> -->
 
         <!-- 小方塊 -->
         <transition name="fade-down">
@@ -89,15 +88,17 @@ import { useProductStore } from '@/stores/practice'
 
 const store = useProductStore()
 
+// 01 ====================================================
 const filterType = computed(() => store.filterType)
 
-// 模擬背景圖清單
-const backgrounds = [
-  "https://picsum.photos/1200/400?random=1",
-  "https://picsum.photos/1200/400?random=2",
-  "https://picsum.photos/1200/400?random=3",
-];
+// 更新當下篩選的產品項
+function setFilter(type) {
+  store.setFilterType(type)
+}
 
+const filteredProducts = computed(() => store.filteredProducts)
+
+// 02 ====================================================
 const randomBg = ref("");
 const current = ref("about"); // 預設顯示「關於我們」
 
@@ -107,21 +108,22 @@ const buttons = [
   { key: "product", label: "產品說明", color: "green" },
 ];
 
-// 更新當下篩選的產品項
-function setFilter(type) {
-  store.setFilterType(type)
-}
+// 模擬背景圖清單
+const backgrounds = [
+  "https://picsum.photos/1200/400?random=1",
+  "https://picsum.photos/1200/400?random=2",
+  "https://picsum.photos/1200/400?random=3",
+];
 
-const filteredProducts = computed(() => store.filteredProducts)
-
-onMounted(() => {
-  randomBg.value = backgrounds[Math.floor(Math.random() * backgrounds.length)];
-});
 // 點擊切換不同banner圖片
 function changeBanner(type) {
   current.value = type;
 }
 
+onMounted(() => {
+  // 載入load隨機圖片
+  randomBg.value = backgrounds[Math.floor(Math.random() * backgrounds.length)];
+});
 </script>
 
 <style scoped lang="scss">
@@ -158,7 +160,7 @@ function changeBanner(type) {
 .button-group {
   position: absolute;
   top: 20px;
-  left: 50%;
+  left: 20%;
   transform: translateX(-50%);
   display: flex;
   gap: 16px;
@@ -166,17 +168,21 @@ function changeBanner(type) {
 
 .banner-btn {
   background: rgba(255, 255, 255, 0.7);
+  box-shadow: 0px 0px 5px #999;
   border: none;
   padding: 8px 16px;
   border-radius: 6px;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.5s;
 }
 
-.banner-btn.active,
 .banner-btn:hover {
-  background: rgba(255, 255, 255, 0.9);
-  transform: translateY(-2px);
+  border: 1px solid green;
+  transform: translateY(-4px);
+}
+
+.banner-btn.active {
+  border: 2px solid blue;
 }
 
 /* === 方塊區 === */
@@ -184,7 +190,7 @@ function changeBanner(type) {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -75%);
 }
 
 /* 大小方塊共用設定 */
@@ -198,26 +204,32 @@ function changeBanner(type) {
 
 /* 顏色分類 */
 .about {
-  background-color: #007bff;
+  background: url("https://picsum.photos/1200/400?random=1") no-repeat center center/cover;
+  box-shadow: 0 0 12px red;
 }
 
 .news {
-  background-color: #e63946;
+  background: url("https://picsum.photos/1200/400?random=2") no-repeat center center/cover;
+  box-shadow: 0 0 12px blue;
 }
 
 .product {
-  background-color: #2a9d8f;
+  background: url("https://picsum.photos/1200/400?random=3") no-repeat center center/cover;
+  box-shadow: 0 0 12px white;
 }
 
-/* 大方塊 */
+/* 大方塊 圖片 */
 .square.big {
-  width: 180px;
-  height: 180px;
+  width: 400px;
+  height: 220px;
+  animation: slide 1s ease;
 }
 
-/* 小方塊 */
+/* 小方塊 圖片 */
 .square.small {
-  width: 100px;
+  position: absolute;
+  left: 100%;
+  width: 250px;
   height: 100px;
 }
 
@@ -232,11 +244,11 @@ function changeBanner(type) {
 /* 大方塊向上淡出/淡入 */
 .fade-up-enter-from {
   opacity: 0;
-  transform: translateY(40px);
+  transform: translateY(20px);
 }
 .fade-up-leave-to {
   opacity: 0;
-  transform: translateY(-40px);
+  transform: translateY(-20px);
 }
 
 /* 小方塊向下淡出/淡入 */
@@ -247,5 +259,17 @@ function changeBanner(type) {
 .fade-down-leave-to {
   opacity: 0;
   transform: translateY(40px);
+}
+
+/* css 動畫設定 */
+@keyframes slide {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>
