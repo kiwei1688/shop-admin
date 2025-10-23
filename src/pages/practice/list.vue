@@ -41,7 +41,7 @@
 
   <!-- 02 -->
   <div class="practice_wrap">
-    <div class="p-title">✦ 02 / 展示banner不同動態圖</div>
+    <div class="p-title">✦ 02 / 切換時展示banner不同圖檔</div>
     <div class="banner" :style="{ backgroundImage: `url(${randomBg})` }">
       <!-- 上方按鈕區 -->
       <div class="button-group">
@@ -160,7 +160,7 @@ onMounted(() => {
 .button-group {
   position: absolute;
   top: 20px;
-  left: 20%;
+  left: 15%;
   transform: translateX(-50%);
   display: flex;
   gap: 16px;
@@ -205,32 +205,53 @@ onMounted(() => {
 /* 顏色分類 */
 .about {
   background: url("https://picsum.photos/1200/400?random=1") no-repeat center center/cover;
-  box-shadow: 0 0 12px red;
 }
 
 .news {
   background: url("https://picsum.photos/1200/400?random=2") no-repeat center center/cover;
-  box-shadow: 0 0 12px blue;
 }
 
 .product {
   background: url("https://picsum.photos/1200/400?random=3") no-repeat center center/cover;
-  box-shadow: 0 0 12px white;
+}
+
+.big.about { // 關於我們用圖
+  background: url("@/assets/image/ppp1.png") no-repeat center center/contain;
+}
+.big.news { // 最新消息用圖
+  background: url("@/assets/image/ppp2.png") no-repeat center center/contain;
+}
+.big.product { // 產品說明用圖
+  background: url("@/assets/image/ppp3.png") no-repeat center center/contain;
+}
+
+.small.about { // 關於我們用圖
+  background: url("@/assets/image/sss1.png") no-repeat center center/contain;
+}
+.small.news { // 最新消息用圖
+  background: url("@/assets/image/sss2.png") no-repeat center center/contain;
+}
+.small.product { // 產品說明用圖
+  background: url("@/assets/image/sss3.png") no-repeat center center/contain;
 }
 
 /* 大方塊 圖片 */
 .square.big {
+  position: relative;
   width: 400px;
-  height: 220px;
+  height: 250px;
   animation: slide 1s ease;
+  z-index: 99;
 }
 
 /* 小方塊 圖片 */
 .square.small {
   position: absolute;
-  left: 100%;
+  top: 72%;
+  left: 20%;
   width: 250px;
   height: 100px;
+  z-index: 1;
 }
 
 /* === 動畫效果 === */
@@ -254,11 +275,11 @@ onMounted(() => {
 /* 小方塊向下淡出/淡入 */
 .fade-down-enter-from {
   opacity: 0;
-  transform: translateY(-40px);
+  transform: translateY(50px);
 }
 .fade-down-leave-to {
   opacity: 0;
-  transform: translateY(40px);
+  transform: translateY(-50px);
 }
 
 /* css 動畫設定 */
