@@ -43,8 +43,20 @@
       style="width: 100%"
       v-loading="loading"
     >
-      <el-table-column prop="title" label="公告標題" width="180" style="color: red;" />
-      <el-table-column prop="create_time" label="發佈時間" />
+      <el-table-column prop="name" label="角色名稱" width="180" style="color: red;" />
+      <el-table-column prop="desc" label="角色描述" />
+      <!-- 修改角色狀態 -->
+      <el-table-column label="狀態" width="150" align="center">
+        <template #default="{ row }">
+          <!-- $event:當下status的值 -->
+          <el-switch 
+            :model-value="row.status" 
+            :active-value="1" 
+            inactive-value="0"
+            @change="handleStatusChg($event, row)"
+          ></el-switch>
+        </template>
+      </el-table-column>
       <!-- table list -->
       <el-table-column label="操作" width="180" align="center">
         <template #default="{ row }">
@@ -101,11 +113,26 @@
         label-width="80px"
         :inline="false"
       >
-        <el-form-item label="公告標題" prop="title">
-          <el-input v-model="form.title" placeholder="請輸入公告標題"></el-input>
+        <el-form-item label="角色名稱" prop="name">
+          <el-input 
+            v-model="form.name" 
+            placeholder="請輸入角色名稱"
+          ></el-input>
         </el-form-item>
-        <el-form-item label="公告內容" prop="content">
-          <el-input v-model="form.content" placeholder="請輸入公告內容" type="textarea" :rows="5"></el-input>
+        <el-form-item label="公告描述" prop="desc">
+          <el-input
+            v-model="form.desc"
+            placeholder="請輸入角色描述" 
+            type="textarea" 
+            :rows="5"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="狀態" prop="status">
+          <el-switch 
+            v-model="form.status"
+            :active-value="1" 
+            inactive-value="0"
+          ></el-switch>
         </el-form-item>
       </el-form>
     </FormDrawer>
@@ -144,6 +171,7 @@ let car = reactive({
 
 // 表格 & 分頁 & 搜索 組件 (共用)
 // loading / 分頁
+
 const {
   tableData,
   loading,
@@ -151,10 +179,12 @@ const {
   limit,
   getData,
   handleDeleteManager,
+  handleStatusChg
 } = useInitTable({
   titleName: "role",
   getList: getRoleList,
-  delete: deleteRole, 
+  delete: deleteRole,
+  updateStatus: updateRoleStatus
 })
 
 // 表格 新增 / 修改
@@ -171,11 +201,21 @@ const {
 } = useInitForm({
   titleName: "role",
   form: { // 初始值
-    title: "",
-    content: ""
+    name: "",
+    desc: "",
+    status: 1
+  },
+  rules: {
+    name: [{
+      require: true,
+      message: "角色名稱不能為空",
+      trigger: "blur"
+    }]
   },
   // rules: Object.assign({ title, content }),
   getData,
+  update: updatedRole,
+  create: createRole
 })
 
 // params按鈕數據

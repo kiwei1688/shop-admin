@@ -31,6 +31,7 @@ function useInitTable(opt = {}) {
 
   // 獲取管理員列表數據
   const getData = async(page = null) => {
+    console.log("@@@@@", opt)
     // 有切換 傳入當下頁碼,則重新給當前頁籤碼
     if(typeof page === "number") curPage.value = page
     loading.value = true // 打開loading
@@ -80,17 +81,17 @@ function useInitTable(opt = {}) {
     }
   }
 
-  // 修改管理者 / 公告 / 菜單權限 啟用狀態
+  // 修改管理者 / 公告 / 菜單權限 / 角色管理 啟用狀態
   const handleStatusChg = async (status, row) => {
     const name = getTitle(opt.titleName)
-
+    console.log("UUUUUUUUUUUUU", status, row)
     if(row.id) {
       try {
         await opt.updateStatus(row.id, status)
         .then(res => {
           // 成功獲取數據
           if(res.msg === "ok"){
-            toast("success", `修改${name}啟用狀態成功`)
+            toast("success", `修改${name}狀態成功`)
             row.status = status
           }
         }).finally(() => {

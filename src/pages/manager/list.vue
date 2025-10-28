@@ -60,7 +60,7 @@
           {{ row.role?.name || "--" }}
         </template>
       </el-table-column>
-
+      <!-- 修改狀態 -->
       <el-table-column label="狀態" width="150" align="center">
         <template #default="{ row }">
           <!-- $event:當下status的值 -->
