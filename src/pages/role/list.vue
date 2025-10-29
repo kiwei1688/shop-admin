@@ -50,9 +50,11 @@
         <template #default="{ row }">
           <!-- $event:當下status的值 -->
           <el-switch 
-            :model-value="row.status" 
-            :active-value="1" 
-            inactive-value="0"
+            :model-value="row.status"
+            :active-value="1"
+            :inactive-value="0"
+            :loading="row.statusLoading"
+            :disabled="row.super === 1"
             @change="handleStatusChg($event, row)"
           ></el-switch>
         </template>
@@ -114,7 +116,7 @@
         :inline="false"
       >
         <el-form-item label="角色名稱" prop="name">
-          <el-input 
+          <el-input
             v-model="form.name" 
             placeholder="請輸入角色名稱"
           ></el-input>
@@ -122,8 +124,8 @@
         <el-form-item label="公告描述" prop="desc">
           <el-input
             v-model="form.desc"
-            placeholder="請輸入角色描述" 
-            type="textarea" 
+            placeholder="請輸入角色描述"
+            type="textarea"
             :rows="5"
           ></el-input>
         </el-form-item>
@@ -131,7 +133,9 @@
           <el-switch 
             v-model="form.status"
             :active-value="1" 
-            inactive-value="0"
+            :inactive-value="0"
+            :loading="row.statusLoading"
+            :disabled="row.super === 1"
           ></el-switch>
         </el-form-item>
       </el-form>

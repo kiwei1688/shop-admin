@@ -67,7 +67,7 @@
           <el-switch 
             :model-value="row.status" 
             :active-value="1" 
-            inactive-value="0"
+            :inactive-value="0"
             @change="handleStatusChg($event, row)"
           ></el-switch>
         </template>

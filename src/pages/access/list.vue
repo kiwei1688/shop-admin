@@ -216,6 +216,7 @@ const {
 const addChild = (id) => {
   handleCreateNotice() // 開啟新增彈窗
   form.rule_id = id // 更新當下id
+  form.status = 1
 }
 </script>
 

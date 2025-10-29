@@ -84,7 +84,6 @@ function useInitTable(opt = {}) {
   // 修改管理者 / 公告 / 菜單權限 / 角色管理 啟用狀態
   const handleStatusChg = async (status, row) => {
     const name = getTitle(opt.titleName)
-    console.log("UUUUUUUUUUUUU", status, row)
     if(row.id) {
       try {
         await opt.updateStatus(row.id, status)
