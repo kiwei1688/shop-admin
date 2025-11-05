@@ -60,8 +60,15 @@
         </template>
       </el-table-column>
       <!-- table list -->
-      <el-table-column label="操作" width="180" align="center">
+      <el-table-column label="操作" width="300" align="center">
         <template #default="{ row }">
+          <!-- 配置權限 -->
+          <el-button 
+            type="success"
+            @click="openSetRule(row)"
+          >
+            配置權限
+          </el-button>
           <!-- 修改 -->
           <el-button 
             type="primary"
@@ -108,7 +115,7 @@
       @submit="handleSubmit"
       destroyOnClose
     >
-      <el-form 
+      <el-form
         :model="form"
         ref="formRef"
         :rules="rules"
@@ -134,11 +141,23 @@
             v-model="form.status"
             :active-value="1" 
             :inactive-value="0"
-            :loading="row.statusLoading"
-            :disabled="row.super === 1"
           ></el-switch>
         </el-form-item>
       </el-form>
+    </FormDrawer>
+
+    <!-- 權限配置--彈窗 -->
+    <FormDrawer
+      title="權限配置"
+      ref="formDrawerRef"
+      @submit="handleSetRuleSubmit"
+    >
+      <el-tree-v2
+        :data="ruleList"
+        :props="{label: 'name', children: 'child'}"
+        show-checkbox
+        :height="treeHeight"
+      />
     </FormDrawer>
   </el-card>
 </template>
@@ -155,6 +174,7 @@ import {
   deleteRole,
   updateRoleStatus
  } from "@/api/role.js"
+ import { getRuleList } from "@/api/rule.js"
  
  // 共用表格功能組件
 import { useInitTable, useInitForm } from "@/utils/useCommon.js"
@@ -235,6 +255,37 @@ const btnData = reactive([
     age: 49
   }
 ])
+
+// 權限配置 === 獲取ref dom
+// const SetRuleFormDrawerRef = ref(null)
+const ruleList = ref([])
+const treeHeight = ref(0)
+const roleId = ref(0) // 當前操作的角色
+const openSetRule = async (row) => {
+  // SetRuleFormDrawerRef.value.openDrawer()
+  // 獲取rule list數據
+  try {
+    await getRuleList(1)
+    .then(res => {
+      formDrawerRef.value.showLoading()
+      roleId.value = row.id
+      treeHeight.value = window.innerHeight - 170
+
+      if(res.msg === "ok") {
+        ruleList.value = res.data.list
+        formDrawerRef.value.openDrawer()
+      }
+    }).finally(() => {
+      // 關閉loading
+      formDrawerRef.value.closeLoading()
+    })
+  } catch(err) {
+    console.log('err ======', err)
+  }
+}
+const handleSetRuleSubmit = () => {
+
+}
 
 // 測試路由參數 query
 const testQuery = () => {
