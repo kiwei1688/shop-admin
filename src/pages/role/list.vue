@@ -153,11 +153,22 @@
       @submit="handleSetRuleSubmit"
     >
       <el-tree-v2
+        node-key="id"
+        :default-expanded-keys="defaultExpandedKeys"
         :data="ruleList"
         :props="{label: 'name', children: 'child'}"
         show-checkbox
         :height="treeHeight"
-      />
+      >
+        <template #default="{ node, data }">
+          <div class="flex items-center">
+            <el-tab :type="data.menu ? '' : 'info'" size="small">
+              <span :class="data.menu ? 'menuBlue' : 'menuGreen'">{{ data.menu ? "菜單" : "權限" }}</span>
+            </el-tab>
+            <span class="ml-2 text-sm">{{ data.name }}</span>
+          </div>
+        </template>
+      </el-tree-v2>
     </FormDrawer>
   </el-card>
 </template>
@@ -261,19 +272,24 @@ const btnData = reactive([
 const ruleList = ref([])
 const treeHeight = ref(0)
 const roleId = ref(0) // 當前操作的角色
+const defaultExpandedKeys = ref([])
 const openSetRule = async (row) => {
-  // SetRuleFormDrawerRef.value.openDrawer()
+  roleId.value = row.id
   // 獲取rule list數據
   try {
     await getRuleList(1)
     .then(res => {
       formDrawerRef.value.showLoading()
-      roleId.value = row.id
       treeHeight.value = window.innerHeight - 170
 
       if(res.msg === "ok") {
         ruleList.value = res.data.list
+        // 預設打開第一層菜單
+        defaultExpandedKeys.value = res.data.list.map(item => item.id)
         formDrawerRef.value.openDrawer()
+        // SetRuleFormDrawerRef.value.openDrawer()
+        // 當前role擁有的權限id
+        
       }
     }).finally(() => {
       // 關閉loading
@@ -334,5 +350,19 @@ provide("giveCar", car)
 .routeBtn a.active {
   border: 1px solid red;
   background-color: #FF7575;
+}
+.menuBlue {
+  padding: 2px;
+  color: #2894FF;
+  background-color: #ECF5FF;
+  border: 1px solid #66B3FF;
+  border-radius: 4px;
+}
+.menuGreen {
+  padding: 2px;
+  color: 	#009100;
+  background-color: #DFFFDF;
+  border: 1px solid 	#53FF53;
+  border-radius: 4px;
 }
 </style>
