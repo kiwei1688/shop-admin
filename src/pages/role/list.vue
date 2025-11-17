@@ -149,11 +149,12 @@
     <!-- 權限配置--彈窗 -->
     <FormDrawer
       title="權限配置"
-      ref="formDrawerRef"
+      ref="SetRuleFormDrawerRef"
       @submit="handleSetRuleSubmit"
     >
       <el-tree-v2
         node-key="id"
+        ref="elTreeRef"
         :default-expanded-keys="defaultExpandedKeys"
         :data="ruleList"
         :props="{label: 'name', children: 'child'}"
@@ -163,9 +164,13 @@
         <template #default="{ node, data }">
           <div class="flex items-center">
             <el-tab :type="data.menu ? '' : 'info'" size="small">
-              <span :class="data.menu ? 'menuBlue' : 'menuGreen'">{{ data.menu ? "菜單" : "權限" }}</span>
+              <span :class="data.menu ? 'menuBlue' : 'menuGreen'">
+                {{ data.menu ? "菜單" : "權限" }}
+              </span>
             </el-tab>
-            <span class="ml-2 text-sm">{{ data.name }}</span>
+            <span class="ml-2 text-sm">
+              {{ data.name }}
+            </span>
           </div>
         </template>
       </el-tree-v2>
@@ -268,11 +273,17 @@ const btnData = reactive([
 ])
 
 // 權限配置 === 獲取ref dom
-// const SetRuleFormDrawerRef = ref(null)
+const SetRuleFormDrawerRef = ref(null)
+const elTreeRef = ref(null)
+
 const ruleList = ref([])
 const treeHeight = ref(0)
 const roleId = ref(0) // 當前操作的角色
 const defaultExpandedKeys = ref([])
+
+// 當前角色擁有的權限id
+const ruleIds = ref([])
+
 const openSetRule = async (row) => {
   roleId.value = row.id
   // 獲取rule list數據
@@ -280,16 +291,20 @@ const openSetRule = async (row) => {
     await getRuleList(1)
     .then(res => {
       formDrawerRef.value.showLoading()
-      treeHeight.value = window.innerHeight - 170
+      treeHeight.value = window.innerHeight - 180
 
       if(res.msg === "ok") {
         ruleList.value = res.data.list
         // 預設打開第一層菜單
         defaultExpandedKeys.value = res.data.list.map(item => item.id)
-        formDrawerRef.value.openDrawer()
-        // SetRuleFormDrawerRef.value.openDrawer()
+        SetRuleFormDrawerRef.value.openDrawer()
         // 當前role擁有的權限id
-        
+        ruleIds.value = row.rules.map(item => item.id)
+
+        setTimeout(() => {
+          // setCheckedKeys()-為element-plus處理預設選中第一層menu方法
+          elTreeRef.value.setCheckedKeys(ruleIds.value)
+        }, 150)
       }
     }).finally(() => {
       // 關閉loading
@@ -309,6 +324,8 @@ const testQuery = () => {
     {
       name: "/manager/list",
       query: {
+
+
         name: "田本初出出出出",
         age: 999
       }
