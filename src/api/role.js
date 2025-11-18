@@ -74,5 +74,21 @@ export const updateRoleStatus = async (id, status) => {
   })
 }
 
+/**
+ * 
+ * @description: 配置角色全縣 api -- post
+ * @param { id: 角色管理id }
+ * @return {*}
+ * 
+ * 
+ */
+
+export const setRoleRules = async (id, rule_ids) => {
+  return await request({
+    url: `/admin/role/set_rules`,
+    method: 'POST',
+    data: { id, rule_ids }
+  })
+}
 
 

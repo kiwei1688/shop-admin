@@ -138,6 +138,9 @@
         </el-form-item>
         <el-form-item label="狀態" prop="status">
           <el-switch 
+
+
+
             v-model="form.status"
             :active-value="1" 
             :inactive-value="0"
@@ -160,6 +163,7 @@
         :props="{label: 'name', children: 'child'}"
         show-checkbox
         :height="treeHeight"
+        @check="handleTreeCheck"
       >
         <template #default="{ node, data }">
           <div class="flex items-center">
@@ -314,8 +318,13 @@ const openSetRule = async (row) => {
     console.log('err ======', err)
   }
 }
+
 const handleSetRuleSubmit = () => {
 
+}
+// 點擊任一權限配置 checkbox
+const handleTreeCheck = (...e) => {
+  console.log(e)
 }
 
 // 測試路由參數 query
