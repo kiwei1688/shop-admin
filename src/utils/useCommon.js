@@ -209,7 +209,9 @@ function getTitle(key) {
   const objName = {
     manager: "管理員",
     notice: "公告",
-    rule: "菜單權限"
+    rule: "菜單權限",
+    role: "role權限",
+    skus: "商品規格"
   }
 
   if(key in objName) name = objName[key]

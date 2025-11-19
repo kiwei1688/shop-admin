@@ -49,7 +49,7 @@ const asyncRouters = [
       title: "後台首頁"
     }
   },
-  { // 商品管理
+  { // 商品管理 / 商品管理
     path: '/goods/list',
     name: '/goods/list',
     component: () => import('@/pages/goods/list.vue'),
@@ -57,7 +57,7 @@ const asyncRouters = [
       title: "商品管理"
     }
   },
-  { // 分類列表
+  { // 商品管理 / 分類列表
     path: '/category/list',
     name: '/category/list',
     component: () => import('@/pages/category/list.vue'),
@@ -65,63 +65,15 @@ const asyncRouters = [
       title: "分類列表"
     }
   },
-  { // 用戶列表
-    path: '/user/list',
-    name: '/user/list',
-    component: () => import('@/pages/user/list.vue'),
+  { // 商品管理 / 規格管理
+    path: '/skus/list',
+    name: '/skus/list',
+    component: () => import('@/pages/skus/list.vue'),
     meta: {
-      title: "用戶列表"
+      title: "規格管理"
     }
   },
-  { // 商品列表
-    path: '/goods/list',
-    name: '/goods/list',
-    component: () => import('@/pages/goods/list.vue'),
-    meta: {
-      title: "商品列表"
-    }
-  },
-  { // 訂單列表
-    path: '/order/list',
-    name: '/order/list',
-    component: () => import('@/pages/order/list.vue'),
-    meta: {
-      title: "訂單列表"
-    }
-  },
-  { // 評價
-    path: '/comment/list',
-    name: '/comment/list',
-    component: () => import('@/pages/comment/list.vue'),
-    meta: {
-      title: "評價"
-    }
-  },
-  { // 圖庫列表
-    path: '/image/list',
-    name: '/image/list',
-    component: () => import('@/pages/image/list.vue'),
-    meta: {
-      title: "圖庫列表"
-    }
-  },
-  { // 公告列表
-    path: '/notice/list',
-    name: '/notice/list',
-    component: () => import('@/pages/notice/list.vue'),
-    meta: {
-      title: "公告列表"
-    }
-  },
-  { // 配置
-    path: '/setting/base',
-    name: '/setting/base',
-    component: () => import('@/pages/setting/base.vue'),
-    meta: {
-      title: "配置"
-    }
-  },
-  { // 優惠券列表
+  { // 商品管理 / 優惠券列表
     path: '/coupon/list',
     name: '/coupon/list',
     component: () => import('@/pages/coupon/list.vue'),
@@ -129,7 +81,55 @@ const asyncRouters = [
       title: "優惠券列表"
     }
   },
-  { // 管理員列表管理 == :age? 的? 代表可傳 可不傳
+  { // 用戶管理 / 用戶管理
+    path: '/user/list',
+    name: '/user/list',
+    component: () => import('@/pages/user/list.vue'),
+    meta: {
+      title: "用戶管理"
+    }
+  },
+  { // 訂單管理 / 訂單管理
+    path: '/order/list',
+    name: '/order/list',
+    component: () => import('@/pages/order/list.vue'),
+    meta: {
+      title: "訂單列表"
+    }
+  },
+  { // 訂單管理 / 評價管理
+    path: '/comment/list',
+    name: '/comment/list',
+    component: () => import('@/pages/comment/list.vue'),
+    meta: {
+      title: "評價"
+    }
+  },
+  { // 其他模塊 / 圖庫列表
+    path: '/image/list',
+    name: '/image/list',
+    component: () => import('@/pages/image/list.vue'),
+    meta: {
+      title: "圖庫列表"
+    }
+  },
+  { // 其他模塊 / 公告列表
+    path: '/notice/list',
+    name: '/notice/list',
+    component: () => import('@/pages/notice/list.vue'),
+    meta: {
+      title: "公告列表"
+    }
+  },
+  { // 系統設置 / 基礎配置
+    path: '/setting/base',
+    name: '/setting/base',
+    component: () => import('@/pages/setting/base.vue'),
+    meta: {
+      title: "基礎配置"
+    }
+  },
+  { // 管理員管理 / 管理員管理 == :age? 的? 代表可傳 可不傳
     path: '/manager/list',
     name: '/manager/list',
     component: () => import('@/pages/manager/list.vue'),
@@ -137,7 +137,7 @@ const asyncRouters = [
       title: "管理員列表管理"
     }
   },
-  { // 管理權限
+  { // 管理員管理 / 權限管理
     path: '/access/list',
     name: '/access/list',
     component: () => import('@/pages/access/list.vue'),
@@ -145,7 +145,7 @@ const asyncRouters = [
       title: "權限管理"
     }
   },
-  { // 角色管理 ===> 傳送動態路由params參數
+  { // 管理員管理 / 角色管理 ===> 傳送動態路由params參數
     path: '/role/list',
     name: '/role/list',
     component: () => import('@/pages/role/list.vue'),
