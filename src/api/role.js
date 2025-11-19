@@ -76,8 +76,8 @@ export const updateRoleStatus = async (id, status) => {
 
 /**
  * 
- * @description: 配置角色全縣 api -- post
- * @param { id: 角色管理id }
+ * @description: 配置角色權限 api -- post
+ * @param { id: 當前角色id, rule_ids: 要配置的當下所有rule id }
  * @return {*}
  * 
  * 

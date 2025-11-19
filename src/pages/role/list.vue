@@ -158,6 +158,7 @@
       <el-tree-v2
         node-key="id"
         ref="elTreeRef"
+        :check-strictly="checkStrictly"
         :default-expanded-keys="defaultExpandedKeys"
         :data="ruleList"
         :props="{label: 'name', children: 'child'}"
@@ -192,7 +193,8 @@ import {
   createRole,
   updatedRole,
   deleteRole,
-  updateRoleStatus
+  updateRoleStatus,
+  setRoleRules
  } from "@/api/role.js"
  import { getRuleList } from "@/api/rule.js"
  
@@ -200,7 +202,8 @@ import {
 import { useInitTable, useInitForm } from "@/utils/useCommon.js"
 // validate rules
 // import { title, content } from "@/utils/validateRules.js"
-
+// tips
+import { toast } from '@/utils/toast'
 // components
 import FormDrawer from "@/components/FormDrawer.vue"
 import ListHeader from "@/components/ListHeader.vue" // 新增/刷新
@@ -284,9 +287,10 @@ const ruleList = ref([])
 const treeHeight = ref(0)
 const roleId = ref(0) // 當前操作的角色
 const defaultExpandedKeys = ref([])
-
 // 當前角色擁有的權限id
 const ruleIds = ref([])
+// 設定權限是否相互關聯,解決勾選父層chkbox,子層無法關聯
+const checkStrictly = ref(false)
 
 const openSetRule = async (row) => {
   roleId.value = row.id
@@ -296,7 +300,7 @@ const openSetRule = async (row) => {
     .then(res => {
       formDrawerRef.value.showLoading()
       treeHeight.value = window.innerHeight - 180
-
+      checkStrictly.value = true // 獲取權限數據前將權限設為不相互關聯
       if(res.msg === "ok") {
         ruleList.value = res.data.list
         // 預設打開第一層菜單
@@ -308,6 +312,7 @@ const openSetRule = async (row) => {
         setTimeout(() => {
           // setCheckedKeys()-為element-plus處理預設選中第一層menu方法
           elTreeRef.value.setCheckedKeys(ruleIds.value)
+          checkStrictly.value = false // 設為相互關聯
         }, 150)
       }
     }).finally(() => {
@@ -319,12 +324,34 @@ const openSetRule = async (row) => {
   }
 }
 
-const handleSetRuleSubmit = () => {
+// 配置新的角色權限
+const handleSetRuleSubmit = async () => {
+  SetRuleFormDrawerRef.value.showLoading()
+
+  try {
+    await setRoleRules(roleId.value, ruleIds.value)
+    .then(res => {
+      if(res.msg === "ok") {
+        toast("success", "權限配置成功!!")
+        getData() // 重新拉取新數據
+        SetRuleFormDrawerRef.value.closeDrawer()
+      }
+    }).finally(() => {
+      // 關閉loading
+      SetRuleFormDrawerRef.value.closeLoading()
+    })
+  } catch(err) {
+    console.log('err ======', err)
+  }
 
 }
-// 點擊任一權限配置 checkbox
+
+// 點擊checkbox / 收集並合併要配置的權限
 const handleTreeCheck = (...e) => {
-  console.log(e)
+  // 勾選配置的權限id
+  const { checkedKeys, halfCheckedKeys } = e[1]
+  // 合併兩個數組
+  ruleIds.value = [...checkedKeys, ...halfCheckedKeys]
 }
 
 // 測試路由參數 query
