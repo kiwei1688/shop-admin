@@ -45,9 +45,7 @@
             @confirm="handleDeleteManager(row.id)"
           >
             <template #reference>
-              <el-button 
-                type="danger"
-              >
+              <el-button type="danger">
                 刪除
               </el-button>
             </template>
@@ -89,7 +87,7 @@
             placeholder="請輸入規格名稱"
           ></el-input>
         </el-form-item>
-        <el-form-item label="配許" prop="order">
+        <el-form-item label="排序" prop="order">
           <el-input-number v-model="form.order" :min="0" :max="1000"></el-input-number>
         </el-form-item>
         <el-form-item label="狀態" prop="status">
@@ -99,11 +97,9 @@
             :inactive-value="0"
           ></el-switch>
         </el-form-item>
+        <!-- 規格值 -- 添加組件 -->
         <el-form-item label="規格值" prop="default">
-          <el-input
-            v-model="form.default" 
-            placeholder="請輸入規格值"
-          ></el-input>
+          <tagInput v-model="form.default"></tagInput>
         </el-form-item>
       </el-form>
     </FormDrawer>
@@ -132,6 +128,7 @@ import { toast } from '@/utils/toast'
 // components
 import FormDrawer from "@/components/FormDrawer.vue"
 import ListHeader from "@/components/ListHeader.vue" // 新增/刷新
+import TagInput from "@/components/TagInput.vue" // 添加值
 
 const router = useRouter()
 

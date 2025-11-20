@@ -1,5 +1,5 @@
 <template>
-  <!-- 抽屜組件 -->
+  <!-- 抽屜組件 destroyOnClose: 關閉後銷毀組件 -->
   <el-drawer 
     v-model="showDrawer" 
     :title="title" 
