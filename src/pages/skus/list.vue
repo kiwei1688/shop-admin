@@ -39,7 +39,7 @@
           </el-button>
           <!-- 刪除 -->
           <el-popconfirm 
-            title="是否刪除該公告?"
+            title="是否刪除該規格?"
             confirm-button-text="確認"
             cancel-button-text="取消"
             @confirm="handleDeleteManager(row.id)"

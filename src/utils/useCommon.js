@@ -61,13 +61,13 @@ function useInitTable(opt = {}) {
   // 刪除管理員 / 公告 / 菜單權限
   const handleDeleteManager = async (id) => {
     loading.value = true
-  
+    const name = getTitle(opt.titleName)
     try {
       await opt.delete(id)
       .then(res => {
         // 成功獲取數據
         if(res.msg === "ok"){
-          toast("success", "成功刪除管理員")
+          toast("success", `成功刪除${name}`)
           // 重新獲取數據
           getData()
         }

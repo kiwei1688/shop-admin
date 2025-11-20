@@ -51,6 +51,9 @@ export const updatedSkus = async (id, data) => {
  */
 
 export const deleteSkus = async (ids) => {
+  // 需傳入arr格式
+  ids = !Array.isArray(ids) ? [ids] : ids
+  
   return await request({
     url: `/admin/skus/delete_all`,
     method: 'POST',
@@ -69,7 +72,7 @@ export const deleteSkus = async (ids) => {
  */
 export const updateSkusStatus = async (id, status) => {
   return await request({
-    url: `/admin/skus/update_status`,
+    url: `/admin/skus/${id}/update_status`,
     method: 'POST',
     data: { "status" : status }
   })
