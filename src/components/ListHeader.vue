@@ -1,15 +1,26 @@
 <template>
    <!-- 表格上方 == 新增 / 刷新 -->
   <div class="flex items-center justify-between mb-4">
-    <el-button 
-      type="primary"
-      @click="$emit('handleCreate')"
-    >
-      新增
-    </el-button>
+    <div>
+      <el-button 
+        v-if="btns.includes('create')"
+        type="primary"
+        @click="$emit('handleCreate')"
+      >
+        新增
+      </el-button>
+      <el-button
+        v-if="btns.includes('delete')"
+        type="danger"
+        @click="$emit('delete')"
+      >
+        批量刪除
+      </el-button>
+    </div>
 
     <!-- 右側 重新刷新提示 -->
     <el-tooltip
+      v-if="btns.includes('refresh')"
       effect="dark" 
       content="刷新數據"
       placement="top"
@@ -24,6 +35,19 @@
 </template>
 
 <script setup>
+import { computed } from "vue"
+
+// 父層傳入字串決定要顯示的按鈕
+const props = defineProps({
+  layout: {
+    type: String,
+    default: "create, refresh"
+  }
+})
+// 父層傳入字串輸入成arr格式
+const btns = computed(() => props.layout.split(","))
+
+
 // 傳遞父層執行
-defineEmits(["handleCreate", "refresh"])
+defineEmits(["handleCreate", "refresh","delete"])
 </script>

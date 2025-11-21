@@ -30,7 +30,11 @@
     </el-form>
 
     <!-- 新增 / 刷新 -->
-    <ListHeader @handleCreate="handleCreateNotice" @refresh="getData"/>
+    <ListHeader
+      layout="create,refresh"
+      @handleCreate="handleCreateNotice" 
+      @refresh="getData"
+    />
 
     <!-- 表格 -->
     <el-table

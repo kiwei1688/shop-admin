@@ -1,7 +1,12 @@
 <template>
   <el-card shadow="never" class="border-0">
-    <!-- 新增 / 刷新 -->
-    <ListHeader @handleCreate="handleCreateNotice" @refresh="getData"/>
+    <!-- 新增 / 刷新
+    layout="create, delete, refresh" 傳入子組件決定要顯示的btn -->
+    <ListHeader
+      layout="create,refresh"
+      @handleCreate="handleCreateNotice" 
+      @refresh="getData"
+    />
     
     <div class="testWrap">
       <div>

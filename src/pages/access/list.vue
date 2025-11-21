@@ -4,7 +4,11 @@
   <div>
     <el-card shadow="never" class="border-0">
       <!-- 新增 / 刷新 -->
-      <ListHeader @handleCreate="handleCreateNotice" @refresh="getData"/>
+      <ListHeader
+        layout="create,refresh"
+        @handleCreate="handleCreateNotice" 
+        @refresh="getData"
+      />
       菜單權限
       <!-- :default-expanded-keys 默認打開第一層子選單 -->
       <!-- data 為當筆數據 -->
