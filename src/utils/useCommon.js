@@ -101,6 +101,36 @@ function useInitTable(opt = {}) {
     }
   }
 
+  // 批量刪除功能
+  // 拿到多選選中對象的id
+  const miltiSelectionIds = ref([])
+  const multipleTableRef = ref(null)
+
+  const handleSelectionChange = (e) => {
+    miltiSelectionIds.value = e.map(item => item.id)
+  }
+  // 執行批量刪除
+  const handleMultiDelete = async () => {
+    loading.value = true
+    try {
+      await opt.delete(miltiSelectionIds.value)
+      .then(res => {
+        if(res.msg === "ok") {
+          toast("success", "刪除成功")
+          // 清空選中 element plus提供的clearSelection()
+          if(multipleTableRef.value) multipleTableRef.value.clearSelection()
+          // 重新獲取數據
+          getData()
+        }
+      }).finally(() => {
+        // 關閉loading
+        loading.value = false
+      })
+    } catch(err) {
+      console.log('err ======', err)
+    }
+  }
+
   return {
     searchForm,
     resetSearchForm,
@@ -109,9 +139,12 @@ function useInitTable(opt = {}) {
     curPage,
     total,
     limit,
+    multipleTableRef,
     getData,
     handleDeleteManager,
-    handleStatusChg
+    handleStatusChg,
+    handleSelectionChange,
+    handleMultiDelete
   }
 }
 
@@ -199,7 +232,7 @@ function useInitForm(opt = {}) {
     handleSubmit,
     resetForm,
     handleCreateNotice,
-    handleUpdatedNotice
+    handleUpdatedNotice,
   }
 }
 
