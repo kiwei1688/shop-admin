@@ -6,14 +6,18 @@
       layout="create,delete,refresh"
       @handleCreate="handleCreateNotice"
       @refresh="getData"
+      @delete="handleMultiDelete"
     />
     <!-- 表格 -->
     <el-table
+      ref="multipleTableRef"
       :data="tableData"
       border
       style="width: 100%"
       v-loading="loading"
+      @selection-change="handleSelectionChange"
     >
+      <el-table-column type="selection" width="40"/>
       <el-table-column prop="name" label="規格名稱" width="180" style="color: red;" />
       <el-table-column prop="default" label="規格值" />
       <el-table-column prop="order" label="排序" />
@@ -186,6 +190,34 @@ const {
   create: createSkus
 })
 
+// 拿到多選選中對象的id
+const miltiSelectionIds = ref([])
+const multipleTableRef = ref(null)
+
+const handleSelectionChange = (e) => {
+  miltiSelectionIds.value = e.map(item => item.id)
+}
+// 執行批量刪除
+const handleMultiDelete = async () => {
+  loading.value = true
+  try {
+    await deleteSkus(miltiSelectionIds.value)
+    .then(res => {
+      if(res.msg === "ok") {
+        toast("success", "刪除成功")
+        // 清空選中 element plus提供的clearSelection()
+        if(multipleTableRef.value) multipleTableRef.value.clearSelection()
+        // 重新獲取數據
+        getData()
+      }
+    }).finally(() => {
+      // 關閉loading
+      loading.value = false
+    })
+  } catch(err) {
+    console.log('err ======', err)
+  }
+}
 </script>
 
 <style scoped>

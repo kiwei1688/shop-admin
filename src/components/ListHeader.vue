@@ -9,13 +9,21 @@
       >
         新增
       </el-button>
-      <el-button
+      
+      <!-- 刪除 -->
+      <el-popconfirm
         v-if="btns.includes('delete')"
-        type="danger"
-        @click="$emit('delete')"
+        title="是否刪除所選的規格?"
+        confirm-button-text="確認"
+        cancel-button-text="取消"
+        @confirm="$emit('delete')"
       >
-        批量刪除
-      </el-button>
+        <template #reference>
+          <el-button type="danger">
+            批量刪除
+          </el-button>
+        </template>
+      </el-popconfirm>
     </div>
 
     <!-- 右側 重新刷新提示 -->
