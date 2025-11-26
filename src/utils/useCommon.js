@@ -244,7 +244,8 @@ function getTitle(key) {
     notice: "公告",
     rule: "菜單權限",
     role: "role權限",
-    skus: "商品規格"
+    skus: "商品規格",
+    coupon: "優惠券"
   }
 
   if(key in objName) name = objName[key]
