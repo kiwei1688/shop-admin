@@ -17,19 +17,22 @@
       <el-table-column 
         prop="title" 
         label="優惠券名稱"
-        width="350"
       >
         <template #default="{ row }">
-          <div class="border border-dashed py-2 px-4 rounded">
+          <div 
+            class="border border-dashed py-2 px-4 rounded" 
+            :class="row.statusText === '領取中' ? 'active' : 'inactive'"
+          >
             <h5 class="font-bold text-md">{{ row.name }}</h5>
             <small>{{ row.start_time }} ~ {{ row.end_time }}</small>
           </div>
         </template>
       </el-table-column>
-      <el-table-column prop="statusText" label="狀態" width="380"/>
+      <el-table-column prop="statusText" label="狀態" width="180"/>
       <el-table-column 
         prop="title"
         label="優惠"
+        width="300"
       >
         <template #default="{ row }">
           <span v-if="row.type === 1" class="plus">滿減</span>
@@ -37,6 +40,8 @@
           {{ row.type ? (`¥${row.value}`) : (`${row.value}折`) }}
         </template>
       </el-table-column>
+      <el-table-column prop="total" label="發放數量" width="180"/>
+      <el-table-column prop="used" label="已使用" width="180"/>
       <!-- table list -->
       <el-table-column label="操作" width="180" align="center">
         <template #default="{ row }">
@@ -123,6 +128,23 @@ import { title, content } from "@/utils/validateRules.js"
 import FormDrawer from "@/components/FormDrawer.vue"
 import ListHeader from "@/components/ListHeader.vue" // 新增/刷新
 
+// 處理判斷優惠券狀態
+const formatStatus = (row) => {
+  let str = "領取中"
+  let start_time = (new Date(row.start_time).getTime()) // 開始時間轉時間戳
+  let now_time = (new Date().getTime()) // 現在時間
+  let end_time = new Date(row.end_time).getTime() // 結束時間
+
+  if(start_time > now_time) {
+    str = "未開始"
+  } else if(end_time < now_time) {
+    str = "已結束"
+  } else if(row.status === 0) {
+    str = "已失效"
+  }
+  return str
+}
+
 // 表格 & 分頁 & 搜索 組件 (共用)
 // loading / 分頁
 const {
@@ -135,6 +157,16 @@ const {
 } = useInitTable({
   titleName: "coupon",
   getList: getCouponList,
+  onGetListSuccess: (res) => {
+    // 表格數據 => 轉化優惠券狀態後
+    tableData.value = res.data.list.map(item => {
+      // statusText為數據中新增優惠券的狀態
+      item.statusText = formatStatus(item)
+      return item
+    })
+    // 總數量
+    total.value = res.data.totalCount
+  },
   delete: deleteCoupon, // 刪除公告
 })
 
@@ -163,6 +195,12 @@ const {
 </script>
 
 <style scoped>
+.active {
+  @apply border-rose-600 bg-rose-50 text-red-500
+}
+.inactive {
+  @apply border-gray-200 bg-gray-50 text-gray-400
+}
 .plus, .discount {
   font-weight: bold;
   padding: 4px;

@@ -29,7 +29,7 @@ function useInitTable(opt = {}) {
     }
   }
 
-  // 獲取管理員列表數據
+  // 獲取管理員列表數據 =====================================================
   const getData = async(page = null) => {
     // 有切換 傳入當下頁碼,則重新給當前頁籤碼
     if(typeof page === "number") curPage.value = page
@@ -39,6 +39,7 @@ function useInitTable(opt = {}) {
       // 接受父層傳入的api方法獲取數據
       await opt.getList(curPage.value, searchForm)
       .then(res => {
+        // 父層傳入onGetListSuccess函式 => 把獲取的數據回傳給父層使用
         if(opt.onGetListSuccess && typeof opt.onGetListSuccess === "function") {
           opt.onGetListSuccess(res)
         } else { 
@@ -58,7 +59,7 @@ function useInitTable(opt = {}) {
 
   getData()
 
-  // 刪除管理員 / 公告 / 菜單權限
+  // 刪除管理員 / 公告 / 菜單權限 ===========================================
   const handleDeleteManager = async (id) => {
     loading.value = true
     const name = getTitle(opt.titleName)
@@ -101,7 +102,7 @@ function useInitTable(opt = {}) {
     }
   }
 
-  // 批量刪除功能
+  // 批量刪除功能 ===========================================================
   // 拿到多選選中對象的id
   const miltiSelectionIds = ref([])
   const multipleTableRef = ref(null)
