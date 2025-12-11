@@ -61,7 +61,7 @@ export const deleteCoupon = async (id) => {
 /**
  * 
  * @description: 失效優惠券 api -- post
- * @param { id: 優惠券id }
+ * @param { id: 優惠券id, status: 0 失效 }
  * @return {*}
  */
 

@@ -80,7 +80,7 @@ function useInitTable(opt = {}) {
     }
   }
 
-  // 修改管理者 / 公告 / 菜單權限 / 角色管理 啟用狀態
+  // 修改管理者 / 公告 / 菜單權限 / 角色管理 / 優惠券失效 啟用狀態
   const handleStatusChg = async (status, row) => {
     const name = getTitle(opt.titleName)
     if(row.id) {

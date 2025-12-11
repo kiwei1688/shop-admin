@@ -46,15 +46,17 @@
       <el-table-column label="操作" width="180" align="center">
         <template #default="{ row }">
           <!-- 修改 -->
-          <el-button 
+          <el-button
+            v-if="row.statusText === '未開始'"
             type="primary"
             @click="handleUpdatedNotice(row)"
           >
             修改
           </el-button>
           <!-- 刪除 -->
-          <el-popconfirm 
-            title="是否刪除該公告?"
+          <el-popconfirm
+            v-if="row.statusText !== '領取中'"
+            title="是否刪除該優惠券?"
             confirm-button-text="確認"
             cancel-button-text="取消"
             @confirm="handleDeleteManager(row.id)"
@@ -64,6 +66,23 @@
                 type="danger"
               >
                 刪除
+              </el-button>
+            </template>
+          </el-popconfirm>
+
+          <!-- 失效 = status: 0 -->
+          <el-popconfirm
+            v-if="row.statusText === '領取中'"
+            title="是否要讓該優惠券失效?"
+            confirm-button-text="失效"
+            cancel-button-text="取消"
+            @confirm="handleStatusChg(0, row)"
+          >
+            <template #reference>
+              <el-button
+                type="warning"
+              >
+                失效
               </el-button>
             </template>
           </el-popconfirm>
@@ -194,6 +213,7 @@ const {
   limit,
   getData,
   handleDeleteManager,
+  handleStatusChg
 } = useInitTable({
   titleName: "coupon",
   getList: getCouponList,
@@ -207,7 +227,8 @@ const {
     // 總數量
     total.value = res.data.totalCount
   },
-  delete: deleteCoupon, // 刪除公告
+  delete: deleteCoupon, // 刪除優惠券
+  updateStatus: updateCouponStatus // 優惠券失效
 })
 
 // 表格 新增 / 修改
