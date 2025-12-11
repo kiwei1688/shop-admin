@@ -114,7 +114,7 @@
         </el-form-item>
         <el-form-item label="發行量" prop="total">
           <el-input-number 
-            v-model="form.total" 
+            v-model="form.total"
             :min="0"
             :max="10000"
           ></el-input-number>
@@ -123,14 +123,23 @@
           <el-input v-model="form.min_price" placeholder="請輸入最低使用價格" type="number"></el-input>
         </el-form-item>
         <el-form-item label="排序" prop="order">
-          <el-input-number 
-            v-model="form.order" 
+          <el-input-number
+            v-model="form.order"
             :min="0"
             :max="1000"
           ></el-input-number>
         </el-form-item>
+        <!-- 選擇時間區間 / 格石化時間 value-format="YYYY-MM-DD HH:mm:ss"-->
         <el-form-item label="活動時間">
-          <el-input v-model="form.content" placeholder="請輸入面值"></el-input>
+          <el-date-picker
+            :editable="false"
+            v-model="timeRange"
+            value-format="YYYY-MM-DD HH:mm:ss"
+            type="datetimerange"
+            range-separator="To"
+            start-placeholder="開始時間"
+            end-placeholder="結束時間"
+          />
         </el-form-item>
         <el-form-item label="描述" prop="desc">
           <el-input v-model="form.desc" placeholder="請輸入描述" type="textarea" :rows="5"></el-input>
@@ -228,7 +237,25 @@ const {
   // rules: Object.assign({ title, content }),
   getData,
   update: updatedCoupon, // 傳修改優惠券api方法
-  create: createCoupon // 傳新增優惠券api方法
+  create: createCoupon, // 傳新增優惠券api方法
+  beforeSubmit: (form) => { // 判斷開始時間&結束時間是否轉時間戳
+    if(typeof form.start_time !== "number") form.start_time = (new Date(form.start_time)).getTime()
+    if(typeof form.end_time !== "number") form.end_time = (new Date(form.end_time)).getTime()
+    return form
+  }
+})
+
+// 選擇時間區間 -- get: 預設取得的時間 / set: 賦值重新選擇的時間區間
+const timeRange = computed({
+  // 有開始時間&結束時間則取出時間值 : empty Arr
+  get() {
+    return form.start_time && form.end_time ? [form.start_time, form.end_time] : []
+  },
+  // 選擇完時間重新賦值給form.start_time及form.end_time
+  set(val) {
+    form.start_time = val[0]
+    form.end_time = val[1]
+  }
 })
 </script>
 

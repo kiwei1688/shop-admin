@@ -167,15 +167,22 @@ function useInitForm(opt = {}) {
   // 驗證rules規則
   const rules = opt.rules || {}
 
-  // 新增/修改 管理員
+  // 新增/修改 提交表單
   const handleSubmit = async () => {
     formRef.value.validate(async (valid) => {
       if(!valid) return false
       formDrawerRef.value.showLoading()
       form.status = 1 // 先給status一個預設值
+
+      // 提交前,格式化 選擇時間區間是否轉--時間戳
+      let body = {}
+      opt.beforeSubmit && typeof opt.beforeSubmit === "function" ?
+      body = opt.beforeSubmit({ ...form }) :
+      body = form
+
       try {
         // 修改公告 / 新增公告
-        await (editId.value ? opt.update(editId.value, form) : opt.create(form) )
+        await (editId.value ? opt.update(editId.value, body) : opt.create(body) )
         .then(res => {
           // 成功獲取數據
           if(res.msg === "ok"){
