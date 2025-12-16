@@ -1,6 +1,7 @@
 import { ref, reactive, computed } from 'vue'
 // 提示彈窗
 import { toast } from "@/utils/toast";
+import { getTitle } from "@/utils/common"
 
 // 表格 == 列表 / 搜索 / 分頁 / 刪除 / 修改啟用狀態  (共用方法)
 function useInitTable(opt = {}) {
@@ -241,22 +242,6 @@ function useInitForm(opt = {}) {
     handleCreateNotice,
     handleUpdatedNotice,
   }
-}
-
-// 彈窗title name
-function getTitle(key) {
-  let name = ""
-  const objName = {
-    manager: "管理員",
-    notice: "公告",
-    rule: "菜單權限",
-    role: "role權限",
-    skus: "商品規格",
-    coupon: "優惠券"
-  }
-
-  if(key in objName) name = objName[key]
-  return name
 }
 
 export {

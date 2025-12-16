@@ -239,7 +239,6 @@ const {
   form,
   rules,
   handleSubmit,
-  resetForm,
   handleCreateNotice,
   handleUpdatedNotice
 } = useInitForm({

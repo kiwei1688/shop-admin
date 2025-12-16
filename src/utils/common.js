@@ -134,6 +134,39 @@ function hideFullLoading() {
   nprogress.done()
 }
 
+// 彈窗title name
+function getTitle(key) {
+  let name = ""
+  const objName = {
+    manager: "管理員",
+    notice: "公告",
+    rule: "菜單權限",
+    role: "role權限",
+    skus: "商品規格",
+    coupon: "優惠券",
+    goods: "商品管理"
+  }
+
+  if(key in objName) name = objName[key]
+  return name
+}
+
+// 組合api query的數值
+function queryParams(query) {
+  let q = []
+  for(const [key] of Object.entries(query)) {
+    if(query[key]){
+      // encodeURIComponent() 防止參數丟失需先轉換
+      q.push(`${key}=${encodeURIComponent(query[key])}`)
+    }
+  }
+  // 拼接出來的query值 為 ?limit=10&keyword=ceshi
+  let res = q.join("&")
+  res = res ? `?${res}` : ""
+
+  return res
+}
+
 export {
   dateFormat,
   deepClone,
@@ -144,5 +177,7 @@ export {
   phoneLeaveKeypress,
   getRandom,
   showFullLoading,
-  hideFullLoading
+  hideFullLoading,
+  queryParams,
+  getTitle
 }

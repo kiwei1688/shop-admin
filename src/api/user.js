@@ -1,4 +1,5 @@
 import request from '@/utils/http'
+import { queryParams } from "@/utils/common.js"
 
 /**
  * @description: login api -- post
@@ -62,18 +63,7 @@ export const updatepassword = async (data) => {
  * {*}
  */
 export const getManagerList = async (page, query = {}) => {
-  // 組合query數值
-  let q = []
-  for(const [key] of Object.entries(query)) {
-    if(query[key]){
-      // encodeURIComponent() 防止參數丟失需先轉換
-      q.push(`${key}=${encodeURIComponent(query[key])}`)
-    }
-  }
-  // 拼接出來的query值 為 ?limit=10&keyword=ceshi
-  let res = q.join("&")
-  res = res ? `?${res}` : ""
-
+  const res = queryParams(query)
   return await request({
     url: `/admin/manager/${page}${res}`
   })
