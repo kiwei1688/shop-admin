@@ -1,4 +1,18 @@
 <template>
+<div>
+  <el-tabs
+    v-model="searchForm.tab"
+    @tab-change="getData"
+  >
+    <el-tab-pane 
+      v-for="item in tabBars" 
+      :label="item.name" 
+      :name="item.key" 
+      :key="item.key"
+    >
+    </el-tab-pane>
+  </el-tabs>
+
   <el-card shadow="never" class="border-0">
     <!-- 搜索 / 重置 -->
     <el-form 
@@ -10,8 +24,8 @@
         <el-col :span="8" :offset="0">
           <el-form-item label="關鍵詞">
             <el-input 
-              v-model="searchForm.keyword"
-              placeholder="管理員暱稱"
+              v-model="searchForm.title"
+              placeholder="商品名稱"
               clearable
             ></el-input>
           </el-form-item>
@@ -40,7 +54,7 @@
       style="width: 100%"
       v-loading="loading"
     >
-      <el-table-column label="管理員" width="300">
+      <el-table-column label="商品名稱" width="300">
         <template #default="{ row }">
           <div class="flex items-star">
             <el-avatar
@@ -158,6 +172,7 @@
       </el-form>
     </FormDrawer>
   </el-card>
+</div>
 </template>
 
 <script setup>
@@ -188,6 +203,33 @@ const { query } = toRefs(route)
 // 角色
 const roles = ref([])
 
+const tabBars = [
+  {
+    key: "all",
+    name: "全部"
+  },
+  {
+    key: "checking",
+    name: "審核中"
+  },
+  {
+    key: "saling",
+    name: "出售中"
+  },
+  {
+    key: "off",
+    name: "已下架"
+  },
+  {
+    key: "min_stock",
+    name: "庫存預警"
+  },
+  {
+    key: "delete",
+    name: "回收站"
+  }
+]
+
 // 表格 & 分頁 & 搜索 組件 (共用)
 const {
   searchForm,
@@ -202,7 +244,11 @@ const {
   handleStatusChg
 } = useInitTable({
   titleName: "goods",
-  searchForm: { keyword: "" }, // 傳要搜索的參數給子組件
+  searchForm: { // 傳要搜索的參數給子組件
+    title: "",
+    tab: "all", // 傳不同的商品狀態獲取不同的商品列表(全部/審核中/出售中/已下架/庫存預警/回收站)
+    category_id: null
+  },
   getList: getGoodsList, // 獲取管理列表
   onGetListSuccess: (res) => {
     tableData.value = res.data.list.map(item => {
@@ -218,9 +264,12 @@ const {
   updateStatus: updateGoodsStatus // 修改啟用狀態
 })
 
+
 // 表格 新增 / 修改
 const {
   formDrawerRef,
+
+
   formRef,
   isTitle,
   form,
