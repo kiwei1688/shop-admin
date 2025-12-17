@@ -56,50 +56,58 @@
     >
       <el-table-column label="商品名稱" width="300">
         <template #default="{ row }">
-          <div class="flex items-star">
-            <el-avatar
-              :size="60" 
-              :src="row.avatar"
-            >
-              <img src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"/>
-            </el-avatar>
-            <div class="ml-3">
-              <h6>{{ row.username }}</h6>
-              <small>ID: {{ row.id }}</small>
+          <div class="flex items-center">
+            <el-image 
+              :src="row.cover" 
+              fit="cover"
+              :lazy="true"
+              class="mr-3 rounded"
+              style="width:50px; height:50px;"
+            ></el-image>
+            <div class="flex-1">
+              <p class="text-blue-600">{{ row.title }}</p>
+              <div>
+                <span class="text-rose-600">¥{{ row.min_price }}</span>
+                <el-divider direction="vertical"/>
+                <span class="text-green-600 text-xs">¥{{ row.min_oprice }}</span>
+              </div>
+              <p class="text-gray-400 text-xs mb-1">分類:{{ row.category ? row.category.name : "未分類" }}</p>
+              <p class="text-gray-400 text-xs">創建時間:{{ row.create_time }}</p>
             </div>
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="所屬角色" align="center">
+      <el-table-column label="實際銷量" width="120" prop="sale_count" align="center"></el-table-column>
+      <!-- 商品狀態 -->
+      <el-table-column label="商品狀態" width="120" align="center">
         <template #default="{ row }">
-          {{ row.role?.name || "--" }}
+          <el-tag :type="row.status ? 'success':'danger'">
+            {{ row.status ? '上架':'倉庫' }}
+          </el-tag>
         </template>
       </el-table-column>
-      <!-- 修改狀態 -->
-      <el-table-column label="狀態" width="150" align="center">
+      <!-- 審核狀態 -->
+      <el-table-column label="審核狀態" width="270" align="center">
         <template #default="{ row }">
-          <!-- $event:當下status的值 -->
-          <el-switch 
-            :model-value="row.status" 
-            :active-value="1" 
-            :inactive-value="0"
-            @change="handleStatusChg($event, row)"
-          ></el-switch>
+          <div v-if="!row.ischeck">
+            <el-button type="success" size="small" >審核通過</el-button>
+            <el-button type="danger" size="small">審核拒絕</el-button>
+          </div>
+          <span v-else>{{ row.ischeck === 1 ? "通過" : "拒絕" }}</span>
         </template>
       </el-table-column>
-      <!-- table list -->
-      <el-table-column label="操作" width="250" align="center">
+      <el-table-column label="總庫存" width="120" prop="stock" align="center"></el-table-column>
+      <!-- 操作 -->
+      <el-table-column label="操作" align="center">
         <template #default="{ row }">
           <!-- 修改 -->
-          <el-button 
-            type="primary"
-            @click="handleUpdatedNotice(row)"
-          >
-            修改
-          </el-button>
+          <el-button type="primary" @click="handleUpdatedNotice(row)">修改</el-button>
+          <el-button type="info" @click="handleUpdatedNotice(row)">商品規格</el-button>
+          <el-button type="success" @click="handleUpdatedNotice(row)">設置輪播圖</el-button>
+          <el-button type="warning" @click="handleUpdatedNotice(row)">商品詳情</el-button>
           <!-- 刪除 -->
           <el-popconfirm 
-            title="是否刪除該管理員?"
+            title="是否刪除該商品?"
             confirm-button-text="確認"
             cancel-button-text="取消"
             @confirm="handleDeleteManager(row.id)"
