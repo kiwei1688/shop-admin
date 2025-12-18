@@ -30,11 +30,32 @@
             ></el-input>
           </el-form-item>
         </el-col>
+        <el-col :span="8" :offset="0" v-if="showSearch">
+          <el-form-item label="商品分類" prop="category_id">
+            <el-select 
+              v-model="searchForm.category_id"
+              placeholder="請選擇商品分類"
+            >
+              <el-option v-for="item in category_list"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              ></el-option>
+            </el-select> 
+          </el-form-item>
+        </el-col>
         <!-- :offset 往右偏移8列 -->
-        <el-col :span="8" :offset="8">
+        <el-col :span="8" :offset="showSearch ? 0 : 8">
           <div class="flex items-center justify-end">
             <el-button type="primary" @click="getData">搜索</el-button>
             <el-button type="info" @click="resetSearchForm">重置</el-button>
+            <el-button type="warning" @click="showSearch = !showSearch">
+              {{ showSearch ? "收合" : "展開" }}
+              <el-icon>
+                <ArrowUp v-if="showSearch" />
+                <ArrowDown v-else />
+              </el-icon>
+            </el-button>
           </div>
         </el-col>
       </el-row>
@@ -46,7 +67,6 @@
       @handleCreate="handleCreateNotice" 
       @refresh="getData"
     />
-
     <!-- 表格 -->
     <el-table
       :data="tableData"
@@ -121,8 +141,6 @@
         </template>
       </el-table-column>
     </el-table>
-    
-
     <!-- 分頁 -->
     <div class="flex items-center justify-center mt-5">
       <el-pagination
@@ -135,7 +153,6 @@
       >
       </el-pagination>
     </div>
-
     <!-- 新增 / 修改 公告--彈窗 -->
     <FormDrawer
       :title="isTitle"
@@ -194,6 +211,9 @@ import {
   updateGoods,
   deleteGoods
  } from "@/api/goods.js"
+import {
+  getCategoryList
+} from "@/api/category.js"
 // 共用表格功能組件
 import { useInitTable, useInitForm } from "@/utils/useCommon.js"
 // validate rules
@@ -272,12 +292,9 @@ const {
   updateStatus: updateGoodsStatus // 修改啟用狀態
 })
 
-
 // 表格 新增 / 修改
 const {
   formDrawerRef,
-
-
   formRef,
   isTitle,
   form,
@@ -300,6 +317,27 @@ const {
   update: updateGoods, // 傳修改商品api方法
   create: createGoods // 傳新增商品api方法
 })
+
+// 商品分類
+const category_list = ref([])
+const showSearch = ref(false)
+const getCategoryData = async () => {
+  loading.value = false
+  try {
+    // 接受父層傳入的api方法獲取數據
+    await getCategoryList()
+    .then(res => {
+      if(res.msg === "ok"){
+        category_list.value = res.data
+      }
+    }).finally(() => {
+      loading.value = false
+    })
+  } catch(err) {
+    console.log('err ======', err)
+  }
+}
+getCategoryData()
 
 </script>
 
