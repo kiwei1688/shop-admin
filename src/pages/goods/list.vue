@@ -107,7 +107,7 @@
         </template>
       </el-table-column>
       <!-- 審核狀態 -->
-      <el-table-column label="審核狀態" width="270" align="center">
+      <el-table-column v-if="searchForm.tab !== 'delete'" label="審核狀態" width="270" align="center">
         <template #default="{ row }">
           <div v-if="!row.ischeck">
             <el-button type="success" size="small" >審核通過</el-button>
@@ -119,7 +119,7 @@
       <el-table-column label="總庫存" width="120" prop="stock" align="center"></el-table-column>
       <!-- 操作 -->
       <el-table-column label="操作" align="center">
-        <template #default="{ row }">
+        <template #default="{ row }" v-if="searchForm.tab !== 'delete'">
           <!-- 修改 -->
           <el-button type="primary" @click="handleUpdatedNotice(row)">修改</el-button>
           <el-button type="info" @click="handleUpdatedNotice(row)">商品規格</el-button>
@@ -139,6 +139,7 @@
             </template>
           </el-popconfirm>
         </template>
+        <span>暫無操作</span>
       </el-table-column>
     </el-table>
     <!-- 分頁 -->
