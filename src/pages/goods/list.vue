@@ -15,52 +15,31 @@
 
   <el-card shadow="never" class="border-0">
     <!-- 搜索 / 重置 -->
-    <el-form 
-      :model="searchForm"
-      label-width="80px"
-      class="mb-3"
-    >
-      <el-row :gutter="20">
-        <el-col :span="8" :offset="0">
-          <el-form-item label="關鍵詞">
-            <el-input 
-              v-model="searchForm.title"
-              placeholder="商品名稱"
-              clearable
-            ></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8" :offset="0" v-if="showSearch">
-          <el-form-item label="商品分類" prop="category_id">
-            <el-select 
-              v-model="searchForm.category_id"
-              placeholder="請選擇商品分類"
-            >
-              <el-option v-for="item in category_list"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              ></el-option>
-            </el-select> 
-          </el-form-item>
-        </el-col>
-        <!-- :offset 往右偏移8列 -->
-        <el-col :span="8" :offset="showSearch ? 0 : 8">
-          <div class="flex items-center justify-end">
-            <el-button type="primary" @click="getData">搜索</el-button>
-            <el-button type="info" @click="resetSearchForm">重置</el-button>
-            <el-button type="warning" @click="showSearch = !showSearch">
-              {{ showSearch ? "收合" : "展開" }}
-              <el-icon>
-                <ArrowUp v-if="showSearch" />
-                <ArrowDown v-else />
-              </el-icon>
-            </el-button>
-          </div>
-        </el-col>
-      </el-row>
-    </el-form>
-
+     <Search @search="getData" @reset="resetSearchForm">
+      <!-- 默認slot -->
+      <SearchItem label="關鍵詞">
+        <el-input
+          v-model="searchForm.title"
+          placeholder="商品名稱"
+          clearable
+        ></el-input>
+      </SearchItem>
+      <!-- 具名slot -->
+      <template #show>
+        <SearchItem label="商品分類">
+          <el-select 
+            v-model="searchForm.category_id"
+            placeholder="請選擇商品分類"
+          >
+            <el-option v-for="item in category_list"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </SearchItem>
+      </template>
+     </Search>
     <!-- 新增 / 刷新 -->
     <ListHeader
       layout="create,refresh"
@@ -91,8 +70,12 @@
                 <el-divider direction="vertical"/>
                 <span class="text-green-600 text-xs">¥{{ row.min_oprice }}</span>
               </div>
-              <p class="text-gray-400 text-xs mb-1">分類:{{ row.category ? row.category.name : "未分類" }}</p>
-              <p class="text-gray-400 text-xs">創建時間:{{ row.create_time }}</p>
+              <p class="text-gray-400 text-xs mb-1">
+                分類:{{ row.category ? row.category.name : "未分類" }}
+              </p>
+              <p class="text-gray-400 text-xs">
+                創建時間:{{ row.create_time }}
+              </p>
             </div>
           </div>
         </template>
@@ -224,6 +207,8 @@ import { username, password, role_id, status, avatar } from "@/utils/validateRul
 import FormDrawer from "@/components/FormDrawer.vue"
 import ChooseImage from "@/components/ChooseImage.vue"
 import ListHeader from "@/components/ListHeader.vue" // 新增/刷新
+import Search from "@/components/search.vue" // 搜索區
+import SearchItem from "@/components/SearchItem.vue" // el-col
 
 const route = useRoute()
 // 要解構響應式數據必須用toRefs,不然會丟失響應式數據
@@ -321,7 +306,6 @@ const {
 
 // 商品分類
 const category_list = ref([])
-const showSearch = ref(false)
 const getCategoryData = async () => {
   loading.value = false
   try {
