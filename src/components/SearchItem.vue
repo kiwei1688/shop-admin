@@ -5,8 +5,9 @@
     </el-form-item>
   </el-col>
 </template>
+
 <script setup>
-difineProps({
+defineProps({
   label: String
 })
 </script>

@@ -4,30 +4,20 @@
   </div>
   <el-card shadow="never" class="border-0">
     <!-- 搜索 / 重置 -->
-    <el-form 
-      :model="searchForm"
-      label-width="80px"
-      class="mb-3"
+    <Search 
+      :model="searchForm" 
+      @search="getData" 
+      @reset="resetSearchForm"
     >
-      <el-row :gutter="20">
-        <el-col :span="8" :offset="0">
-          <el-form-item label="關鍵詞">
-            <el-input 
-              v-model="searchForm.keyword"
-              placeholder="管理員暱稱"
-              clearable
-            ></el-input>
-          </el-form-item>
-        </el-col>
-        <!-- :offset 往右偏移8列 -->
-        <el-col :span="8" :offset="8">
-          <div class="flex items-center justify-end">
-            <el-button type="primary" @click="getData">搜索</el-button>
-            <el-button type="info" @click="resetSearchForm">重置</el-button>
-          </div>
-        </el-col>
-      </el-row>
-    </el-form>
+      <!-- 默認slot -->
+      <SearchItem label="關鍵詞">
+        <el-input 
+          v-model="searchForm.keyword"
+          placeholder="管理員暱稱"
+          clearable
+        ></el-input>
+      </SearchItem>
+     </Search>
 
     <!-- 新增 / 刷新 -->
     <ListHeader
@@ -183,6 +173,9 @@ import { username, password, role_id, status, avatar } from "@/utils/validateRul
 import FormDrawer from "@/components/FormDrawer.vue"
 import ChooseImage from "@/components/ChooseImage.vue"
 import ListHeader from "@/components/ListHeader.vue" // 新增/刷新
+
+import Search from "@/components/search.vue" // 搜索區
+import SearchItem from "@/components/SearchItem.vue" // el-col共用結構
 
 const route = useRoute()
 // 要解構響應式數據必須用toRefs,不然會丟失響應式數據

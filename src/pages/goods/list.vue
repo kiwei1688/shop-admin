@@ -15,7 +15,11 @@
 
   <el-card shadow="never" class="border-0">
     <!-- 搜索 / 重置 -->
-     <Search @search="getData" @reset="resetSearchForm">
+     <Search 
+      :model="searchForm"
+      @search="getData" 
+      @reset="resetSearchForm"
+    >
       <!-- 默認slot -->
       <SearchItem label="關鍵詞">
         <el-input
@@ -25,7 +29,7 @@
         ></el-input>
       </SearchItem>
       <!-- 具名slot -->
-      <template #show>
+      <template #showHeightSearch>
         <SearchItem label="商品分類">
           <el-select 
             v-model="searchForm.category_id"
@@ -43,7 +47,7 @@
     <!-- 新增 / 刷新 -->
     <ListHeader
       layout="create,refresh"
-      @handleCreate="handleCreateNotice" 
+      @handleCreate="handleCreateNotice"
       @refresh="getData"
     />
     <!-- 表格 -->
@@ -207,8 +211,9 @@ import { username, password, role_id, status, avatar } from "@/utils/validateRul
 import FormDrawer from "@/components/FormDrawer.vue"
 import ChooseImage from "@/components/ChooseImage.vue"
 import ListHeader from "@/components/ListHeader.vue" // 新增/刷新
+
 import Search from "@/components/search.vue" // 搜索區
-import SearchItem from "@/components/SearchItem.vue" // el-col
+import SearchItem from "@/components/SearchItem.vue" // el-col共用結構
 
 const route = useRoute()
 // 要解構響應式數據必須用toRefs,不然會丟失響應式數據
