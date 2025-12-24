@@ -17,7 +17,7 @@
             <el-button type="primary" @click="$emit('search')">搜索</el-button>
             <el-button type="info" @click="$emit('reset')">重置</el-button>
             <el-button
-              v-if="isHeightSearch" 
+              v-if="hasHeightSearch" 
               type="warning" 
               @click="showSearch = !showSearch"
             >
@@ -39,7 +39,7 @@ const showSearch = ref(false)
 
 // 判斷父層是否有具名slot元素 - 進階搜索showHeightSearch
 const slots = useSlots()
-const isHeightSearch = ref(!!slots.showHeightSearch)
+const hasHeightSearch = ref(!!slots.showHeightSearch)
 
 defineProps({
   model: Object

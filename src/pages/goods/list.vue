@@ -155,32 +155,59 @@
         label-width="80px"
         :inline="false"
       >
-        <el-form-item label="用戶名" prop="username">
-          <el-input v-model="form.username" placeholder="請輸入用戶名"></el-input>
+        <el-form-item label="商品名稱" prop="title">
+          <el-input v-model="form.title" placeholder="請輸入商品名稱,不能超過60個字符"></el-input>
         </el-form-item>
-        <el-form-item label="密碼" prop="password">
-          <el-input v-model="form.password" placeholder="請輸入密碼"></el-input>
+        <el-form-item label="封面" prop="cover">
+          <chooseImage v-model="form.cover"/>
         </el-form-item>
-        <!-- 頭像 avatar -->
-        <el-form-item label="頭像" prop="avatar">
-          <ChooseImage v-model="form.avatar"/>
-        </el-form-item>
-        <el-form-item label="所屬角色" prop="role_id">
-          <el-select v-model="form.role_id" placeholder="選擇所屬角色">
+        <el-form-item label="商品分類" prop="category_id">
+          <el-select v-model="form.category_id" placeholder="選擇所屬商品分類">
             <el-option
-              v-for="item in roles"
+              v-for="item in category_list"
               :key="item.id"
               :label="item.name"
               :value="item.id"
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="狀態" prop="status">
-          <el-switch 
-            v-model="form.status"
-            :active-value="1"
-            :inactive-value="0"
-          ></el-switch>
+        <el-form-item type="textarea" label="商品描述" prop="desc">
+          <el-input v-model="form.desc" placeholder="選填. 商品賣點"></el-input>
+        </el-form-item>
+        <el-form-item label="單位" prop="unit">
+          <el-input v-model="form.unit" placeholder="請輸入單位" style="width:50%;"></el-input>
+        </el-form-item>
+        <el-form-item label="總庫存" prop="stock">
+          <el-input v-model="form.stock" type="number" style="width: 40%;">
+            <template #append>件</template>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="庫存預警" prop="min_stock">
+          <el-input v-model="form.min_stock" type="number" style="width: 40%;">
+            <template #append>件</template>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="最低銷售價" prop="min_price">
+          <el-input v-model="form.min_price" type="number" style="width: 40%;">
+            <template #append>元</template>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="最低原價" prop="min_oprice">
+          <el-input v-model="form.min_oprice" type="number" style="width: 40%;">
+            <template #append>件</template>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="庫存顯示" prop="stock_display">
+          <el-radio-group v-model="form.stock_display">
+            <el-radio :value="0">隱藏</el-radio>
+            <el-radio :value="1">顯示</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="是否上架" prop="status">
+          <el-radio-group v-model="form.status">
+            <el-radio :value="0">放入倉庫</el-radio>
+            <el-radio :value="1">立即上架</el-radio>
+          </el-radio-group>
         </el-form-item>
       </el-form>
     </FormDrawer>
@@ -218,9 +245,6 @@ import SearchItem from "@/components/SearchItem.vue" // el-col共用結構
 const route = useRoute()
 // 要解構響應式數據必須用toRefs,不然會丟失響應式數據
 const { query } = toRefs(route)
-
-// 角色
-const roles = ref([])
 
 const tabBars = [
   {
@@ -276,8 +300,6 @@ const {
     })
     tableData.value = res.data.list
     total.value = res.data.totalCount
-    // 獲取role數據
-    roles.value = res.data.roles
   },
   delete: deleteGoods, // 刪除
   updateStatus: updateGoodsStatus // 修改啟用狀態
@@ -297,11 +319,17 @@ const {
 } = useInitForm({
   titleName: "goods",
   form: { // 初始值
-    username: "",
-    password: "",
-    role_id: null,
-    status: 1,
-    avatar: ""
+    title: null, // 商品名稱
+    category_id: null, // 商品分類
+    cover: null, // 商品封面
+    desc: null, // 商品描述
+    unit: "件", // 商品單位
+    stock: 100, // 總庫存
+    min_stock: 10, // 庫存預警
+    status: 1, // 是否上架 0 倉庫 / 1 上架
+    stock_display: 1, // 庫存顯示 0隱藏 / 1顯示
+    min_price: 0, // 最低銷售
+    min_oprice: 0 // 最低原價
   },
   rules: Object.assign({ username, password, role_id, status, avatar }),
   getData,
