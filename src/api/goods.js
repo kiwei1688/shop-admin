@@ -16,7 +16,7 @@ export const getGoodsList = async (page, query = {}) => {
 
 /**
  * @description: 批量上架下架商品 -- post
- * @param { ids : 多個商品id / status: }
+ * @param { ids : 要上下架的多個商品id / status: 1:上架 / 0:下架 }
  * @return {*}
  */
 export const updateGoodsStatus = async (ids, status) => {

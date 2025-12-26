@@ -24,6 +24,8 @@
           </el-button>
         </template>
       </el-popconfirm>
+      <!-- 左側 批量上下架 btn -->
+       <slot/>
     </div>
 
     <!-- 右側 重新刷新提示 -->
@@ -54,7 +56,6 @@ const props = defineProps({
 })
 // 父層傳入字串輸入成arr格式
 const btns = computed(() => props.layout.split(","))
-
 
 // 傳遞父層執行
 defineEmits(["handleCreate", "refresh","delete"])

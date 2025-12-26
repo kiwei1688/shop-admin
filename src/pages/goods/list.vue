@@ -46,17 +46,37 @@
      </Search>
     <!-- 新增 / 刷新 -->
     <ListHeader
-      layout="create,refresh"
+      layout="create,delete,refresh"
       @handleCreate="handleCreateNotice"
       @refresh="getData"
-    />
+      @delete="handleMultiDelete"
+    >
+      <!-- 批量上下架  1:上架 / 0:下架 -->
+      <el-button 
+        v-if="searchForm.tab === 'all' || searchForm.tab === 'off'"
+        size="small"
+        @click="handleMultiStatusChange(1)"
+      >
+        批量上架
+      </el-button>
+      <el-button
+        v-if="searchForm.tab === 'all' || searchForm.tab === 'saling'"
+        size="small" 
+        @click="handleMultiStatusChange(0)"
+      >
+        批量下架
+      </el-button>
+    </ListHeader>
     <!-- 表格 -->
     <el-table
       :data="tableData"
+      ref="multipleTableRef"
       border
       style="width: 100%"
       v-loading="loading"
+      @selection-change="handleSelectionChange"
     >
+      <el-table-column type="selection" width="40"/>
       <el-table-column label="商品名稱" width="300">
         <template #default="{ row }">
           <div class="flex items-center">
@@ -284,7 +304,10 @@ const {
   limit,
   getData,
   handleDeleteManager,
-  handleStatusChg
+  multipleTableRef,
+  handleSelectionChange,
+  handleMultiDelete,
+  handleMultiStatusChange
 } = useInitTable({
   titleName: "goods",
   searchForm: { // 傳要搜索的參數給子組件

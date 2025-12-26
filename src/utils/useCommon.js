@@ -132,6 +132,28 @@ function useInitTable(opt = {}) {
     }
   }
 
+  // 批量修改狀態 / 商品(上下架)
+  const handleMultiStatusChange = async (status) => {
+    loading.value = true
+    try {
+      await opt.updateStatus(miltiSelectionIds.value, status)
+      .then(res => {
+        if(res.msg === "ok") {
+          toast("success", "修改狀態成功")
+          // 清空選中 element plus提供的clearSelection()
+          if(multipleTableRef.value) multipleTableRef.value.clearSelection()
+          // 重新獲取數據
+          getData()
+        }
+      }).finally(() => {
+        // 關閉loading
+        loading.value = false
+      })
+    } catch(err) {
+      console.log('err ======', err)
+    }
+  }
+
   return {
     searchForm,
     resetSearchForm,
@@ -145,7 +167,8 @@ function useInitTable(opt = {}) {
     handleDeleteManager,
     handleStatusChg,
     handleSelectionChange,
-    handleMultiDelete
+    handleMultiDelete,
+    handleMultiStatusChange
   }
 }
 
