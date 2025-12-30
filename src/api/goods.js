@@ -65,3 +65,28 @@ export const deleteGoods = async (ids) => {
     data: { ids }
   })
 }
+
+/**
+ * @description: 查看商品資料 -- get
+ * @param { }
+ * @return {*}
+ */
+export const readGoods = async (id) => {
+  return await request({
+    url: `/admin/goods/read/${id}`
+  })
+}
+
+/**
+ * @description: 設置商品輪撥圖 -- post
+ * @param { id : 商品id / data: body的參數}
+ * @return {*}
+ */
+export const setGoodsBanner = async (id, data) => {
+  return await request({
+    url: `/admin/goods/banners/${id}`,
+    method: 'POST',
+    data
+  })
+}
+

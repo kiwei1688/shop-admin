@@ -54,6 +54,7 @@
       <!-- 批量上下架  1:上架 / 0:下架 -->
       <el-button 
         v-if="searchForm.tab === 'all' || searchForm.tab === 'off'"
+        
         size="small"
         @click="handleMultiStatusChange(1)"
       >
@@ -129,9 +130,9 @@
         <template #default="{ row }" v-if="searchForm.tab !== 'delete'">
           <!-- 修改 -->
           <el-button type="primary" @click="handleUpdatedNotice(row)">修改</el-button>
-          <el-button type="info" @click="handleUpdatedNotice(row)">商品規格</el-button>
-          <el-button type="success" @click="handleUpdatedNotice(row)">設置輪播圖</el-button>
-          <el-button type="warning" @click="handleUpdatedNotice(row)">商品詳情</el-button>
+          <el-button type="info">商品規格</el-button>
+          <el-button type="success" @click="handleSetGoodsBanners(row)">設置輪播圖</el-button>
+          <el-button type="warning">商品詳情</el-button>
           <!-- 刪除 -->
           <el-popconfirm 
             title="是否刪除該商品?"
@@ -232,6 +233,8 @@
       </el-form>
     </FormDrawer>
   </el-card>
+  <!-- 設置輪撥圖--彈窗 -->
+  <Banners ref="bannerRef"/>
 </div>
 </template>
 
@@ -261,6 +264,7 @@ import ListHeader from "@/components/ListHeader.vue" // 新增/刷新
 
 import Search from "@/components/search.vue" // 搜索區
 import SearchItem from "@/components/SearchItem.vue" // el-col共用結構
+import Banners from "./banners.vue" // 設置輪撥圖彈窗
 
 const route = useRoute()
 // 要解構響應式數據必須用toRefs,不然會丟失響應式數據
@@ -379,6 +383,11 @@ const getCategoryData = async () => {
   }
 }
 getCategoryData()
+
+// 設置輪撥圖彈窗
+const bannerRef = ref(null)
+// 開啟彈窗
+const handleSetGoodsBanners = (row) => bannerRef.value.open(row)
 
 </script>
 
