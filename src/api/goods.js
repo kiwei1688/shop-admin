@@ -68,7 +68,7 @@ export const deleteGoods = async (ids) => {
 
 /**
  * @description: 查看商品資料 -- get
- * @param { }
+ * @param { id: 當筆商品id }
  * @return {*}
  */
 export const readGoods = async (id) => {
@@ -79,7 +79,7 @@ export const readGoods = async (id) => {
 
 /**
  * @description: 設置商品輪撥圖 -- post
- * @param { id : 商品id / data: body的參數}
+ * @param { id : 商品id / data: 輪撥圖的array數據}
  * @return {*}
  */
 export const setGoodsBanner = async (id, data) => {

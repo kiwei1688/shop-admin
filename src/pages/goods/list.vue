@@ -81,8 +81,8 @@
       <el-table-column label="商品名稱" width="300">
         <template #default="{ row }">
           <div class="flex items-center">
-            <el-image 
-              :src="row.cover" 
+            <el-image
+              :src="row.cover"
               fit="cover"
               :lazy="true"
               class="mr-3 rounded"

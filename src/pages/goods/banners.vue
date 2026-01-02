@@ -1,4 +1,5 @@
 <template>
+  <!-- dertroy-on-close: 關閉彈窗銷毀子組件 -->
   <el-drawer
     title="設置輪撥圖"
     v-model="dialogVisible"
@@ -32,10 +33,10 @@ const form = reactive({
 })
 
 // 設置商品輪撥圖api
-const handleGoodsBanners = async (row) => {
+const handleGoodsBanners = async (goodsId) => {
   try {
     // 接受父層傳入的api方法獲取數據
-    await readGoods(row.id)
+    await readGoods(goodsId)
     .then(res => {
       if(res.msg === "ok"){
         form.banners = res.data.goodsBanner.map(item => item.url)

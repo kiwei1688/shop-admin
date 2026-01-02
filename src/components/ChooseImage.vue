@@ -1,7 +1,29 @@
 <template>
   <!-- avatar頭像 已選 -->
   <div v-if="modelValue">
-    <el-image :src="modelValue" fit="cover" class="w-[100px] h-[100px] rounded mr-2 border"></el-image>
+    <!-- modelValue: 傳入單一圖檔url -->
+    <el-image v-if="typeof modelValue === 'string'" :src="modelValue" fit="cover" class="w-[100px] h-[100px] rounded mr-2 border"></el-image>
+    <!-- modelValue: 商品管理(設置輪播圖) 傳入Array格式,多張圖檔url -->
+    <div v-else class="flex flex-wrap">
+      <div 
+        class="relative h-[100px] w-[100px] rounded border mr-2 mb-2"
+        v-for="(url,index) in modelValue" :key="index"
+      >
+        <!-- 移除圖片 -->
+        <el-icon
+          class="absolute right-[5px] top-[5px] cursor-pointer"
+          style="z-index: 10;"
+          @click="removeImage(url)"
+        >
+          <CircleClose style="color: red; font-weight: bold;"/>
+        </el-icon>
+        <el-image
+          :src="url"
+          fit="cover"
+          class="w-[100px] h-[100px] rounded border mr-2"
+        ></el-image>
+      </div>
+    </div>
   </div>
   <!-- avatar頭像 修改 -->
   <div class="choose-image-btn" @click="open">
@@ -107,6 +129,11 @@ const handleChooseImg = (checkedImg) => {
   urls = checkedImg.map(item => item.url)
 }
 
+// 移除圖片 (篩選掉不要的圖片url)
+const removeImage = (url) => {
+  const allImg = props.modelValue.filter(item => item !== url)
+  emit("update:modelValue", allImg) // 重新更新父層數據
+}
 // 確定
 const submit = () => {
   // 回傳給父層<ChooseImage v-model="form.avatar"/>
