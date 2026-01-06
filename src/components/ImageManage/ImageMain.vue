@@ -216,23 +216,27 @@ const emit = defineEmits(["chooseImg"])
 const checkedImg = computed(() => imgList.value.filter(item => item.checked))
 // 檢查當下只能選取一張圖片
 const handleChooseChg = (item) => {
-  if(item.checked && checkedImg.value.length > 1) {
+  if(item.checked && checkedImg.value.length > props.limit) {
     item.checked = false
-    return toast("error", "只能選取一張圖片")
+    return toast("error", `只能選取${props.limit}張圖片`)
   }
 
   // 回傳選中的圖片至父層 (ChooseImage.vue)
   emit("chooseImg", checkedImg.value)
-} 
+}
 
 // 上傳圖片成功,重新抓取數據
 const handleUploadSuccess = () => getImgList(1)
 
 // 父層傳入openChoose判斷~  管理員列表(有checkbox) - 可更新圖片 / 圖庫管理(沒有checkbox) - 不能更新圖片
-defineProps({
+const props = defineProps({
   openChoose: {
     type: Boolean,
     default: false
+  },
+  limit: { // 選取圖片總數的限制
+    type: Number,
+    default: 1
   }
 })
 

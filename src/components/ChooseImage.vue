@@ -70,6 +70,7 @@
         <!-- 右側: 圖片展示區 -->
         <ImageMain
           openChoose
+          :limit="limit"
           ref="ImageMainRef"
           @chooseImg="handleChooseImg"
         />
@@ -91,6 +92,7 @@ import { ref } from "vue"
 // component
 import ImageAside from "@/components/ImageManage/ImageAside.vue"
 import ImageMain from "@/components/ImageManage/ImageMain.vue"
+import { toast } from "@/utils/toast"
 
 const showDialog = ref(false)
 // 獲取ImageAside組件的dom
@@ -115,7 +117,11 @@ const handleOpenUpload = () => ImageMainRef.value.openUploadFile()
 const props = defineProps({
   modelValue: [
     String, Array
-  ]
+  ],
+  limit: { // 選取圖片總數的限制
+    type: Number,
+    default: 1
+  }
 })
 
 // 回傳給父層
@@ -134,12 +140,21 @@ const removeImage = (url) => {
   const allImg = props.modelValue.filter(item => item !== url)
   emit("update:modelValue", allImg) // 重新更新父層數據
 }
-// 確定
+// 確定 送出
 const submit = () => {
   // 回傳給父層<ChooseImage v-model="form.avatar"/>
-  if(urls.length) {
-    emit("update:modelValue", urls[0])
+  let value = []
+  if(props.limit === 1) { // 只能選一張
+    value = urls[0]
+  } else { // banner輪撥圖選多張
+    value = [...props.modelValue, ...urls]
+    // 選中的圖片數量 > 限制的圖片數量
+    if(value.length > props.limit) {
+      return toast("error","最多還能選擇"+(props.limit - props.modelValue.length)+"張")
+    }
   }
+
+  if(value) emit("update:modelValue", value)
   close()
 }
 </script>
