@@ -14,7 +14,7 @@
         <ChooseImage :limit="9" v-model="form.banners"/>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="submit">提交</el-button>
+        <el-button type="primary" @click="submit" :loading="loading">提交</el-button>
       </el-form-item>
     </el-form>
 </el-drawer>
@@ -24,40 +24,55 @@
 import { ref, reactive } from "vue"
 import ChooseImage from "@/components/ChooseImage.vue"
 // api
-import { readGoods } from "@/api/goods"
+import { readGoods, setGoodsBanner } from "@/api/goods"
+import { toast } from "@/utils/toast"
 
 const dialogVisible = ref(false)
 const goodsId = ref(0)
 const form = reactive({
   banners: []
 })
+const loading = ref(false)
+const emit = defineEmits(["reloadData"])
 
-// 設置商品輪撥圖api
-const handleGoodsBanners = async (goodsId) => {
+// 打開輪撥圖彈框 (設置商品輪撥圖)
+const open = async (row) => {
+  goodsId.value = row.id
+  row.bannersLoading = true
   try {
     // 接受父層傳入的api方法獲取數據
-    await readGoods(goodsId)
+    await readGoods(goodsId.value)
     .then(res => {
       if(res.msg === "ok"){
         form.banners = res.data.goodsBanner.map(item => item.url)
         dialogVisible.value = true
       }
     }).finally(() => {
+      row.bannersLoading = false
     })
   } catch(err) {
     console.log('err ======', err)
   }
 }
-
-// 打開輪撥圖彈框
-const open = (row) => {
-  goodsId.value = row.id
-  handleGoodsBanners(goodsId.value)
-  
-}
 // 提交
-const submit = () => {
-
+const submit = async () => {
+  loading.value = true
+  try {
+    // 設置商品輪撥圖
+    await setGoodsBanner(goodsId.value, form)
+    .then(res => {
+      if(res.msg === "ok"){
+        toast("success", "商品輪撥圖設置成功!!")
+        dialogVisible.value = false
+        // 設置成功後,reload頁面
+        emit("reloadData")
+      }
+    }).finally(() => {
+      loading.value = false
+    })
+  } catch(err) {
+    console.log('err ======', err)
+  }
 }
 // 導出給外部使用
 defineExpose({

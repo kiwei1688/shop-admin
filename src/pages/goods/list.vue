@@ -129,10 +129,14 @@
       <el-table-column label="操作" align="center">
         <template #default="{ row }" v-if="searchForm.tab !== 'delete'">
           <!-- 修改 -->
-          <el-button type="primary" @click="handleUpdatedNotice(row)">修改</el-button>
-          <el-button type="info">商品規格</el-button>
-          <el-button type="success" @click="handleSetGoodsBanners(row)">設置輪播圖</el-button>
-          <el-button type="warning">商品詳情</el-button>
+          <el-button type="success" @click="handleUpdatedNotice(row)">修改</el-button>
+          <el-button type="success">商品規格</el-button>
+          <el-button 
+            :type="row.goods_banner.length === 0 ? 'danger' : 'primary'"
+            @click="handleSetGoodsBanners(row)"
+            :loading="row.bannersLoading"
+          >設置輪播圖</el-button>
+          <el-button type="success">商品詳情</el-button>
           <!-- 刪除 -->
           <el-popconfirm 
             title="是否刪除該商品?"
@@ -141,7 +145,7 @@
             @confirm="handleDeleteManager(row.id)"
           >
             <template #reference>
-              <el-button type="danger">
+              <el-button type="success">
                 刪除
               </el-button>
             </template>
@@ -234,7 +238,7 @@
     </FormDrawer>
   </el-card>
   <!-- 設置輪撥圖--彈窗 -->
-  <Banners ref="bannerRef"/>
+  <Banners ref="bannerRef" @reloadData="getData"/>
 </div>
 </template>
 
@@ -322,7 +326,7 @@ const {
   getList: getGoodsList, // 獲取管理列表
   onGetListSuccess: (res) => {
     tableData.value = res.data.list.map(item => {
-      item.statusLoading = false
+      item.bannersLoading = false
       return item
     })
     tableData.value = res.data.list
