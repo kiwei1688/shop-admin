@@ -30,3 +30,22 @@ export const useProductStore = defineStore("product", {
     }
   }
 })
+
+export const useListStore = defineStore("list", {
+  state: () => ({
+    mitems: [
+      { id: 1, text: '手機產品1' },
+      { id: 2, text: '手機產品2' },
+      { id: 3, text: '手機產品3' },
+      { id: 4, text: '手機產品4' },
+      { id: 5, text: '手機產品5' },
+      { id: 6, text: '手機產品6' },
+    ]
+  }),
+  actions: {
+    // 刪除傳入的產品id
+    deleteListItem(id) {
+      this.mitems = this.mitems.filter(item => item.id !== id)
+    }
+  }
+})

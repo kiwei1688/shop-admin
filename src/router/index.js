@@ -28,9 +28,17 @@ const routes = [
       title: "練習用"
     }
   },
+  { // 練習手機板-列表左滑刪除資料功能
+    path: '/practice/mobile_Dellist',
+    name: 'mobileDellist',
+    component: () => import('@/pages/practice/mobile_Dellist.vue'),
+    meta: {
+      title: "練習用2"
+    }
+  },
   {
     // 404
-    path: '/:pathMatch(.*)*', 
+    path: '/:pathMatch(.*)*',
     name: '404',
     component: () => import('@/pages/404.vue'),
     meta: {
