@@ -1,49 +1,31 @@
 <template>
-  <el-form 
-      :model="model"
-      label-width="80px"
-      class="mb-3"
-    >
-      <el-row :gutter="20">
-        <!-- 默認slot (關鍵詞搜索) -->
-        <slot/>
-        <!-- 具名slot (展開進階搜索) -->
-        <template v-if="showSearch">
-          <slot name="showHeightSearch"/>
-        </template>
-        <!-- :offset 往右偏移8列 -->
-        <el-col :span="8" :offset="showSearch ? 0 : 8">
-          <div class="flex items-center justify-end">
-            <el-button type="primary" @click="$emit('search')">搜索</el-button>
-            <el-button type="info" @click="$emit('reset')">重置</el-button>
-            <el-button
-              v-if="hasHeightSearch" 
-              type="warning" 
-              @click="showSearch = !showSearch"
-            >
-              {{ showSearch ? "收合" : "展開" }}
-              <el-icon>
-                <ArrowUp v-if="showSearch" />
-                <ArrowDown v-else />
-              </el-icon>
-            </el-button>
-          </div>
-        </el-col>
-      </el-row>
-    </el-form>
+  <editor v-model="content" tag-name="div" :init="init"/>
 </template>
 
 <script setup>
-import { ref, useSlots } from "vue"
-const showSearch = ref(false)
+import tinymce from "tinymce/tinymce"
+import Editor from "@tinymce/tinymce-vue"
+import {ref, watch} from "vue"
+import "tinymce/themes/silver/theme" // 引用主題文建
+import "tinymce/icons/default" // 引用圖標文件
+import "tinymce/models/dom"
 
-// 判斷父層是否有具名slot元素 - 進階搜索showHeightSearch
-const slots = useSlots()
-const hasHeightSearch = ref(!!slots.showHeightSearch)
-
-defineProps({
-  model: Object
-})
-// 觸發執行父層的function
-defineEmits(["search","reset"])
+import "tinymce/plugins/advlist"
+import "tinymce/plugins/anchor"
+import "tinymce/plugins/autolink"
+import "tinymce/plugins/autoresize"
+import "tinymce/plugins/autosave"
+import "tinymce/plugins/charmap" // 特殊字符
+import "tinymce/plugins/code" // 查看源碼
+import "tinymce/plugins/codesample" // 插入代碼
+import "tinymce/plugins/directionality"
+import "tinymce/plugins/emoticons"
+import "tinymce/plugins/fullscreen" // 全屏
+import "tinymce/plugins/help"
+import "tinymce/plugins/image" // 插入上傳圖片插件
+import "tinymce/plugins/importcss" // 圖片工具
+import "tinymce/plugins/insertdatetime" // 時間插入
+import "tinymce/plugins/link"
+import "tinymce/plugins/lists" // 列表插件
+import "tinymce/plugins/media" // 插入是屏插件
 </script>
