@@ -9,7 +9,6 @@ import {ref, watch} from "vue"
 import "tinymce/themes/silver/theme" // 引用主題文建
 import "tinymce/icons/default" // 引用圖標文件
 import "tinymce/models/dom"
-
 import "tinymce/plugins/advlist"
 import "tinymce/plugins/anchor"
 import "tinymce/plugins/autolink"
@@ -27,5 +26,65 @@ import "tinymce/plugins/importcss" // 圖片工具
 import "tinymce/plugins/insertdatetime" // 時間插入
 import "tinymce/plugins/link"
 import "tinymce/plugins/lists" // 列表插件
-import "tinymce/plugins/media" // 插入是屏插件
+import "tinymce/plugins/media" // 插入視頻插件
+import "tinymce/plugins/nonbreaking"
+import "tinymce/plugins/pagebreak" // 分頁
+import "tinymce/plugins/preview" // 預覽
+import "tinymce/plugins/quickbars"
+import "tinymce/plugins/save" // 保存
+import "tinymce/plugins/searchreplace" // 查詢替換
+import "tinymce/plugins/table" // 插入表格插件
+import "tinymce/plugins/template" // 插入模板
+import "tinymce/plugins/visualblocks"
+import "tinymce/plugins/visualchars"
+import "tinymce/plugins/wordcount" // 字數統計插件
+// v-model
+const props = defineProps({
+  modelValue: String,
+})
+const emit = defineEmits(["update:modelValue"])
+
+const init = {
+  language_url: "/tinymce/langs/zh-Hans.js", // 中文語言包路徑
+  language: "zh-Hans",
+  skin_url: "/tinymce/skins/ui/oxide",
+  content_css: "/tinymce/skins/content/default/content.min.css",
+  menubar: false, // 隱藏菜單欄位
+  autoresize_bottom_margin: 50,
+  max_height: 500,
+  min_height: 450,
+  // height: 320,
+  toolbar_mode: "none",
+  plugins: 
+    `wordcount visualchars visualblocks template searchreplace save quickbars
+    preview pagebreak nonbreaking media insertdatetime importcss image help
+    fullscreen directionality codesample code charmap link code table lists
+    advlist anchor autolink autoresize autosave`,
+  toolbar:
+    `formats undo redo fontsizeselect fontselect ltr rtl searchreplace media |
+    outdent indent aligncenter alignleft alignright alignjustify lineheight
+    underline quicklink h2 h3 blockquote numlist bullist table removeformat
+    forecolor bakcolor bold italic strikethrough hr link preview fullscreen help`,
+  content_style: "p {margin: 5px 0; font-size: 14px;}",
+  fontsize_formats: "12px 14px 16px 18px 24px 36px 48px 56px 72px",
+  font_formats:
+    `微軟雅黑=Microsoft YaHei,Helvetica Neue,PingFang SC,sans-serif;蘋果蘋方 =
+    PingFang SC, Microsoft YaHei, sans- serif; 宋體 = simsun, serif; 仿宋體 =
+    serif;Arial Black = arial black, avant garde;Book Antiqua = book antiqua,
+    palatino; `,
+  branding: false,
+  elementpath: false,
+  resize: false, // 禁止改變大小
+  statusbar: false, // 隱藏底部狀態欄
+}
+tinymce.init; // 初始化
+const content = ref(props.modelValue)
+watch(props, (newVal) => content.value = newVal.modelValue)
+watch(content, (newVal) => emit("update:modelValue", newVal))
 </script>
+
+<style>
+  .tox-tinymce-aux {
+    z-index: 9999 !important;
+  }
+</style>
