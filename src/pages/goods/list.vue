@@ -54,7 +54,6 @@
       <!-- 批量上下架  1:上架 / 0:下架 -->
       <el-button 
         v-if="searchForm.tab === 'all' || searchForm.tab === 'off'"
-        
         size="small"
         @click="handleMultiStatusChange(1)"
       >
