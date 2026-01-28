@@ -130,13 +130,20 @@
         <template #default="{ row }" v-if="searchForm.tab !== 'delete'">
           <!-- 修改 -->
           <el-button type="success" @click="handleUpdatedNotice(row)">修改</el-button>
-          <el-button type="success">商品規格</el-button>
+          <el-button type="success"
+            :loading="row.skusLoading"
+            @click="handleSetGoodsSkus(row)"
+          >商品規格</el-button>
           <el-button 
             :type="row.goods_banner.length === 0 ? 'danger' : 'primary'"
             @click="handleSetGoodsBanners(row)"
             :loading="row.bannersLoading"
           >設置輪播圖</el-button>
-          <el-button type="success">商品詳情</el-button>
+          <el-button
+            :type="!row.content ? 'danger' : 'primary'"
+            @click="handleSetGoodsContent(row)"
+            :loading="row.contentLoading"
+          >商品詳情</el-button>
           <!-- 刪除 -->
           <el-popconfirm 
             title="是否刪除該商品?"
@@ -239,6 +246,10 @@
   </el-card>
   <!-- 設置輪撥圖--彈窗 -->
   <Banners ref="bannerRef" @reloadData="getData"/>
+  <!-- 設置商品詳情--彈窗 -->
+  <Content ref="contentRef" @reloadData="getData"/>
+  <!-- 設置商品規格--彈窗 -->
+  <Skus ref="skusRef" @reloadData="getData"/>
 </div>
 </template>
 
@@ -269,6 +280,9 @@ import ListHeader from "@/components/ListHeader.vue" // 新增/刷新
 import Search from "@/components/search.vue" // 搜索區
 import SearchItem from "@/components/SearchItem.vue" // el-col共用結構
 import Banners from "./banners.vue" // 設置輪撥圖彈窗
+
+import Content from "./content.vue" // 設置商品詳情(文字編輯器)
+import Skus from "./skus.vue" // 商品單規則skus
 
 const route = useRoute()
 // 要解構響應式數據必須用toRefs,不然會丟失響應式數據
@@ -327,6 +341,8 @@ const {
   onGetListSuccess: (res) => {
     tableData.value = res.data.list.map(item => {
       item.bannersLoading = false
+      item.contentLoading = false
+      item.skusLoading = false
       return item
     })
     tableData.value = res.data.list
@@ -392,6 +408,16 @@ getCategoryData()
 const bannerRef = ref(null)
 // 開啟彈窗
 const handleSetGoodsBanners = (row) => bannerRef.value.open(row)
+
+// 設置商品詳情(文字編輯器)
+const contentRef = ref(null)
+// 開啟彈窗
+const handleSetGoodsContent = (row) => contentRef.value.open(row)
+
+// 設置商品規則
+const skusRef = ref(null)
+// 開啟彈窗
+const handleSetGoodsSkus = (row) => skusRef.value.open(row)
 
 </script>
 

@@ -90,3 +90,16 @@ export const setGoodsBanner = async (id, data) => {
   })
 }
 
+/**
+ * @description: 設置商品skus -- post
+ * @param { id : 商品id / data: skus}
+ * @return {*}
+ */
+export const setGoodsSkus = async (id, data) => {
+  return await request({
+    url: `/admin/goods/updateskus/${id}`,
+    method: 'POST',
+    data
+  })
+}
+
