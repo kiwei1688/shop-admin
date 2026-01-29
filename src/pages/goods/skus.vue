@@ -1,21 +1,41 @@
 <template>
   <!-- dertroy-on-close: 關閉彈窗銷毀子組件 -->
   <FormDrawer
-    ref="formDrawerRef" 
+    ref="formDrawerRef"
     title="設置商品規格"
     @submit="submit" 
     dertroy-on-close
     size="70%"
   >
     <el-form :model="form">
-      <el-form-item>
-        <Editor v-model="form.content"/>
+      <!-- <el-form-item label="規格類型">
+        <el-radio-group v-model="form.sku_type">
+          <el-radio :label="0">單規格</el-radio>
+          <el-radio :label="1">雙規格</el-radio>
+        </el-radio-group>
+      </el-form-item> -->
+      <el-form-item label="市場價格">
+        <e-input v-model="form.sku_value.oprice" style="width:35%">
+          <template #append>元</template>
+        </e-input>
+      </el-form-item>
+      <el-form-item label="預設價格">
+        
+      </el-form-item>
+      <el-form-item label="成本價格">
+        
+      </el-form-item>
+      <el-form-item label="商品重量">
+        
+      </el-form-item>
+      <el-form-item label="商品體積">
+        
       </el-form-item>
     </el-form>
   </FormDrawer>
 </template>
 
-<script setup> 
+<script setup>
 import { ref, reactive } from "vue"
 import ChooseImage from "@/components/ChooseImage.vue"
 import FormDrawer from "@/components/FormDrawer.vue"
@@ -27,17 +47,16 @@ import Editor from "@/components/Editor.vue"
 
 const formDrawerRef = ref(null)
 const goodsId = ref(0)
-const initObj = {
+
+const form = reactive({
+  sky_type: 0, // 0 單規格 / 1 雙規格
+  "sku_value": {
     "oprice": 0,
     "pprice": 0,
     "cprice": 0,
     "weight": 0,
     "volume": 0,
   }
-const form = reactive({
-  sky_type: 0, // 0 單規格 / 1 雙規格
-  "sku_value": initObj,
-  content: ""
 })
 const loading = ref(false)
 const emit = defineEmits(["reloadData"])
@@ -52,8 +71,13 @@ const open = async (row) => {
     .then(res => {
       if(res.msg === "ok"){
         form.sku_type = res.data.sku_type
-        form.sku_value = res.data.sku_value || initObj
-        // form.content = res.data.content
+        form.sku_value = res.data.sku_value || {
+          "oprice": 0,
+          "pprice": 0,
+          "cprice": 0,
+          "weight": 0,
+          "volume": 0,
+        }
         formDrawerRef.value.openDrawer()
       }
     }).finally(() => {
