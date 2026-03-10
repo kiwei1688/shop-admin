@@ -45,8 +45,8 @@ const props = defineProps({
 const emit = defineEmits(["update:modelValue"])
 
 const init = {
-  language_url: "/tinymce/langs/zh-Hans.js", // 中文語言包路徑
-  language: "zh-Hans",
+  language_url: "/tinymce/langs/zh-TW.js", // 中文語言包路徑
+  language: "zh-TW",
   skin_url: "/tinymce/skins/ui/oxide",
   content_css: "/tinymce/skins/content/default/content.min.css",
   menubar: false, // 隱藏菜單欄位

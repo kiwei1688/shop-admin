@@ -41,7 +41,7 @@ const open = async (row) => {
     await readGoods(goodsId.value)
     .then(res => {
       if(res.msg === "ok"){
-        form.content = res.data.content
+        form.content = res.data.content // 初始化文字編輯資訊
         formDrawerRef.value.openDrawer()
       }
     }).finally(() => {
@@ -56,7 +56,7 @@ const submit = async () => {
   formDrawerRef.value.showLoading()
   try {
     // 設置商品輪撥圖
-    await updateGoods(goodsId.value, form)
+    await updateGoods(goodsId.value, form.content)
     .then(res => {
       if(res.msg === "ok"){
         toast("success", "商品詳情設置成功!!")

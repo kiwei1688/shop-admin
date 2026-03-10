@@ -95,7 +95,7 @@ export const setGoodsBanner = async (id, data) => {
  * @param { id : 商品id / data: skus}
  * @return {*}
  */
-export const setGoodsSkus = async (id, data) => {
+export const updateGoodsSkus = async (id, data) => {
   return await request({
     url: `/admin/goods/updateskus/${id}`,
     method: 'POST',
