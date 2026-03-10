@@ -91,7 +91,7 @@ export const setGoodsBanner = async (id, data) => {
 }
 
 /**
- * @description: 設置商品skus -- post
+ * @description: 設置商品skus規格(單規格 / 雙規格) -- post
  * @param { id : 商品id / data: skus}
  * @return {*}
  */
