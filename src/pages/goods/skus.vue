@@ -44,7 +44,7 @@
       </template>
       <!-- 多規格 form.sku_type = 1 -->
       <template v-else>
-        多規格
+        <SkuCard/>
       </template>
     </el-form>
   </FormDrawer>
@@ -58,6 +58,8 @@ import { readGoods, updateGoodsSkus } from "@/api/goods"
 import { toast } from "@/utils/toast"
 // 文字編輯器 tinyMCE
 import Editor from "@/components/Editor.vue"
+// 商品多規格
+import SkuCard from "./components/skuCard.vue"
 
 const formDrawerRef = ref(null)
 const goodsId = ref(0)
