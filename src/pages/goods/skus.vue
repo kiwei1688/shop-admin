@@ -10,8 +10,8 @@
     <el-form :model="form">
       <el-form-item label="規格類型">
         <el-radio-group v-model="form.sku_type">
-          <el-radio :label="0">單規格</el-radio>
-          <el-radio :label="1">雙規格</el-radio>
+          <el-radio :value="0">單規格</el-radio>
+          <el-radio :value="1">雙規格</el-radio>
         </el-radio-group>
       </el-form-item>
       <!-- 單規格 form.sku_type = 0 -->
@@ -60,9 +60,10 @@ import { toast } from "@/utils/toast"
 import Editor from "@/components/Editor.vue"
 // 商品多規格
 import SkuCard from "./components/skuCard.vue"
+// 初始化商品規格
+import { goodsId, initSkuCardList } from "@/utils/useSku.js"
 
 const formDrawerRef = ref(null)
-const goodsId = ref(0)
 
 const form = reactive({
   sky_type: 0, // 0 單規格 / 1 雙規格
@@ -83,7 +84,7 @@ const open = async (row) => {
   row.skusLoading = true
   try {
     // 接受父層傳入的api方法獲取數據
-    await readGoods(goodsId.value)
+    await readGoods(goodsId.value)  
     .then(res => {
       if(res.msg === "ok"){
         form.sku_type = res.data.sku_type
@@ -94,6 +95,9 @@ const open = async (row) => {
           "weight": 0,
           "volume": 0,
         }
+
+        // 初始化商品規格
+        initSkuCardList(res)
         formDrawerRef.value.openDrawer()
       }
     }).finally(() => {

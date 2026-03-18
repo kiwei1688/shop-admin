@@ -1,10 +1,19 @@
 <template>
   <el-form-item label="規格選項">
-    <el-card shadow="never" class="w-full mb-2">
+    <el-card 
+      shadow="never" 
+      class="w-full mb-2"
+      v-for="item in sku_card_list"
+      :key="item.id"
+    >
       <!-- 規格選項 -->
       <template #header>
         <div class="flex items-center">
-          <el-input placeholder="規格名稱" style="width: 200px;">
+          <el-input
+            v-model="item.newName"
+            placeholder="規格名稱" 
+            style="width: 200px;"
+          >
             <template #append>
               <el-icon><more/></el-icon>
             </template>
@@ -15,16 +24,17 @@
         </div>
       </template>
       <!-- card-body -->
-       <SkuCardItem/>
+       <SkuCardItem :skuCardId="item.id"/>
     </el-card>
     <el-button type="success">添加規格</el-button>
   </el-form-item>
 </template>
 
 <script setup>
-import { ref, reactive} from 'vue'
+import { ref } from 'vue'
 // 規格選項
 import SkuCardItem from "./skuCardItem.vue"
+import { sku_card_list } from "@/utils/useSku.js"
 
 </script>
 
