@@ -103,3 +103,16 @@ export const updateGoodsSkus = async (id, data) => {
   })
 }
 
+/**
+ * @description: 添加商品規格(雙規格) -- post
+ * @param { data: 商品規格 }
+ * @return {*}
+ */
+export const createGoodsSkusCard = async (data) => {
+  return await request({
+    url: `/admin/goods_skus_card`,
+    method: 'POST',
+    data
+  })
+}
+

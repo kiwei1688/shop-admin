@@ -26,7 +26,11 @@
       <!-- card-body -->
        <SkuCardItem :skuCardId="item.id"/>
     </el-card>
-    <el-button type="success">添加規格</el-button>
+    <el-button
+      type="success"
+      :loading="btnLoading"
+      @click="addSkuCardEvent"
+    >添加商品規格</el-button>
   </el-form-item>
 </template>
 
@@ -34,7 +38,11 @@
 import { ref } from 'vue'
 // 規格選項
 import SkuCardItem from "./skuCardItem.vue"
-import { sku_card_list } from "@/utils/useSku.js"
+import { 
+  sku_card_list,
+  addSkuCardEvent,
+  btnLoading
+} from "@/utils/useSku.js"
 
 </script>
 

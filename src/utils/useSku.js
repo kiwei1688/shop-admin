@@ -1,5 +1,8 @@
 import { ref } from 'vue'
+// api
+import { createGoodsSkusCard } from "@/api/goods.js"
 
+// 商品規格--雙規格
 // 商品id
 export const goodsId = ref(0)
 // 規格選項列表數據
@@ -18,6 +21,41 @@ export function initSkuCardList(d) {
     })
     return item
   })
+}
+
+// 添加規格 (雙規格)
+// loading
+export const btnLoading = ref(false)
+export async function addSkuCardEvent() {
+  const data = {
+    goods_id: goodsId.value, // 商品id
+    name: "規格選項", // 規格名稱
+    order: 50, // 排序
+    type: 0, // 規格類型 0文字
+  }
+
+  btnLoading.value = true
+  try {
+    await createGoodsSkusCard(data)
+    .then(res => {
+      if(res.msg === "ok"){
+        // api返回的數據只有goods_id / name / order / type
+        // 上面sku_card_list Array裡面有新增三個屬性(newName, loading, goodsSkusCardValue)
+        // 添加規格時,也必須手動增加給它
+        sku_card_list.value.push({
+          ...res,
+          newName: res.name,
+          loading: false,
+          goodsSkusCardValue: []
+        })
+      }
+    })
+    .finally(() => {
+      btnLoading.value = false
+    })
+  } catch(err) {
+    console.log('err ======', err)
+  }
 }
 
 // 初始化規格選項列表 (內容)
