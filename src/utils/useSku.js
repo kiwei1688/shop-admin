@@ -1,6 +1,9 @@
 import { ref } from 'vue'
 // api
-import { createGoodsSkusCard } from "@/api/goods.js"
+import { 
+  createGoodsSkusCard,
+  updatedGoodsSkusCard
+ } from "@/api/goods.js"
 
 // 商品規格--雙規格
 // 商品id
@@ -13,7 +16,7 @@ export function initSkuCardList(d) {
   sku_card_list.value = d.data.goodsSkusCard.map(item => {
     // 防止更新name失敗,恢復預設值
     item.newName = item.name
-    item.logading = false // 更新時loading
+    item.loading = false // 更新時loading
     // 規格屬性值
     item.goodsSkusCardValue.map(v => {
       v.subNewName = v.value || "屬性值"
@@ -57,6 +60,34 @@ export async function addSkuCardEvent() {
     console.log('err ======', err)
   }
 }
+
+// 修改商品規格 (雙規格)
+export async function handleUpdate(item) {
+  item.loading = true
+  try {
+    await updatedGoodsSkusCard(item.id, {
+      goods_id: item.goods_id,
+      name: item.newName, // 修改後的值
+      order: item.order,
+      type: 0
+    })
+    .then(res => {
+      if(res.msg === "ok"){
+        // 修改成功 把name改為newName(修改後的值)
+        item.name = item.newName
+      }
+    })
+    .catch(err => {
+      item.newName = item.name
+    })
+    .finally(() => {
+      item.loading = false
+    })
+  } catch(err) {
+    console.log('err ======', err)
+  }
+}
+
 
 // 初始化規格選項列表 (內容)
 export function initSkusCardItem(id) {

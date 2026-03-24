@@ -5,14 +5,17 @@
       class="w-full mb-2"
       v-for="item in sku_card_list"
       :key="item.id"
+      v-loading="item.loading"
     >
       <!-- 規格選項 -->
       <template #header>
         <div class="flex items-center">
+          <!-- input @change方法,input值有變更觸發hanhandleUpdate() -->
           <el-input
             v-model="item.newName"
             placeholder="規格名稱" 
             style="width: 200px;"
+            @change="handleUpdate(item)"
           >
             <template #append>
               <el-icon><more/></el-icon>
@@ -41,7 +44,8 @@ import SkuCardItem from "./skuCardItem.vue"
 import { 
   sku_card_list,
   addSkuCardEvent,
-  btnLoading
+  btnLoading,
+  handleUpdate
 } from "@/utils/useSku.js"
 
 </script>
