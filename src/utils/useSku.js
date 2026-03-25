@@ -2,7 +2,8 @@ import { ref } from 'vue'
 // api
 import { 
   createGoodsSkusCard,
-  updatedGoodsSkusCard
+  updatedGoodsSkusCard,
+  deleteGoodsSkusCard
  } from "@/api/goods.js"
 
 // 商品規格--雙規格
@@ -61,7 +62,7 @@ export async function addSkuCardEvent() {
   }
 }
 
-// 修改商品規格 (雙規格)
+// 修改商品規格名稱 (雙規格)
 export async function handleUpdate(item) {
   item.loading = true
   try {
@@ -79,6 +80,28 @@ export async function handleUpdate(item) {
     })
     .catch(err => {
       item.newName = item.name
+    })
+    .finally(() => {
+      item.loading = false
+    })
+  } catch(err) {
+    console.log('err ======', err)
+  }
+}
+
+// 刪除商品規格 (雙規格)
+export async function handleDelete(item) {
+  item.loading = true
+  try {
+    await deleteGoodsSkusCard(item.id)
+    .then(res => {
+      if(res.msg === "ok"){
+        const isIndex =  sku_card_list.value.findIndex(o => o.id === item.id)
+        // -1表示找不到該數據
+        if(isIndex !== -1) {
+          sku_card_list.value.splice(isIndex, 1)
+        }
+      }
     })
     .finally(() => {
       item.loading = false

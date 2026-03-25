@@ -69,7 +69,6 @@ export const deleteGoods = async (ids) => {
 /**
  * @description: 查看商品資料 -- get
  * @param { id: 當筆商品id }
- * @return {*}
  */
 export const readGoods = async (id) => {
   return await request({
@@ -80,7 +79,6 @@ export const readGoods = async (id) => {
 /**
  * @description: 設置商品輪撥圖 -- post
  * @param { id : 商品id / data: 輪撥圖的array數據}
- * @return {*}
  */
 export const setGoodsBanner = async (id, data) => {
   return await request({
@@ -93,7 +91,6 @@ export const setGoodsBanner = async (id, data) => {
 /**
  * @description: 設置商品skus規格(單規格 / 雙規格) -- post
  * @param { id : 商品id / data: skus}
- * @return {*}
  */
 export const updateGoodsSkus = async (id, data) => {
   return await request({
@@ -106,7 +103,6 @@ export const updateGoodsSkus = async (id, data) => {
 /**
  * @description: 添加商品規格(雙規格) -- post
  * @param { data: 商品規格 }
- * @return {*}
  */
 export const createGoodsSkusCard = async (data) => {
   return await request({
@@ -119,13 +115,23 @@ export const createGoodsSkusCard = async (data) => {
 /**
  * @description: 修改商品規格選項名稱(雙規格) -- post
  * @param { data: 商品規格數據 }
- * @return {*}
  */
 export const updatedGoodsSkusCard = async (id, data) => {
   return await request({
     url: `/admin/goods_skus_card/${id}`,
     method: 'POST',
     data
+  })
+}
+
+/**
+ * @description: 刪除商品規格選項(雙規格) -- post
+ * @param { id: 商品規格id }
+ */
+export const deleteGoodsSkusCard = async (id) => {
+  return await request({
+    url: `/admin/goods_skus_card/${id}/delete`,
+    method: 'POST'
   })
 }
 

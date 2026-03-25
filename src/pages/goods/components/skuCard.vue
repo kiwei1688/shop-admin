@@ -23,7 +23,19 @@
           </el-input>
           <el-button size="small" class="ml-auto"><el-icon><Top/></el-icon></el-button>
           <el-button size="small"><el-icon><Bottom/></el-icon></el-button>
-          <el-button size="small"><el-icon><Delete/></el-icon></el-button>
+            <!-- 刪除 -->
+            <el-popconfirm 
+              title="是否刪除該商品規格?"
+              confirm-button-text="確認"
+              cancel-button-text="取消"
+              @confirm="handleDelete(item)"
+            >
+              <template #reference>
+                <el-button size="small">
+                  <el-icon><Delete/></el-icon>
+                </el-button>
+              </template>
+            </el-popconfirm>
         </div>
       </template>
       <!-- card-body -->
@@ -45,7 +57,8 @@ import {
   sku_card_list,
   addSkuCardEvent,
   btnLoading,
-  handleUpdate
+  handleUpdate,
+  handleDelete
 } from "@/utils/useSku.js"
 
 </script>
