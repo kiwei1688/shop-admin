@@ -1,5 +1,5 @@
 <template>
-  <el-form-item label="規格選項">
+  <el-form-item label="規格選項" v-loading="bodyLoading">
     <el-card 
       shadow="never" 
       class="w-full mb-2"
@@ -50,6 +50,8 @@
                   <el-icon><Delete/></el-icon>
                 </el-button>
               </template>
+
+
             </el-popconfirm>
         </div>
       </template>
@@ -74,7 +76,8 @@ import {
   btnLoading,
   handleUpdate,
   handleDelete,
-  sortCard
+  sortCard,
+  bodyLoading
 } from "@/utils/useSku.js"
 
 </script>

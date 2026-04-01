@@ -3,7 +3,8 @@ import { ref } from 'vue'
 import { 
   createGoodsSkusCard,
   updatedGoodsSkusCard,
-  deleteGoodsSkusCard
+  deleteGoodsSkusCard,
+  sortGoodsSkusCard
 } from "@/api/goods.js"
 // common方法
 import { useArrayMoveUp, useArrayMoveDown } from "@/utils/common.js"
@@ -128,10 +129,35 @@ export async function handleDelete(item) {
 }
 
 // 排序商品規格選項(上移&下移)
-export function sortCard(action, index) {
-  action === "cardUp" ? 
-  useArrayMoveUp(sku_card_list.value, index) : 
-  useArrayMoveDown(sku_card_list.value, index)
+export const bodyLoading = ref(false)
+export async function sortCard(action, index) {
+  // 淺拷貝數據
+  let newSkuList = JSON.parse(JSON.stringify(sku_card_list.value))
+  // 判斷執行上移or下移
+  let actionFun = action === "cardUp" ? useArrayMoveUp : useArrayMoveDown
+  actionFun(newSkuList, index)
+  // 重新整理newSkuList
+  let sortData = newSkuList.map((item, index) => {
+    return {
+      id: item.id,
+      order: index + 1 // 索引從0開始
+    }
+  })
+  bodyLoading.value = true
+  try {
+    await sortGoodsSkusCard({ sortdata : sortData })
+    .then(res => {
+      if(res.msg === "ok"){
+        // 再次執行並更新sku_card_list數組,非拷貝數組
+        actionFun(sku_card_list.value, index)
+      }
+    })
+    .finally(() => {
+      bodyLoading.value = false
+    })
+  } catch(err) {
+    console.log('err ======', err)
+  }
 }
 
 // 初始化規格選項列表 (內容)

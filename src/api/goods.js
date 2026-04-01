@@ -135,3 +135,15 @@ export const deleteGoodsSkusCard = async (id) => {
   })
 }
 
+/**
+ * @description: 排序商品規格選項(雙規格) -- post
+ * @param { data: {id: 商品id, order: 商品排序}  }
+ */
+export const sortGoodsSkusCard = async (data) => {
+  return await request({
+    url: `/admin/goods_skus_card/sort`,
+    method: 'POST',
+    data
+  })
+}
+
