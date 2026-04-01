@@ -167,6 +167,23 @@ function queryParams(query) {
   return res
 }
 
+// Array 上移
+function useArrayMoveUp(arr, index) {
+  swapArray(arr, index, index-1)
+}
+
+// Array 下移
+function useArrayMoveDown(arr, index) {
+  swapArray(arr, index, index+1)
+}
+
+// Array替換位置
+function swapArray(arr, index1, index2) {
+  // splice(要刪除or增加的索引位置, 刪除數量, 增加的值)
+  arr[index1] = arr.splice(index2, 1, arr[index1])[0]
+  return arr
+}
+
 export {
   dateFormat,
   deepClone,
@@ -179,5 +196,7 @@ export {
   showFullLoading,
   hideFullLoading,
   queryParams,
-  getTitle
+  getTitle,
+  useArrayMoveUp,
+  useArrayMoveDown
 }

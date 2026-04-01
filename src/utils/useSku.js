@@ -4,7 +4,9 @@ import {
   createGoodsSkusCard,
   updatedGoodsSkusCard,
   deleteGoodsSkusCard
- } from "@/api/goods.js"
+} from "@/api/goods.js"
+// common方法
+import { useArrayMoveUp, useArrayMoveDown } from "@/utils/common.js"
 
 // 商品規格--雙規格
 // 商品id
@@ -48,10 +50,11 @@ export async function addSkuCardEvent() {
         // 添加規格時,也必須手動增加給它
         sku_card_list.value.push({
           ...res,
-          newName: res.name,
+          newName: res.data.name,
           loading: false,
           goodsSkusCardValue: []
         })
+  
       }
     })
     .finally(() => {
@@ -62,9 +65,22 @@ export async function addSkuCardEvent() {
   }
 }
 
+// const rebuildData = (item) => {
+//   const newSkuList = {
+//     ...item.data,
+//     goodsSkusCardValue: [],
+//     loading: false,
+//     newName: "初始商品規格名稱"
+//   }
+//   return newSkuList
+// }
+
 // 修改商品規格名稱 (雙規格)
 export async function handleUpdate(item) {
   item.loading = true
+  // const newItem = rebuildData(item)
+  // newItem.newName = item.newName
+  
   try {
     await updatedGoodsSkusCard(item.id, {
       goods_id: item.goods_id,
@@ -111,6 +127,12 @@ export async function handleDelete(item) {
   }
 }
 
+// 排序商品規格選項(上移&下移)
+export function sortCard(action, index) {
+  action === "cardUp" ? 
+  useArrayMoveUp(sku_card_list.value, index) : 
+  useArrayMoveDown(sku_card_list.value, index)
+}
 
 // 初始化規格選項列表 (內容)
 export function initSkusCardItem(id) {

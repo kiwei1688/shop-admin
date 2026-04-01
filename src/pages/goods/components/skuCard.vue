@@ -3,7 +3,7 @@
     <el-card 
       shadow="never" 
       class="w-full mb-2"
-      v-for="item in sku_card_list"
+      v-for="(item, index) in sku_card_list"
       :key="item.id"
       v-loading="item.loading"
     >
@@ -21,8 +21,23 @@
               <el-icon><more/></el-icon>
             </template>
           </el-input>
-          <el-button size="small" class="ml-auto"><el-icon><Top/></el-icon></el-button>
-          <el-button size="small"><el-icon><Bottom/></el-icon></el-button>
+          <!-- 規格上移-第一個無法上移 -->
+          <el-button 
+            size="small"
+            class="ml-auto"
+            @click="sortCard('cardUp', index)"
+            :disabled="index === 0"
+          >
+            <el-icon><Top/></el-icon>
+          </el-button>
+          <!-- 規格下移-最後一個無法下移 -->
+          <el-button 
+            size="small"
+            @click="sortCard('cardDown', index)"
+            :disabled="index === (sku_card_list.length -1)"
+          >
+            <el-icon><Bottom/></el-icon>
+          </el-button>
             <!-- 刪除 -->
             <el-popconfirm 
               title="是否刪除該商品規格?"
@@ -58,7 +73,8 @@ import {
   addSkuCardEvent,
   btnLoading,
   handleUpdate,
-  handleDelete
+  handleDelete,
+  sortCard
 } from "@/utils/useSku.js"
 
 </script>
