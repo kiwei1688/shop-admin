@@ -162,7 +162,40 @@ export async function sortCard(action, index) {
 
 // 初始化規格選項列表 (內容)
 export function initSkusCardItem(id) {
+  const inputValue = ref('')
+  const dynamicTags = ref(['Tag 1', 'Tag 2', 'Tag 3'])
+  const inputVisible = ref(false)
+  const InputRef = ref()
+
+  // 刪除該標籤
+  const handleClose = (tag) => {
+    dynamicTags.value.splice(dynamicTags.value.indexOf(tag), 1)
+  }
+
+  const showInput = () => {
+  inputVisible.value = true
+  nextTick(() => {
+    InputRef.value.input.focus()
+  })
+}
+
+  const handleInputConfirm = () => {
+    if (inputValue.value) {
+      dynamicTags.value.push(inputValue.value)
+    }
+    inputVisible.value = false
+    inputValue.value = ''
+  }
+
   // 找出符合當筆數據id
   const skuCardValueList = sku_card_list.value.find(o => o.id === id)
-  return { skuCardValueList }
+  return { 
+    skuCardValueList,
+    inputValue,
+    inputVisible,
+    InputRef,
+    handleClose,
+    showInput,
+    handleInputConfirm
+  }
 }
