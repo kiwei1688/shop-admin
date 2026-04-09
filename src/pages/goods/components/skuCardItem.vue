@@ -1,6 +1,5 @@
 <template>
   <!-- 規格詳細內容 -->
-
   <div class="flex gap-2">
     <el-tag
       v-for="(tag, index) in skuCardValueList.goodsSkusCardValue"
@@ -22,7 +21,7 @@
       @blur="handleInputConfirm"
     />
     <el-button v-else class="button-new-tag" size="small" @click="showInput">
-      + New Tag
+      + 添加選項值
     </el-button>
   </div>
 </template>
@@ -41,7 +40,8 @@ const {
   InputRef,
   handleClose,
   showInput,
-  handleInputConfirm
+  handleInputConfirm,
+  createCardLoading
 } = initSkusCardItem(props.skuCardId)
 </script>
 

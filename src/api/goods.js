@@ -147,3 +147,20 @@ export const sortGoodsSkusCard = async (data) => {
   })
 }
 
+/**
+ * @description: 創建商品規格細項(雙規格) -- post
+ * @param { data: {
+ *    goods_skus_card_id: 商品id,
+ *    name: 商品名稱
+ *    order: 商品排序
+ *    value: 輸入的值
+ * }}
+ */
+export const createGoodsSkusCardValue = async (data) => {
+  return await request({
+    url: `/admin/goods_skus_card_value`,
+    method: 'POST',
+    data
+  })
+}
+

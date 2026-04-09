@@ -1,10 +1,11 @@
-import { ref } from 'vue'
+import { ref, nextTick } from 'vue'
 // api
 import { 
   createGoodsSkusCard,
   updatedGoodsSkusCard,
   deleteGoodsSkusCard,
-  sortGoodsSkusCard
+  sortGoodsSkusCard,
+  createGoodsSkusCardValue
 } from "@/api/goods.js"
 // common方法
 import { useArrayMoveUp, useArrayMoveDown } from "@/utils/common.js"
@@ -65,16 +66,6 @@ export async function addSkuCardEvent() {
     console.log('err ======', err)
   }
 }
-
-// const rebuildData = (item) => {
-//   const newSkuList = {
-//     ...item.data,
-//     goodsSkusCardValue: [],
-//     loading: false,
-//     newName: "初始商品規格名稱"
-//   }
-//   return newSkuList
-// }
 
 // 修改商品規格名稱 (雙規格)
 export async function handleUpdate(item) {
@@ -160,8 +151,28 @@ export async function sortCard(action, index) {
   }
 }
 
+// skuCardValueList的數據 ==========
+// goodsSkusCardValue:[  
+//   {goods_skus_card_id: 2004
+//   id: 5653
+//   name: "内存"
+//   order: 50
+//   subNewName: "32g"
+//   value: "32g"}......
+// ]
+// goods_id: 542
+// id: 2004
+// loading: false
+// name: "内存"
+// newName: "内存"
+// order: 50
+// type: 0
+
 // 初始化規格選項列表 (內容)
 export function initSkusCardItem(id) {
+  // 找出當筆數據
+  const skuCardValueList = sku_card_list.value.find(o => o.id === id)
+
   const inputValue = ref('')
   const dynamicTags = ref(['Tag 1', 'Tag 2', 'Tag 3'])
   const inputVisible = ref(false)
@@ -173,22 +184,44 @@ export function initSkusCardItem(id) {
   }
 
   const showInput = () => {
-  inputVisible.value = true
-  nextTick(() => {
-    InputRef.value.input.focus()
-  })
-}
-
-  const handleInputConfirm = () => {
-    if (inputValue.value) {
-      dynamicTags.value.push(inputValue.value)
+    inputVisible.value = true
+    nextTick(() => {
+      InputRef.value.input.focus()
+    })
+  }
+  // 創建商品規格細項
+  const createCardLoading = ref(false)
+  const handleInputConfirm = async () => {
+    if (!inputValue.value) {
+      inputVisible.value = false
+      return
     }
-    inputVisible.value = false
-    inputValue.value = ''
+    createCardLoading.value = true
+    try {
+      await createGoodsSkusCardValue({
+        goods_skus_card_id: id,
+        name: skuCardValueList.name,
+        order: 50,
+        value: inputValue.value
+      })
+      .then(res => {
+        if(res.msg === "ok"){
+          skuCardValueList.goodsSkusCardValue.push({
+            ...res.data,
+            subNewName: res.data.value // 新增一筆text數據,為了不修改原值,修改失敗則不更動原值
+          })
+        }
+      })
+      .finally(() => { // 成功或失敗都會調用
+        inputVisible.value = false
+        inputValue.value = ''
+        createCardLoading.value = false
+      })
+    } catch(err) {
+      console.log('err ======', err)
+    }
   }
 
-  // 找出符合當筆數據id
-  const skuCardValueList = sku_card_list.value.find(o => o.id === id)
   return { 
     skuCardValueList,
     inputValue,
@@ -196,6 +229,7 @@ export function initSkusCardItem(id) {
     InputRef,
     handleClose,
     showInput,
-    handleInputConfirm
+    handleInputConfirm,
+    createCardLoading
   }
 }
