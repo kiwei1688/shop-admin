@@ -5,7 +5,8 @@ import {
   updatedGoodsSkusCard,
   deleteGoodsSkusCard,
   sortGoodsSkusCard,
-  createGoodsSkusCardValue
+  createGoodsSkusCardValue,
+  updateGoodsSkusCardValue
 } from "@/api/goods.js"
 // common方法
 import { useArrayMoveUp, useArrayMoveDown } from "@/utils/common.js"
@@ -222,6 +223,33 @@ export function initSkusCardItem(id) {
     }
   }
 
+  // 修改商品細項值
+  const handleChange = async (value, tag) => {
+    // console.log("WWWWWWW", value)
+    createCardLoading.value = true
+    try {
+      await updateGoodsSkusCardValue(tag.id, {
+        goods_skus_card_id: id,
+        name: skuCardValueList.name,
+        order: tag.order,
+        value: value // 輸入要改的新值
+      })
+      .then(res => {
+        if(res.msg === "ok"){
+          tag.value = value // 寫入修改成功,把local的tag數據更新
+        }
+      })
+      .catch(err => { // 失敗改回原本的值
+        tag.subNewName = tag.value
+      })
+      .finally(() => { // 成功或失敗都會調用
+        createCardLoading.value = false
+      })
+    } catch(err) {
+      console.log('err ======', err)
+    }
+  }
+
   return { 
     skuCardValueList,
     inputValue,
@@ -230,6 +258,7 @@ export function initSkusCardItem(id) {
     handleClose,
     showInput,
     handleInputConfirm,
+    handleChange,
     createCardLoading
   }
 }

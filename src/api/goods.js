@@ -164,3 +164,15 @@ export const createGoodsSkusCardValue = async (data) => {
   })
 }
 
+/**
+ * @description: 修改商品規格細項(雙規格) -- post
+ * @param { id: 商品id , data: 要修改的數據 }
+ */
+export const updateGoodsSkusCardValue = async (id, data) => {
+  return await request({
+    url: `/admin/goods_skus_card_value/${id}`,
+    method: 'POST',
+    data
+  })
+}
+
