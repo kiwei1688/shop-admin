@@ -6,7 +6,8 @@ import {
   deleteGoodsSkusCard,
   sortGoodsSkusCard,
   createGoodsSkusCardValue,
-  updateGoodsSkusCardValue
+  updateGoodsSkusCardValue,
+  deleteGoodsSkusCardValue
 } from "@/api/goods.js"
 // common方法
 import { useArrayMoveUp, useArrayMoveDown } from "@/utils/common.js"
@@ -178,10 +179,26 @@ export function initSkusCardItem(id) {
   const dynamicTags = ref(['Tag 1', 'Tag 2', 'Tag 3'])
   const inputVisible = ref(false)
   const InputRef = ref()
+  const createCardLoading = ref(false)
 
-  // 刪除該標籤
-  const handleClose = (tag) => {
-    dynamicTags.value.splice(dynamicTags.value.indexOf(tag), 1)
+  // 刪除該商品規格子細項
+  const handleClose = async (tag) => {
+    createCardLoading.value = true
+    try {
+      await deleteGoodsSkusCardValue(tag.id)
+      .then(res => {
+        if(res.msg === "ok"){
+          let hasIndex = skuCardValueList.goodsSkusCardValue.findIndex(o => o.id === tag.id)
+          // 找到該筆數據刪除
+          if(hasIndex !== -1) skuCardValueList.goodsSkusCardValue.splice(hasIndex, 1)
+        }
+      })
+      .finally(() => { // 成功或失敗都會調用
+        createCardLoading.value = false
+      })
+    } catch(err) {
+      console.log('err ======', err)
+    }
   }
 
   const showInput = () => {
@@ -191,7 +208,6 @@ export function initSkusCardItem(id) {
     })
   }
   // 創建商品規格細項
-  const createCardLoading = ref(false)
   const handleInputConfirm = async () => {
     if (!inputValue.value) {
       inputVisible.value = false
@@ -225,7 +241,6 @@ export function initSkusCardItem(id) {
 
   // 修改商品細項值
   const handleChange = async (value, tag) => {
-    // console.log("WWWWWWW", value)
     createCardLoading.value = true
     try {
       await updateGoodsSkusCardValue(tag.id, {

@@ -101,8 +101,8 @@ export const updateGoodsSkus = async (id, data) => {
 }
 
 /**
- * @description: 添加商品規格(雙規格) -- post
- * @param { data: 商品規格 }
+ * @description: 添加商品規格主選項(雙規格) -- post
+ * @param { data: 商品規格主選項 }
  */
 export const createGoodsSkusCard = async (data) => {
   return await request({
@@ -113,8 +113,8 @@ export const createGoodsSkusCard = async (data) => {
 }
 
 /**
- * @description: 修改商品規格選項名稱(雙規格) -- post
- * @param { data: 商品規格數據 }
+ * @description: 修改商品規格主選項名稱(雙規格) -- post
+ * @param { data: 商品規格主選項數據 }
  */
 export const updatedGoodsSkusCard = async (id, data) => {
   return await request({
@@ -125,8 +125,8 @@ export const updatedGoodsSkusCard = async (id, data) => {
 }
 
 /**
- * @description: 刪除商品規格選項(雙規格) -- post
- * @param { id: 商品規格id }
+ * @description: 刪除商品規格主選項(雙規格) -- post
+ * @param { id: 商品規格主選項id }
  */
 export const deleteGoodsSkusCard = async (id) => {
   return await request({
@@ -176,3 +176,13 @@ export const updateGoodsSkusCardValue = async (id, data) => {
   })
 }
 
+/**
+ * @description: 刪除商品規格子細項(雙規格) -- post
+ * @param { id: 要刪除的商品子細項id }
+ */
+export const deleteGoodsSkusCardValue = async (id) => {
+  return await request({
+    url: `/admin/goods_skus_card_value/${id}/delete`,
+    method: 'POST'
+  })
+}
