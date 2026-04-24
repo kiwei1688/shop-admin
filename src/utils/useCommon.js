@@ -30,7 +30,7 @@ function useInitTable(opt = {}) {
     }
   }
 
-  // 獲取管理員列表數據
+  // 獲取 管理員/商品 列表數據
   const getData = async(page = null) => {
     // 有切換 傳入當下頁碼,則重新給當前頁籤碼
     if(typeof page === "number") curPage.value = page

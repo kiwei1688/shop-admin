@@ -18,7 +18,12 @@
             @change="handleUpdate(item)"
           >
             <template #append>
-              <el-icon><more/></el-icon>
+              <el-icon
+                class="cursor-pointer" 
+                @click="handleChooseSku(item)"
+              >
+                <more/>
+              </el-icon>
             </template>
           </el-input>
           <!-- 規格上移-第一個無法上移 -->
@@ -64,10 +69,13 @@
       @click="addSkuCardEvent"
     >添加商品規格</el-button>
   </el-form-item>
+  <!-- 規格選擇彈窗 -->
+  <ChooseSku ref="ChooseSkuRef"/>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+import ChooseSku from "@/components/ChooseSku.vue"
 // 規格選項
 import SkuCardItem from "./skuCardItem.vue"
 import { 
@@ -79,6 +87,13 @@ import {
   sortCard,
   bodyLoading
 } from "@/utils/useSku.js"
+
+// 規格選擇彈窗組件dom元素
+const ChooseSkuRef = ref(null)
+const handleChooseSku = (item) => {
+  // 開啟
+  ChooseSkuRef.value.open()
+}
 
 </script>
 
