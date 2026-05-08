@@ -186,3 +186,15 @@ export const deleteGoodsSkusCardValue = async (id) => {
     method: 'POST'
   })
 }
+
+/**
+ * @description: 設置商品規格選項&值(雙規格) -- post
+ * @param { id: 商品規格選項id, data }
+ */
+export const chooseAndSetGoodsSkusCard = async (id, data) => {
+  return await request({
+    url: `/admin/goods_skus_card/${id}/set`,
+    method: 'POST',
+    data
+  })
+}

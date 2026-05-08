@@ -85,14 +85,21 @@ import {
   handleUpdate,
   handleDelete,
   sortCard,
-  bodyLoading
+  bodyLoading,
+  handleChooseSetGoodsSkusCard
 } from "@/utils/useSku.js"
 
 // 規格選擇彈窗組件dom元素
 const ChooseSkuRef = ref(null)
 const handleChooseSku = (item) => {
   // 開啟
-  ChooseSkuRef.value.open()
+  ChooseSkuRef.value.openChooseSku(async (value) => {
+    // 更新選擇的--設置商品規格
+    await handleChooseSetGoodsSkusCard(item.id, {
+      name: value.name,
+      value: value.list
+    })
+  })
 }
 
 </script>

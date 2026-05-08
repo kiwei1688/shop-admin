@@ -90,11 +90,15 @@ const activeId = ref(0)
 const list = ref([])
 // 右側選中的值
 const form = reactive({
+  name: "",
   list: []
 })
 
 // 開啟彈窗
-const open = async () => {
+const callbackFunction = ref(null)
+const openChooseSku = async (callback = null) => {
+  // 父層傳入的callback Fun存起來
+  callbackFunction.value = callback
   // 獲取第一頁 數據
   await getData(1)
   dialogVisible.value = true
@@ -107,17 +111,21 @@ function handleChangeActiveId(id) {
   // 找出當下link的該筆數據
   let mainItem = tableData.value.find(item => item.id === id)
   if(mainItem) {
-    // 將default字串用,分割成array
+    // 將default字串用,分割成array格式
     list.value = mainItem.default.split(",")
+    form.name = mainItem.name
   }
 }
 // 確定 送出
+// 選中數據 ex:{list: ['32g', '64g'], name:'內存'}
 const submit = () => {
-  
+  // 執行父層Fun
+  if(typeof callbackFunction.value === "function") callbackFunction.value(form)
+  dialogVisible.value = false
 }
-
+// 給外部使用
 defineExpose({
-  open
+  openChooseSku
 })
 </script>
 

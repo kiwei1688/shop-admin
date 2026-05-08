@@ -7,7 +7,8 @@ import {
   sortGoodsSkusCard,
   createGoodsSkusCardValue,
   updateGoodsSkusCardValue,
-  deleteGoodsSkusCardValue
+  deleteGoodsSkusCardValue,
+  chooseAndSetGoodsSkusCard
 } from "@/api/goods.js"
 // common方法
 import { useArrayMoveUp, useArrayMoveDown } from "@/utils/common.js"
@@ -143,6 +144,23 @@ export async function sortCard(action, index) {
       if(res.msg === "ok"){
         // 再次執行並更新sku_card_list數組,非拷貝數組
         actionFun(sku_card_list.value, index)
+      }
+    })
+    .finally(() => {
+      bodyLoading.value = false
+    })
+  } catch(err) {
+    console.log('err ======', err)
+  }
+}
+
+// 設置商品規格
+export async function handleChooseSetGoodsSkusCard(id, data) {
+  try {
+    await chooseAndSetGoodsSkusCard(id, data)
+    .then(res => {
+      if(res.msg === "ok"){
+       console.log("ewwegeeeee", res)
       }
     })
     .finally(() => {
